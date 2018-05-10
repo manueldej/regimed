@@ -1,13 +1,13 @@
 <?php 
 ############################################################################################################
 # Software: Regimed                                                                                        #
-#(Registro de Medios Inform·ticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jes˙s N˙Òez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
+#(Registro de Medios Inform√°ticos)     					                                   #
+# Version:  3.0.1                                                     				           #
+# Fecha:    01/06/2016 - 03/04/2018                                             			   #
+# Autores:  Ing. Manuel de Jes√∫s N√∫√±ez Guerra   							   #
+#           Msc. Carlos Pollan Estrada						      		           #
+# Licencia: Freeware                                                				           #
+#                                                                       			           #
 # Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
 ############################################################################################################
 ?>
@@ -37,7 +37,7 @@ if (!check_auth_user()){
     <td width="450" height="2" bgcolor="#FFFFFF"><hr align="right" width="100%" color="#0099CC" /></td>
   </tr>
   <tr align="right" valign="top">
-    <td height="25"><iframe src="buscaaft.php" name="b" width="100%" height="600" frameborder="0" class="notice" border="0"> El explorador no admite los marcos flotantes o no est· configurado actualmente 
+    <td height="25"><iframe src="buscaaft.php" name="b" width="100%" height="600" frameborder="0" class="notice" border="0"> El explorador no admite los marcos flotantes o no est√° configurado actualmente 
     para mostrarlos. </iframe></td>
   </tr>
 </table>
