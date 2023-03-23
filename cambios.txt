@@ -1,0 +1,82 @@
+Version 3.1.1 Final. (01/enero/2023)
+- Implementación de alternativas a consecuencias de funciones que en Php 8.1.10
+  quedaron obsoletas: 
+	•mysqli_connect — Alias de mysqli::__construct
+	•mysqli_escape_string — Alias de mysqli_real_escape_string
+	•mysqli_execute — Alias para mysqli_stmt_execute
+	•mysqli_get_client_stats — Returns client per-process statistics
+	•mysqli_get_links_stats — Devolver información sobre enlaces abiertos y almacenados en caché
+	•mysqli_report — Alias de mysqli_driver->report_mode
+	•mysqli::set_opt — Alias de mysqli_options
+- La nueva versión está en correspondencia con los niveles restrictivos de la versión 8.1.10 en torno al
+  tratamiento de errores.
+-   
+
+Version 3.0.1 (22/Febrero/2018)
+ - Se retoma el acceso al sitio por "usuarios" además del "invitado", tal como fuera
+   concevido desde la versión inicial, pero avandonado en la v2.1
+ 
+ - Implementación de una solución para "desconectar" a los usuarios que al cerrar el
+   navegador consciente o inconscientemente, sus sessiones quedaban registradas en 
+   la base de dato y por consiguiente no podían logearse nuevamente.
+ 
+ - Empleo de Menues Popup y ventanas Modales para hacer más amigable su operacionalidad.
+ 
+ - La lista de órganos emisores de las resoluciones, se nutre del propio usuario. 
+ 
+ - Además del módulo "traspasos", se implementa nueva característica para que un Custodio 
+   transfiera uno, varios o todos sus medios (aft) para otro u otros Custodios.  
+ 
+ - Aspecto y estilo. 78
+    
+ -------------------------------------------------------------------------------------
+ Version 3.0.0 (15/Julio/2015)
+ - Se retoma el acceso al sitio por "usuarios" además del "invitado", tal como fuera
+   concevido desde la versión inicial, pero avandonado en la v2.1
+ 
+ - Implementación de una solución para "desconectar" a los usuarios que al cerrar el
+   navegador consciente o inconscientemente, sus sessiones quedaban registradas en 
+   la base de dato y por consiguiente no podían logearse nuevamente.
+ 
+ - Empleo de Menues Popup y ventanas Modales para hacer más amigable su operacionalidad.
+ 
+ - La lista de órganos emisores de las resoluciones, se nutre del propio usuario. 
+ 
+ - Además del módulo "traspasos", se implementa nueva característica para que un Custodio 
+   transfiera uno, varios o todos sus medios (aft) para otro u otros Custodios.  
+ 
+ - Aspecto y estilo. 78
+    
+ -------------------------------------------------------------------------------------
+ Version 2.1.1 Final. (23/Diciembre/2014)
+ - Se retoma el acceso al sitio por "usuarios" además del "invitado", tal como fuera
+   concevido desde la versión inicial, pero avandonado en la v2.1
+ 
+ - Implementación de una solución para "desconectar" a los usuarios que al cerrar el
+   navegador consciente o inconscientemente, sus sessiones quedaban registradas en 
+   la base de dato y por consiguiente no podían logearse nuevamente.
+ 
+ - Empleo de Menues Popup y ventanas Modales para hacer más amigable su operacionalidad.
+ 
+ - La lista de órganos emisores de las resoluciones, se nutre del propio usuario. 
+ 
+ - Además del módulo "traspasos", se implementa nueva característica para que un Custodio 
+   transfiera uno, varios o todos sus medios (aft) para otro u otros Custodios.  
+ 
+ - Aspecto y estilo.
+ -------------------------------------------------------------------------------------
+ 
+ Versión 2.1.0 (14/Abril/2013)
+ - Solucionado bug de la no creación de la tabla regimed.conectado
+ 
+ - Empleo del motor InnoDB y rediseño de la Base de Datos.
+ 
+ - Reprogramación para la actualización de la estructura de Base de Datos, 
+   garantizando la integridad de los datos de aquellos usuarios que ya 
+   tenían la aplicación en explotación
+---------------------------------------------------------------------------------------
+   versión 2.0.0 (24/Marzo/2011)
+ - Rediseño del software para el trabajo multi-unidad.
+ 
+ - Eempleo del framework bootsrap 3.0, empleo de CSS3 y HTML5.
+
