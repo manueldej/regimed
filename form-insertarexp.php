@@ -1,25 +1,26 @@
 <?php 
-############################################################################################################
+#############################################################################################################
 # Software: Regimed                                                                                         #
-#(Registro de Medios Inform·ticos)     					                                		            #
-# Version:  3.0.1                                                     				                        #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                        #
-# Autores:  Ing. Manuel de Jes˙s N˙Òez Guerra   								     			            #
-#          	Msc. Carlos Pollan Estrada											         		            #
-# Licencia: Freeware                                                				                        #
-#                                                                       			                        #
+#(Registro de Medios Inform√°ticos)     					                  		    #
+# Version:  3.1.1                                                    				            #
+# Fecha:    24/03/2011 - 01/01/2023                                             		            #
+# Autores:  Ing. Manuel de Jes√∫s N√∫√±ez Guerra   						            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)					            #
+# Licencia: Freeware                                                				            #
+#                                                                       			            #
 # Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
 # LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
-# lo puede modificar bajo los tÈrminos de la Licencia P˙blica General GNU publicada por la FundaciÛn de     #
-# Software Gratuito (the Free Software Foundation ); Ya sea la versiÛn 2 de la Licencia, o (en su opciÛn)   #
-# cualquier posterior versiÛn. REGIMED es distribuido con la esperanza de que ser· ˙til, pero SIN CUALQUIER #
-# GARANTÕA; Sin a˙n la garantÌa implÌcita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROP”SITO PARTICULAR.  #
-# Vea la Licencia P˙blica General del GNU para m·s detalles. Usted deberÌa haber recibido una copia de la   #
-# Licencia  P˙blica General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+# lo puede modificar bajo los t√©rminos de la Licencia P√∫blica General GNU publicada por la Fundaci√≥n de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versi√≥n 2 de la Licencia, o (en su opci√≥n)   #
+# cualquier posterior versi√≥n. REGIMED es distribuido con la esperanza de que ser√° √∫til, pero SIN CUALQUIER #
+# GARANT√çA; Sin a√∫n la garant√≠a impl√≠cita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROP√ìSITO PARTICULAR.  #
+# Vea la Licencia P√∫blica General del GNU para m√°s detalles. Usted deber√≠a haber recibido una copia de la   #
+# Licencia  P√∫blica General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
 #############################################################################################################
 @session_start();
 require_once('connections/miConex.php');
 include('header.php');
+include('jquery.php');
 $i="es";
 $memo0="";
 $memo1="";
@@ -32,18 +33,74 @@ $varMemorias = array('marca','modelo','no_serie','fabricante','capacidad','tasa'
 $varDiscoDuro = array('marca','modelo','no_serie','fabricante','capacidad','tasa','cache','rpm');
 $varTarjetaGrafica = array('marca','modelo','no_serie','fabricante','capacidad','frecuencia');
 $varcomponente = array($varCPU,$varMemorias,$varDiscoDuro,$varTarjetaGrafica);
+$sistema_operativo = array('Microsoft Windows Server 2008','Microsoft Windows 11','Microsoft Windows 10','Microsoft Windows 8.1','Microsoft Windows 8','Microsoft Windows 7','Microsoft Windows XP','Unix','GNU/Linux','Solaris','Google Ghrome','IO OS');
 
-	if(isset($_COOKIE['seulang'])){
-		if(($_COOKIE['seulang']) =="es"){$i="es"; }else{$i="en";}
+//Para importar datos de expedientes 
+
+$roo = $_SERVER['DOCUMENT_ROOT'];
+$fin =str_replace($_SERVER['SERVER_NAME'],"",$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
+$pht1 = substr($fin, 0, strlen($fin)- strlen(basename($_SERVER['PHP_SELF'])));
+$upload_extensions = array(".txt", ".TXT");
+    function tamano($size,$digits) {
+		$kb=1024; $mb=1024*$kb; $gb=1024*$mb; $tb=1024*$gb;
+		if (($size==0)) { 
+			return "0 Byte"; 
+		}elseif ($size<$kb) { 
+			return $size." Byte"; 
+		}elseif ($size<$mb) { 
+			return round($size/$kb,$digits)." Kb"; 
+		}elseif ($size<$gb) { 
+			return round($size/$mb,$digits)." Mb"; 
+		}elseif ($size<$tb) { 
+			return round($size/$gb,$digits)." Gb"; 
+		}else { 
+			return round($size/$tb,$digits)." Tb"; 
+		}
 	}
+    $carpeta= $roo.$pht1."importar/";
+    $fecha=date("dmY");
+	
+	if (isset($_REQUEST['marcado'])) {
+      $fichero = $_REQUEST['marcado'];
+	}
+
+	if(isset($_POST['crash']) AND ($_POST['crash']) !=""){	
+		if (isset($_REQUEST['marcado'])) {
+          $fichero = $_REQUEST['marcado'];
+	    }
+		if (isset($_REQUEST['inv'])) {
+		  $invent = $_REQUEST['inv'];
+		}
+
+		@unlink($carpeta.$fichero); ?>
+		<script type="text/javascript">
+		    //document.location="javascript:history.go(-2)"
+       		document.location="form-insertarexp.php?impor=kbpimpirt&inv=<?php echo $invent?>";
+		</script>
+		<?php
+	}
+	
+// fin importar 	
+
+if(isset($_COOKIE['seulang'])){
+   if(($_COOKIE['seulang']) =="es"){$i="es"; }else{$i="en";}
+}
+	
 if(($i) =="es"){include('esp.php');}else{ include('eng.php');}
+
 if (isset($_REQUEST['idunidades'])) {
   $unidad = $_REQUEST['idunidades'];
 }else{
-  $unidad =1;
+  $unidad =1;  
 }
+
+$unidadE = $unidad;
+
 if (isset($_REQUEST['inv'])) {
   $invent = $_REQUEST['inv'];
+}
+if (isset($_REQUEST['impor'])) {
+  $impor = $_REQUEST['impor'];
 }
 
 if (isset($_REQUEST['q'])){
@@ -186,20 +243,20 @@ if (isset($_REQUEST['q'])){
 	   }
 	   $resultcomp = mysqli_query($miConex, $sql) or die (mysql_error());
 	}else{
-	   $sql1 ="SELECT * FROM componentes WHERE nombre ='".$compo."' AND idexp='".$invent."'";
+	   $sql1 ="SELECT * FROM componentes WHERE nombre ='".$compo."' AND idexp='".@$invent."'";
 	   $result1 = mysqli_query($miConex, $sql1) or die (mysql_error());
 	   $rows1 = mysqli_fetch_array($result1); 
 	   $cantrows = mysqli_num_rows($result1);
 	}
 
-$consul = "SELECT * from aft where inv='".$invent."' AND idunidades='". $unidad."'";
+$consul = "SELECT * from aft where inv='".@$invent."' AND idunidades='". $unidad."'";
 $result = mysqli_query($miConex, $consul) or die(mysql_error());
 $row = mysqli_fetch_array ($result);
 $resultx = mysqli_query($miConex, "SELECT * from datos_generales where id_datos='". $unidad."'") or die(mysql_error());
 $rowx = mysqli_fetch_array ($resultx);
 
-$query_Recordset1 = "SELECT usuarios.nombre FROM usuarios where nombre ='".$row['custodio']."' AND idunidades='".$unidad."'";
-$Recordset1 = mysqli_query($miConex, $query_Recordset1) or die(mysql_error());
+@$query_Recordset1 = "SELECT usuarios.nombre FROM usuarios where nombre ='".$row['custodio']."' AND idunidades='".$unidad."'";
+$Recordset1 = mysqli_query($miConex, @$query_Recordset1) or die(mysql_error());
 $row_Recordset1 = mysqli_fetch_array($Recordset1);
 $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
 
@@ -208,142 +265,144 @@ $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
 
 // CHEQUEO QUE NINGUN CAMPO QUEDE EN BLANCO 
 
-function submit_page(){
- foundError = false;
- var form=form1;
-  if(isFieldBlank(form.t2)) {
-  alert("El campo 'Inv' est· en blanco.");
-  form.t2.focus();
-  foundError = true;
- }else
- if(isFieldBlank(form.t3)) {
-  alert("El campo 'CPU' est· en blanco.");
-  form.t3.focus();
-  foundError = true;
- }else
- if(isFieldBlank(form.t4)) {
-  alert("El campo 'PLACA' est· en blanco.");
-  form.t4.focus();
-  foundError = true;
- }else
- if(isFieldBlank(form.t5)) {
-  alert("El campo 'CHIPSET' est· en blanco.");
-  form.t5.focus();
-  foundError = true;
- }else
- if(isFieldBlank(form.t6)) {
-  alert("El campo 'MEMORIA' est· en blanco.");
-  form.t6.focus();
-  foundError = true;
- }else
- if(isFieldBlank(form.t8)) {
-  alert("El campo 'GRAFICS' est· en blanco.");
-  form.t8.focus();
-  foundError = true;
- }else
- if(isFieldBlank(form.t9)) {
-  alert("El campo 'DRIVE-1' est· en blanco.");
-  form.t9.focus();
-  foundError = true;
- }else
- if(isFieldBlank(form.t16)) {
-  alert("El campo 'SO' est· en blanco.");
-  foundError = true;
- }else
-   
- if(foundError == false ){
-  return true; }
-   return false;
-}
+	function submit_page(){
+	  foundError = false;
+	  var form=form1;
+		if(isFieldBlank(form.t2)) {
+		  alert("El campo 'Inv' est√° en blanco.");
+		  form.t2.focus();
+		  foundError = true;
+		}else
+		 if(isFieldBlank(form.t3)) {
+		  alert("El campo 'CPU' est√° en blanco.");
+		  form.t3.focus();
+		  foundError = true;
+		}else
+		 if(isFieldBlank(form.t4)) {
+		  alert("El campo 'PLACA' est√° en blanco.");
+		  form.t4.focus();
+		  foundError = true;
+		}else
+		 if(isFieldBlank(form.t5)) {
+		  alert("El campo 'CHIPSET' est√° en blanco.");
+		  form.t5.focus();
+		  foundError = true;
+		}else
+		 if(isFieldBlank(form.t6)) {
+		  alert("El campo 'MEMORIA' est√° en blanco.");
+		  form.t6.focus();
+		  foundError = true;
+		}else
+		 if(isFieldBlank(form.t8)) {
+		  alert("El campo 'GRAFICS' est√° en blanco.");
+		  form.t8.focus();
+		  foundError = true;
+		}else
+		 if(isFieldBlank(form.t9)) {
+		  alert("El campo 'DRIVE-1' est√° en blanco.");
+		  form.t9.focus();
+		  foundError = true;
+		}else
+		 if(isFieldBlank(form.t16)) {
+		  alert("El campo 'SO' est√° en blanco.");
+		  foundError = true;
+		}else
+	   
+		if(foundError == false ){
+		  return true; 
+		}
+	    return false;
+	}
 
-function retornar(form){
- document.form1.action="registromedios1.php";
-}
+	function retornar(form){
+	 document.form1.action="registromedios1.php";
+	}
 
-function isFieldBlank(theField){
- innStr = theField.value;
- innLen = innStr.length;
+	function isFieldBlank(theField){
+	 innStr = theField.value;
+	 innLen = innStr.length;
 
- if(theField.value == "" && innLen==0)
-  return true;
- else
-  return false;
+	 if(theField.value == "" && innLen==0)
+	  return true;
+	 else
+	  return false;
 
-}
+	}
 
-function ctype_digit(theField){
- val = theField.value;
- Len = val.length;
- 
-  for(var i=0; i<Len; i++)
-  {
-   var ch = val.substring(i,i+1)
-   if(ch < "0" || "16"< ch)
-     return true;
-  }
-}
+	function ctype_digit(theField){
+	 val = theField.value;
+	 Len = val.length;
+	 
+	  for(var i=0; i<Len; i++)
+	  {
+	   var ch = val.substring(i,i+1)
+	   if(ch < "0" || "16"< ch)
+		 return true;
+	  }
+	}
 
-function ci(theField)   {
- val = theField.value;
- Len = val.length;
+	function ci(theField){
+	 val = theField.value;
+	 Len = val.length;
 
-  for(var i=0; i<Len; i++)
-    var chh = val.substring(i,i+1)
-    
-  if(i < "16")
-    return true;
-}
+	  for(var i=0; i<Len; i++)
+		var chh = val.substring(i,i+1)
+		
+	  if(i < "16")
+		return true;
+	}
 
-function masmemo(id,nuevoid,nuevoid2) {
- document.getElementById(id).style.display ='none';
- document.getElementById(nuevoid).style.display ='block';
- document.getElementById(nuevoid2).style.display ='block';
-}
-function menmemo(id,nuevoid,nuevoid2,idvalor) {
- document.getElementById(id).style.display ='none';
- document.getElementById(idvalor).value ='';
- document.getElementById(nuevoid).style.display ='none';
- document.getElementById(nuevoid2).style.display ='none';
- }
+	function masmemo(id,nuevoid,nuevoid2) {
+	  document.getElementById(id).style.display ='none';
+	  document.getElementById(nuevoid).style.display ='block';
+	  document.getElementById(nuevoid2).style.display ='block';
+	}
+	
+	function menmemo(id,nuevoid,nuevoid2,idvalor) {
+	  document.getElementById(id).style.display ='none';
+	  document.getElementById(idvalor).value ='';
+	  document.getElementById(nuevoid).style.display ='none';
+	  document.getElementById(nuevoid2).style.display ='none';
+	}
 
-function seguro4(invent,idunidades,memo0,memo1,memo2,memo3,cpu,placa,chipset,tgrafica,hdd0,hdd1,lector0,lector1,sonido,red0,red1,red2,fuente,os,npc,indice,compon,compo){
-	if (compo!=="") {
-		document.regresa.inv.value = invent;
-		document.regresa.unidad.value = idunidades;
-		document.regresa.indice.value = indice;
-		document.regresa.memo0.value = memo0;
-		document.regresa.memo1.value = memo1;
-		document.regresa.memo2.value = memo2;
-		document.regresa.memo3.value = memo3;
-		document.regresa.cpux.value = cpu;
-		document.regresa.placax.value = placa;
-		document.regresa.chipsetx.value = chipset;
-		document.regresa.tgraficax.value = tgrafica;
-		document.regresa.hdd0x.value = hdd0;
-		document.regresa.hdd1x.value = hdd1;
-		document.regresa.lector0x.value = lector0;
-		document.regresa.lector1x.value = lector1;
-		document.regresa.sonidox.value = sonido;
-		document.regresa.red0x.value = red0;
-		document.regresa.red1x.value = red1;
-		document.regresa.red2x.value = red2;
-		document.regresa.fuentex.value = fuente;
-		document.regresa.osx.value = os;
-		document.regresa.npcx.value = npc;
-		document.regresa.compon.value = compon;
-		document.regresa.compo.value = compo;
-		document.regresa.action ='#modal6';
-		document.regresa.submit();
-	 }else{
-		document.regresa.memo0.value = memo0;
-		document.regresa.memo1.value = memo1;
-		document.regresa.memo2.value = memo2;
-		document.regresa.memo3.value = memo3;
-	   return false; 
-	 } 
-}
- function acepta(invent,idunidades,memo0,memo1,memo2,memo3,cpu,placa,chipset,tgrafica,hdd0,hdd1,lector0,lector1,sonido,red0,red1,red2,fuente,os,npc,marca,modelo,no_serie,fabricante,capacidad,tasa,frecuencia,cache,rpm,interfaz,taip,indice,compon,compo,cpuid,cpucores,cpulogicos,socket){
-	var aceptaEntrar = window.confirm("Realmente desea continuar.?");
+	function seguro4(invent,idunidades,memo0,memo1,memo2,memo3,cpu,placa,chipset,tgrafica,hdd0,hdd1,lector0,lector1,sonido,red0,red1,red2,fuente,os,npc,indice,compon,compo){
+		if (compo!=="") {
+			document.regresa.inv.value = invent;
+			document.regresa.unidad.value = idunidades;
+			document.regresa.indice.value = indice;
+			document.regresa.memo0.value = memo0;
+			document.regresa.memo1.value = memo1;
+			document.regresa.memo2.value = memo2;
+			document.regresa.memo3.value = memo3;
+			document.regresa.cpux.value = cpu;
+			document.regresa.placax.value = placa;
+			document.regresa.chipsetx.value = chipset;
+			document.regresa.tgraficax.value = tgrafica;
+			document.regresa.hdd0x.value = hdd0;
+			document.regresa.hdd1x.value = hdd1;
+			document.regresa.lector0x.value = lector0;
+			document.regresa.lector1x.value = lector1;
+			document.regresa.sonidox.value = sonido;
+			document.regresa.red0x.value = red0;
+			document.regresa.red1x.value = red1;
+			document.regresa.red2x.value = red2;
+			document.regresa.fuentex.value = fuente;
+			document.regresa.osx.value = os;
+			document.regresa.npcx.value = npc;
+			document.regresa.compon.value = compon;
+			document.regresa.compo.value = compo;
+			document.regresa.action ='#modal6';
+			document.regresa.submit();
+		 }else{
+			document.regresa.memo0.value = memo0;
+			document.regresa.memo1.value = memo1;
+			document.regresa.memo2.value = memo2;
+			document.regresa.memo3.value = memo3;
+		   return false; 
+		 } 
+	}
+    function acepta(invent,idunidades,memo0,memo1,memo2,memo3,cpu,placa,chipset,tgrafica,hdd0,hdd1,lector0,lector1,sonido,red0,red1,red2,fuente,os,npc,marca,modelo,no_serie,fabricante,capacidad,tasa,frecuencia,cache,rpm,interfaz,taip,indice,compon,compo,cpuid,cpucores,cpulogicos,socket){
+	    var aceptaEntrar = window.confirm("Realmente desea continuar.?");
 		if (aceptaEntrar) {
 			document.componente.inv.value = invent;
 			document.componente.compon.value = compon;
@@ -388,24 +447,40 @@ function seguro4(invent,idunidades,memo0,memo1,memo2,memo3,cpu,placa,chipset,tgr
 	    }else {
 		 return false;
 		} 
-  }
+    }
 
- function cierra(){
-	document.regresa.action ='form-insertarexp.php';
-	document.regresa.submit();
- }
- 
- function __ir(donde){
-     var aceptaEntrar = window.confirm("Desea realmente cancelar.?");
-		if (aceptaEntrar) {
-	      document.ir.dde.value = donde;
-	      document.ir.submit();
-		}else {
-		 return false;
-		}  
+	function cierra(){
+		document.regresa.action ='form-insertarexp.php';
+		document.regresa.submit();
 	}
  
- 
+	function __ir(donde){
+	    var aceptaEntrar = window.confirm("Desea realmente cancelar.?");
+			if (aceptaEntrar) {
+			  document.ir.dde.value = donde;
+			  document.ir.submit();
+			}else {
+			 return false;
+			}  
+	}	
+	
+	function cierrz(){
+		document.getElementById('cir').innerHTML="";
+	}
+	function chequea(){
+		var tt= document.frm1;
+		var cuenta=0;
+		for (i=0;i<frm1.elements.length;i++)   {
+			if ((frm1.elements[i].type=="radio")&&(frm1.elements[i].checked==true))	 {
+				cuenta++;
+			}	
+		}
+		
+		if((cuenta) ==0){
+			showAlert(4000,'<div class="alert negro" style="display: none"><button class="closex" type="button" onclick="cierrz();">X</button><div align="center"><font color="#FFDCA8" size="3"><b><?php echo $strerror;?></b></font></div><div align="center"><b><?php echo $plea8.$ficher;?>.</b></div></div>');
+			return false;		
+		}
+	}
 </script>
 	<link href="css/template.css" rel="stylesheet">
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -469,6 +544,7 @@ div.message {
 		</div><br>
 	<form action="form-insertarexp.php" method="post" name="componente" id="componente">
         <table width="47%" align="center" class="table"><?php 
+		 if ($compon!=""){ 
 		    if($compon == "Memorias") {
 		        foreach ($varcomponente[1] as $clave => $valor) { 
 				   $nombcampo[] = $valor; 
@@ -492,7 +568,7 @@ div.message {
 		<tr>
 		  <td width="46%" align="center"><div align="center"><b><?php echo strtoupper($nombcampo[$a]); ?></b></div></td>
 		  <td width="54%" align="center"><div align="center"><input name="<?php echo $nombcampo[$a]; ?>1" id="<?php echo $nombcampo[$a]; ?>1" type="text" onkeypress="return handleEnter(this, event);" value="<?php echo $rows1[$nombcampo[$a]]; ?>" class="form-control" onblur="componente.<?php echo $nombcampo[$a]; ?>.value=this.value;"></div></td>
-		</tr><?php } ?>
+		 </tr><?php } } ?>
 		<tr><input name="interfaz" id="interfaz" type="hidden" value="<?php echo $rows1['interfaz'];?>"><?php if($compon!="Microprocesador" and $compon!="Memorias") { ?>
 		  <td width="46%" align="center"><div align="center"><b>INTERFAZ</b></div></td>
 		  <td width="54%" align="center"><div align="center">
@@ -570,48 +646,252 @@ div.message {
 </form>
 <div id="buscad">
 <fieldset class='fieldset'>
-<legend class="vistauserx"><?php echo strtoupper($btregmedio);?><?php if(($unidadactiva) !=""){ echo "&nbsp;&nbsp;&nbsp;".$btdatosentidad3.": <font color='red'>".$unidadactiva."</font>"; }?></legend>	
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0" class="table" style="width:70%;">
-        <form action="insertarexp.php" method="post" enctype="multipart/form-data" name="form1" onSubmit="return submit_page();">          
+<legend class="vistauserx"><?php echo strtoupper($btregmedio);?><?php if(($unidadactiva) !=""){ echo "&nbsp;&nbsp;&nbsp;".$btdatosentidad3.": <font color='red'>".$unidadactiva."</font>"; } ?></legend>
+<form method="post" name="importa" id="importa" action="">
+	<input name="inv" type="hidden" id="invent" value="<?php echo @$invent; ?>"> 
+	<input name="unidad" type="hidden" id="unidad" value="<?php echo $unidad; ?>">
+	<input name="id_area" type="hidden" id="id_area" value="<?php echo @$row['idarea']; ?>">
+	<input name="custodio" type="hidden" id="unidad" value="<?php echo @$row_Recordset1['nombre']; ?>">
+	<input name="impor" type="hidden" id="impor" value="">
+	<input name="crash" type="hidden" id="crash" value="">
+	<input name="marcado" type="hidden" id="marcado" value="">
+</form>	
+<?php 
+	if(isset($_POST['subir'])){
+		if(isset($_POST['filea'])) {	
+  			$upload_ext = strrchr($_POST['filea'],".");
+			
+			if (in_array($upload_ext, $upload_extensions) AND ($upload_ext) !="") { ?>
+				<script type="text/javascript">
+				   document.getElementById("subir").style.visibility='visible';
+			    </script>
+			<?php 
+				@copy($roo.$pht1."tmp/".$_POST['filea'],$roo.$pht1."importar/".$_POST['filea']);
+			    @unlink($roo.$pht1."tmp/".$_POST['filea']);
+				
+				if(($upload_ext) ==".zip" OR ($upload_ext) ==".ZIP"){
+					$zip = new ZipArchive;
+					if ($zip->open($roo.$pht1."importar/".$_POST['filea']) === TRUE) {
+						$zip->extractTo($roo.$pht1."importar/");
+						$zip->close();
+						@rename($roo.$pht1."importar/".$_FILES['filea']['name'],$roo.$pht1."importar/import_exp.txt");
+						@unlink($roo.$pht1."importar/".$_POST['filea']);
+					} else { 
+					   echo 'Intento fallido';
+					}				
+				}else{
+					@rename($roo.$pht1."importar/".$_POST['filea'],$roo.$pht1."importar/import_exp.txt");			
+				}
+			}else{ ?>
+			  <script type="text/javascript">
+				alert("El fichero: <?php echo $_POST['file'];?>, tiene una extesion no valida");
+			  </script> <?php
+			} ?>
+            
+			<script type="text/javascript">
+			   document.importa.impor.value="kbpimpirt";
+			   document.importa.inv.value="<?php echo @$invent; ?>";
+			   document.importa.submit(); 
+			</script>
+			
+	 <?php } 
+			 		
+	}?>
+		<div id="openModal" class="modalDialog">
+			<div>
+				<button title="<?php echo $cerrar2;?>" class="closex" type="button" onclick="document.location='#closex';">X</button>
+				<div align="justify"><div><?php echo $seguro;?><hr><input class="btn" onclick="document.location='#closex';" value="<?php echo $btcancelar;?>">&nbsp;<input id="ok" class="btn" onclick="bValid2(document.frm1.marcado.value);" value="<?php echo$btaceptar;?>"></div></div>	
+			</div>
+		</div><br>
+	<?php if (@$impor == "kbpimpirt" ){ ?>	
+		<table border="0" align="center" cellpadding="2" cellspacing="2" class="table" style="width:70%">
+			<tr><td><?php include("js/droparea.php"); ?>
+				<div id="areas"><br>
+					<form name="form1a" method="post" action="" enctype="multipart/form-data">
+						<div id="arras">&nbsp;&nbsp;&nbsp;<?php echo $arrastrar;?></div>
+							<input type="file" class="droparea spot" style="font-size:12px;" name="ficheroX" data-post="uploadexp.php" data-width="220" data-height="345" data-crop="true"/><input type="hidden" name="filea">&nbsp;&nbsp;<span id="nambr"></span><hr>
+							<input name="subir" type="submit" id="subir" value="<?php echo $cargar2;?>" class="btn" style="visibility:hidden">
+							<script type="text/javascript">
+									function checkFile(fileUrl) {			
+										var xmlHttpReq = false;
+										var self = this;
+										// Mozilla/Safari
+										if (window.XMLHttpRequest) {
+											self.xmlHttpReq = new XMLHttpRequest();
+										}
+										// IE
+										else if (window.ActiveXObject) {
+											self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+										}
+
+										self.xmlHttpReq.open('HEAD', fileUrl, true);
+										self.xmlHttpReq.onreadystatechange = function() {
+											if (self.xmlHttpReq.readyState == 4) {
+												if (self.xmlHttpReq.status == 200) {
+													alert('El fichero no existe');
+												} else if (self.xmlHttpReq.status == 404) {
+													document.getElementById('nambr').innerHTML='';
+													document.form1a.filea.value='';
+													alert('El fichero no existe');
+												}
+											}
+										}
+										self.xmlHttpReq.send();
+									}
+
+									function quit(file_name,q){						
+										$.ajax({
+											url: 'quitaresolu.php',
+											data: {'file' : "<?php echo dirname(__FILE__) . '/importar/'?>" + file_name },
+											success: function (response) {
+												if((q) =="s"){
+													checkFile("<?php echo dirname(__FILE__) . '/importar/'?>" + file_name);
+													document.getElementById('nambr').innerHTML='';		
+													document.form1a.subir.style.visibility='hidden';										
+												}
+												// do something
+											},
+											  error: function () {
+												// do something
+											  }
+										});						
+									}
+									extArray = new Array(".txt", ".TXT");
+									extArray1 = new Array(".sql", ".zip");
+									
+									function LimitAttach(file) {
+										allowSubmit = false;
+										if (!file) return;
+										while (file.indexOf("\\") != -1)
+										file = file.slice(file.indexOf("\\") + 1);
+										ext = file.slice(file.indexOf(".")).toLowerCase();
+										for (var i = 0; i < extArray.length; i++) {
+											if (extArray[i] == ext) { allowSubmit = true; break; }
+										}
+										if (allowSubmit) {
+											document.getElementById('nambr').innerHTML= ' &nbsp;&nbsp;&nbsp;'+file+' &nbsp;<a title="Quitar '+file+'..." onmouseover="this.style.cursor=\'pointer\'" onclick="quit(\''+file+'\',\'s\');"><img src="images/quitar.png" width="20" height="20" border="0" align="absmiddle" ></a>'; 
+											document.form1a.filea.value=file;
+											document.form1a.subir.style.visibility='visible';				
+										}else{
+											document.getElementById('nambr').innerHTML= "<font color='red'><b>ERROR.</b></font> Solo Se permiten archivos con la extenci&oacute;n: " + (extArray1.join("  ")) + "\nPor favor, seleccione otro archivo.";
+											quit(file,'n');
+										}
+									}
+										// Calling jQuery "droparea" plugin
+										$('.droparea').droparea({
+											'instructions': '',
+											'init' : function(result){
+												//console.log('custom init',result);
+											},
+											'start' : function(area){
+												area.find('.error').remove(); 
+											},
+											'error' : function(result, input, area){
+												$('<div class="error">').html(result.error).prependTo(area); 
+												return 0;
+												//console.log('custom error',result.error);
+											},
+											'complete' : function(result, file, input, area){
+												var tld = file.name.toLowerCase().split(/\./);
+												tld = tld[tld.length -1];
+												LimitAttach(file.name);
+											}
+										});
+							</script>
+						<input name="inv" type="hidden" id="invent" value="<?php echo $invent; ?>">
+						<input name="unidad" type="hidden" id="unidad" value="<?php echo $unidadE; ?>">
+						<input name="id_area" type="hidden" id="id_area" value="<?php echo $row['idarea']; ?>">
+	                    <input name="custodio" type="hidden" id="unidad" value="<?php echo @$row_Recordset1['nombre']; ?>">
+					</form>
+				</div>
+				</td>
+			</tr>
+		</table>	  	
+		<form name="frm1" method="post" action="imprt_exp.php" onsubmit="return chequea();">
+			<table border="0" align="center" cellpadding="2" cellspacing="2" class="table" style="width:70%">
+				<tr>
+					<td><?php 
+						$handle=opendir('./importar');
+						$r=0;
+						while ($file = readdir($handle)) { 
+							if ($file != "." && $file != "..") {
+								$upload_extx = strrchr($file,".");
+								if(($upload_extx) ==".txt"){ 
+									$estadisticas = stat($roo.$pht1."importar/".$file); ?>
+									<label class='Estilo3' style="cursor:pointer;"><input name='marcado' type='radio' class="boton" id='<?php echo $r;?>' value='<?php echo $file;?>' />
+									&nbsp;<?php echo $file."&nbsp;&nbsp;(<font color='red' size='2'>".tamano($estadisticas['size'],2)."</font>)";?></label><br><?php
+									$r++;									
+								}
+							} 
+						}
+						closedir($handle); ?>
+					</td>
+				</tr>
+				<?php if(($r) ==0){ ?>
+				<tr>
+					<td align="center"><br><div class="message" align="center"><?php echo $noregitro3." ".strtolower($para_import);?>.</div>
+				  </td>
+				</tr><?php 
+				}
+				if(($r) >0){ ?>
+				<tr>
+					<td><input type="submit" class="btn" name="importar" value="<?php echo $btImportar;?>"/>
+						&nbsp;&nbsp;<input name="elimina" id="elimina" type="button" class="btn" onclick="checkLengthr('<?php echo $strerror;?>','<?php echo $plea1.$bteliminar;?>','d');" value="<?php echo $bteliminar;?>"/>
+						<input name="crash" type="hidden" >
+						<input name="inv" type="hidden" id="invent" value="<?php echo $invent; ?>">
+						<input name="unidad" type="hidden" id="unidad" value="<?php echo $unidadE; ?>">
+						<input name="id_area" type="hidden" id="id_area" value="<?php echo $row['idarea']; ?>">
+	                    <input name="custodio" type="hidden" id="unidad" value="<?php echo @$row_Recordset1['nombre']; ?>">
+					</td>
+				</tr><?php
+				} ?>				
+			</table>	
+				<input name="tb" type="hidden" value="todo">
+				<input name="origen" type="hidden" value="form-insertarexp.php">			  
+		</form>  
+	<?php }else{  ?>		
+	
+	<table border="0" align="center" cellspacing="0" cellpadding="0" class="table" style="width:58%;">
+        <form name="form1" action="insertarexp.php" method="post" enctype="multipart/form-data" onSubmit="return submit_page();">          
           <tr>
             <td colspan="4"><div align="center"></div></td>
           </tr>
           <tr>
             <td width="61"><div align="right"><img src="images/idarea.png" width="45" height="30" /></div></td>
             <td width="127"><div align="left"><strong><?php echo strtoupper($btdatosentidad3);?></strong></div></td>
-            <td width="271" colspan="2"> <input onKeyPress="return handleEnter(this, event)" name="bentidad" class="form-control" type="text" readonly id="t1" size="40" value="<?php echo strtoupper($rowx['entidad']); ?>">              </td>
+            <td width="271" colspan="2"> <input onKeyPress="return handleEnter(this, event)" name="bentidad" class="form-control" type="text" readonly id="t1" size="40" value="<?php echo $rowx['entidad']; ?>"></td>
           </tr>
           <tr>
             <td width="61"><div align="right"><img src="images/unidades.png" width="38" height="30" /></div></td>
             <td width="127"><div align="left"><strong><?php echo substr($btAreas,0,-1);?></strong></div></td>
-            <td colspan="2"> <input onKeyPress="return handleEnter(this, event)" name="id_area" id="id_area" class="form-control" type="text" readonly size="40" value="<?php echo $row['idarea']; ?>"></td>
+            <td colspan="2"> <input onKeyPress="return handleEnter(this, event)" name="id_area" id="id_area" class="form-control" type="text" readonly size="40" value="<?php echo @$row['idarea']; ?>"></td>
           </tr>
           <tr>
             <td><div align="right"><img src="images/inv.png"  width="53" height="30"  /></div></td>
             <td><div align="left"><strong>INV</strong></div></td>
             <td colspan="2"><label>
-            <input onKeyPress="return handleEnter(this, event)" name="inv" type="text" id="inv" class="form-control" readonly value="<?php echo $row['inv']; ?>">
+            <input onKeyPress="return handleEnter(this, event)" name="inv" type="text" id="inv" class="form-control" readonly value="<?php echo @$row['inv']; ?>">
             </label></td>
           </tr>
           <tr>
             <td><div align="right"><img src="images/cpu.png"  width="53" height="30"  /></div></td>
             <td><div align="left"><strong>CPU</strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="cpu" value="<?php echo $cpux; ?>" class="form-control" type="text" id="cpu" ><input value="" name="editmen0" class="art-edit-button" id="editmen0" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Microprocesador',document.getElementById('cpu').value);"></td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="cpu" value="<?php if (isset($_POST['cpu'])) { echo $_POST['cpu']; }else{ echo $cpux; } ?>" class="form-control" type="text" id="cpu" ><input value="" name="editmen0" class="art-edit-button" id="editmen0" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Microprocesador',document.getElementById('cpu').value);"></td>
           </tr>
           <tr>
             <td><div align="right"><img src="images/placa.png" alt="Board" width="54" height="37" /></div></td>
             <td><div align="left"><strong><?php echo $btPLACA;?></strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="placa" value="<?php echo $placax; ?>"  type="text" id="placa" class="form-control"></td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="placa" value="<?php if (isset($_POST['placa'])) { echo $_POST['placa']; }else{ echo $placax; } ?>"  type="text" id="placa" class="form-control"></td>
           </tr>
           <tr>
 		  <td><div align="right"><img src="images/chipset.png" alt="Chipset" width="55" height="38" /></div></td>
             <td><div align="left"><strong>CHIPSET</strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="chipset" value="<?php echo $chipsetx; ?>" type="text" id="chipset" class="form-control"></td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="chipset" value="<?php if (isset($_POST['chipset'])) { echo $_POST['chipset']; }else{ echo $chipsetx; } ?>" type="text" id="chipset" class="form-control"></td>
           </tr>
           <tr>
 		  <td><div align="right"><img src="images/ram.png" width="55" height="35" /></div></td>
             <td><div align="left"><strong><?php echo $Memorias1;?></strong></div></td>
-            <td colspan="2"><i id="editmen0" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Memorias',document.getElementById('mem').value);" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 2px; margin-left: 563px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><input onKeyPress="return handleEnter(this, event)" name="mem" value="<?php echo $memo0; ?>" type="text" id="mem" class="form-control"><i id="masmem1" onClick="document.getElementById('menmem1').style.display='block'; masmemo(this.id,'divmem1','divmem2');" style='<?php if($memo1!="") { ?>display:none; <?php } ?>height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
+            <td colspan="2"><i id="editmen0" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Memorias',document.getElementById('mem').value);" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 2px; margin-left: 563px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><input onKeyPress="return handleEnter(this, event)" name="mem" value="<?php if (isset($_POST['memoria'])) { echo $_POST['memoria']; }else{ echo @$mem0; } ?>" type="text" id="mem" class="form-control"><i id="masmem1" onClick="document.getElementById('menmem1').style.display='block'; masmemo(this.id,'divmem1','divmem2');" style='<?php if($memo1!="") { ?>display:none; <?php } ?>height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
           </tr>
           <tr>
             <td colspan="2"><div id="divmem1" style="<?php if ($memo1=="") { ?>display:none;<?php } ?>"><div align="right"><strong><?php echo $Memorias1;?></strong></div></div></td>
@@ -628,30 +908,30 @@ div.message {
           <tr>
 		  <td><div align="right"><img src="images/video.png" alt="Video" width="45" height="38" /></div></td>
             <td><div align="left"><strong><?php echo $bttargeta;?></strong></div></td>
-            <td colspan="2"><i id="editmen01" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Tarjeta Grafica',document.getElementById('grafic').value);" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 2px; margin-left: 563px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><input onKeyPress="return handleEnter(this, event)" name="grafic" type="text" id="grafic" value="<?php echo $tgraficax; ?>" class="form-control"></td>
+            <td colspan="2"><i id="editmen01" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Tarjeta Grafica',document.getElementById('grafic').value);" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 2px; margin-left: 563px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><input onKeyPress="return handleEnter(this, event)" name="grafic" type="text" id="grafic" value="<?php if (isset($_POST['grafics'])) { echo $_POST['grafics']; }else{ echo $tgraficax; } ?>" class="form-control"></td>
           </tr>
           <tr>
 		  <td><div align="right"><img src="images/HDD.png" width="40" height="40"  /></div></td>
             <td><div align="left"><strong>HDD</strong></div></td>
-            <td colspan="2"><i id="editmen02" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Disco Duro',document.getElementById('drive1').value);" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 2px; margin-left: 563px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><input onKeyPress="return handleEnter(this, event)" name="drive1" type="text" id="drive1" value="<?php echo $hdd0x; ?>" class="form-control"><i id="mashdd" onClick="document.getElementById('menhdd').style.display='block'; masmemo(this.id,'divhdd1','divhdd2');" style='<?php if ($hdd1x!="") { ?>display:none; <?php } ?>height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
+            <td colspan="2"><i id="editmen02" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Disco Duro',document.getElementById('drive1').value);" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 2px; margin-left: 563px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><input onKeyPress="return handleEnter(this, event)" name="drive1" type="text" id="drive1" value="<?php if (isset($_POST['driver1'])) { echo $_POST['driver1']; }else{ echo $hdd0x; } ?>" class="form-control"><i id="mashdd" onClick="document.getElementById('menhdd').style.display='block'; masmemo(this.id,'divhdd1','divhdd2');" style='<?php if ($hdd1x!="") { ?>display:none; <?php } ?>height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
           <tr>
 	        <td colspan="2"><div id="divhdd1" style="<?php if ($hdd1x=="") { ?>display:none; <?php } ?>"><div align="right"><strong>HDD</strong></div></div></td>
             <td colspan="2"><div id="divhdd2" style="<?php if ($hdd1x=="") { ?>display:none; <?php } ?>"><i id="editmen03" onClick="seguro4('<?php echo $row['inv'];?>','1',document.getElementById('mem').value,document.getElementById('mem2').value,document.getElementById('mem3').value,document.getElementById('mem4').value,document.getElementById('cpu').value,document.getElementById('placa').value,document.getElementById('chipset').value,document.getElementById('grafic').value,document.getElementById('drive1').value,document.getElementById('drive2').value,document.getElementById('drive3').value,document.getElementById('drive4').value,document.getElementById('sonido').value,document.getElementById('red0').value,document.getElementById('red1').value,document.getElementById('red2').value,document.getElementById('fuente').value,document.getElementById('so').value,document.getElementById('npc').value,0,'Disco Duro',document.getElementById('drive2').value);" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 2px; margin-left: 563px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><input onKeyPress="return handleEnter(this, event)" name="drive2" type="text" id="drive2" value="<?php echo $hdd1x; ?>" class="form-control"><i id="menhdd" onClick="document.getElementById('mashdd').style.display='block'; menmemo(this.id,'divhdd1','divhdd2','drive2');" style="height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url('images/glyphicons-halflings.png') repeat scroll -23px -90px;"></i></div></td>
           <tr>
 		  <td><div align="right"><img src="images/DriveDVD.png" alt="drive" width="40" height="40" /></div></td>
             <td><div align="left"><strong><?php echo $btdevice;?></strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="drive3" type="text" id="drive3" value="<?php echo $lector0x;?>" class="form-control"><i id="masdvd" onClick="document.getElementById('mendvd').style.display='block'; masmemo(this.id,'divdvd1','divdvd2');" style='<?php if ($lector1x!="") { ?>display:none; <?php } ?> height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="drive3" type="text" id="drive3" value="<?php if (isset($_POST['driver2'])) { echo $_POST['driver2']; }else{ echo $lector0x; } ?>" class="form-control"><i id="masdvd" onClick="document.getElementById('mendvd').style.display='block'; masmemo(this.id,'divdvd1','divdvd2');" style='<?php if ($lector1x!="") { ?>display:none; <?php } ?> height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
           <tr>
             <td colspan="2"><div id="divdvd1" style="<?php if ($lector1x=="") { ?>display:none; <?php } ?>"><div align="right"><strong><?php echo $btdevice;?></strong></div></div></td>
             <td colspan="2"><div id="divdvd2" style="<?php if ($lector1x=="") { ?>display:none; <?php } ?>"><input onKeyPress="return handleEnter(this, event)" name="drive4" value="<?php echo $lector1x;?>" type="text" id="drive4" class="form-control"><i id="mendvd" onClick="document.getElementById('masdvd').style.display='block'; menmemo(this.id,'divdvd1','divdvd2','drive4');" style='height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -23px -90px;'></i></div></td>
           <tr>
 		  <td><div align="right"><img src="images/sonido.png" alt="sonido" width="49" height="37" /></div></td>
             <td><div align="left"><strong><?php echo $btSONIDO;?></strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="sonido" type="text" id="sonido" value="<?php echo $sonidox;?>" class="form-control"></td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="sonido" type="text" id="sonido" value="<?php if (isset($_POST['sonido'])) { echo $_POST['sonido']; }else{ echo $sonidox; } ?>" class="form-control"></td>
           <tr>
 		  <td><div align="right"><img src="images/Ethernet card Vista.png" alt="Red" width="40" height="40" /></div></td>
             <td><div align="left"><strong><?php echo $btRED;?></strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="red0" type="text" id="red0" value="<?php echo $red0x;?>" class="form-control"><i id="masred" onClick="document.getElementById('menred').style.display='block'; masmemo(this.id,'divred1','divred2');" style='<?php if ($red1x!="") { ?>display:none;<?php } ?> height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="red0" type="text" id="red0" value="<?php if (isset($_POST['red'])) { echo $_POST['red']; }else{ echo $red0x; } ?>" class="form-control"><i id="masred" onClick="document.getElementById('menred').style.display='block'; masmemo(this.id,'divred1','divred2');" style='<?php if ($red1x!="") { ?>display:none;<?php } ?> height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i></td>
           <tr>
             <td colspan="2"><div id="divred1" style="<?php if ($red1x=="") { ?>display:none;<?php } ?>"><div align="right"><strong><?php echo $btRED;?></strong></div></div></td>
             <td colspan="2"><div id="divred2" style="<?php if ($red1x=="") { ?>display:none;<?php } ?>"><input onKeyPress="return handleEnter(this, event)" name="red1" type="text" id="red1" value="<?php echo $red1x;?>" class="form-control"><i id="masred2" onClick="document.getElementById('menred3').style.display='block'; masmemo(this.id,'divred3','divred4');" style='<?php if ($red2x!="") { ?>display:none;<?php } ?> height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 583px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -1px -90px;'></i><i id="menred" onClick="document.getElementById('masred').style.display='block'; menmemo(this.id,'divred1','divred2','red1');" style='height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -26px; margin-left: 442px; background: transparent url("images/glyphicons-halflings.png") repeat scroll -23px -90px;'></i></div></td>
@@ -665,15 +945,21 @@ div.message {
           <tr>
 		  <td><div align="right"><img src="images/SO.png" width="40" height="40" /></div></td>
             <td><div align="left"><strong>OS</strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="so" type="text" id="so" value="<?php echo $osx; ?>" class="form-control"></td>
+            <td colspan="2">
+			<select name="os" id="os" class="form-control" onChange="return handleEnter(this, event)">
+			    <?php for ($i=0; $i<count($sistema_operativo);  $i++) { ?>    
+				   <option value="<?php echo $sistema_operativo[$i]; ?>" <?php if (isset($_POST['os']) AND $_POST['os'] == strstr($_POST['os'], $sistema_operativo[$i])) { echo "selected"; } else { echo $sistema_operativo[$i]; } ?>><?php echo $sistema_operativo[$i]; ?></option>
+				<?php } ?>
+			</select>
+			</td>
           <tr>
 		  <td><div align="right"><img src="images/custodios.png" width="40" height="40" /></div></td>
             <td><div align="left"><strong><?php echo $btCustodios;?></strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="custodio" readonly type="text" id="custodio" class="form-control" value="<?php echo $row_Recordset1['nombre']?>" size="40">            </td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="custodio" readonly type="text" id="custodio" class="form-control" value="<?php echo @$row_Recordset1['nombre']?>" size="40"></td>
 		  <tr>
 		  <td><div align="right"></div></td>
             <td><div align="left"><strong><?php echo strtoupper($btNombre);?> PC </strong></div></td>
-            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="npc" type="text" id="npc" value="<?php echo $npcx;?>" class="form-control"><input name="idunidades" type="hidden" value="<?php echo $row['idunidades'];?>"></td>
+            <td colspan="2"><input onKeyPress="return handleEnter(this, event)" name="npc" type="text" id="npc" value="<?php if (isset($_POST['computer'])) { echo $_POST['computer']; }else{ echo $npcx; } ?>" class="form-control"><input name="idunidades" type="hidden" value="<?php echo $row['idunidades'];?>"></td>
           <tr>
             <td colspan="4" align="center">&nbsp;</td>
           </tr>
@@ -684,9 +970,11 @@ div.message {
 			</td>	
 	      </tr>	 
         </form>	
-    </table></fieldset><br><?php include('version.php'); ?>	
+    </table>
+	<?php } ?>
+</fieldset><br><?php include('version.php'); ?>	
 <div class="dialogoInfo"></div>
-<div class="ContenedorAlert" id="cir"> </div>
+<div class="ContenedorAlert" id="cir"></div>
 <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
