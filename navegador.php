@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 $quepagina=$bttotalreg;
 switch (substr(strrchr($_SERVER['PHP_SELF'],'/'),1)) {
 	case "expedientes.php":$quepagina=$btTAreas; //Expedientes
@@ -76,8 +83,8 @@ switch (substr(strrchr($_SERVER['PHP_SELF'],'/'),1)) {
 							}
 						}
 						if(($pagina - 1) > 0) { ?>
-						   <a href='<?php echo @$PHP_SELF;?>?registros=<?php echo @$registros;?>&total_paginas=<?php echo @$total_paginas;?>&pagina=1&palabra=<?php echo @$palabra;?>&gral=<?php echo @$gral;?>&nom_custo=<?php echo @$nom_custo;?>&custo=<?php echo @$custo;?>&total_registros=<?php echo $total_registros;?>&asc=<?php echo @$asc;?>&orderby=<?php echo @$orderby; if(isset($_REQUEST['m'])){ ?>&m=m<?php } ?>'><span onmouseover="this.style.cursor='pointer';" class="next paginate_button"><?php echo $registr1;?></span></a>&nbsp;
-						   <a href='<?php echo @$PHP_SELF;?>?registros=<?php echo @$registros;?>&total_paginas=<?php echo @$total_paginas;?>&pagina=<?php echo ($pagina-1);?>&palabra=<?php echo @$palabra;?>&gral=<?php echo @$gral;?>&nom_custo=<?php echo @$nom_custo;?>&custo=<?php echo @$custo;?>&total_registros=<?php echo $total_registros;?>&asc=<?php echo @$asc;?>&orderby=<?php echo @$orderby; if(isset($_REQUEST['m'])){ ?>&m=m<?php } ?>'><span onmouseover="this.style.cursor='pointer';" class="previous paginate_button"><?php echo $registr3;?></span></a>&nbsp;<?php 
+						   <a href='<?php echo @$PHP_SELF;?>?registros=<?php echo @$registros;?>&total_paginas=<?php echo @$total_paginas;?>&pagina=1&palabra=<?php echo @$palabra;?>&gral=<?php echo @$gral;?>&nom_custo=<?php echo @$nom_custo;?>&custo=<?php echo @$custo;?>&estado=<?php echo @$estado;?>&total_registros=<?php echo $total_registros;?>&asc=<?php echo @$asc;?>&orderby=<?php echo @$orderby; if(isset($_REQUEST['m'])){ ?>&m=m<?php } ?>'><span onmouseover="this.style.cursor='pointer';" class="next paginate_button"><?php echo $registr1;?></span></a>&nbsp;
+						   <a href='<?php echo @$PHP_SELF;?>?registros=<?php echo @$registros;?>&total_paginas=<?php echo @$total_paginas;?>&pagina=<?php echo ($pagina-1);?>&palabra=<?php echo @$palabra;?>&gral=<?php echo @$gral;?>&nom_custo=<?php echo @$nom_custo;?>&custo=<?php echo @$custo;?>&estado=<?php echo @$estado;?>&total_registros=<?php echo $total_registros;?>&asc=<?php echo @$asc;?>&orderby=<?php echo @$orderby; if(isset($_REQUEST['m'])){ ?>&m=m<?php } ?>'><span onmouseover="this.style.cursor='pointer';" class="previous paginate_button"><?php echo $registr3;?></span></a>&nbsp;<?php 
 						}
 						if(($pagina - 1) > 0 OR ($pagina + 1)<=$total_paginas) { ?>
 						<span>
@@ -90,7 +97,8 @@ switch (substr(strrchr($_SERVER['PHP_SELF'],'/'),1)) {
 						<input type="hidden" name="registros" value="<?php echo @$registros;?>">
 						<input type="hidden" name="total_paginas" value="<?php echo $total_paginas;?>">
 						<input type="hidden" name="palabra" value="<?php echo @$palabra;?>">
-						<input type="hidden" name="total_registros"  value="<?php echo $total_registros;?>">
+						<input type="hidden" name="total_registros" value="<?php echo $total_registros;?>">
+						<input type="hidden" name="estado" value="<?php echo @$estado;?>">
 						<input type="hidden" name="nom_custo" value="<?php echo @$nom_custo;?>" />
 						<input type="hidden" name="custo" value="<?php echo @$custo;?>" />
 						<input type="hidden" name="gral" value="<?php echo @$gral;?>">

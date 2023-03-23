@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php');
 include('script.php');
 $validus = "";
@@ -36,7 +43,7 @@ $upload_extensions = array(".pdf", ".txt", ".rtf", ".doc", ".docx", ".odt",".PDF
 
 			return $ret;
 		}			
-$us1 = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysql_error());
+$us1 = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die();
 $rus1 = mysqli_fetch_array($us1);
 		$err=array();
 	if(isset($_POST['inserta'])){	
@@ -101,14 +108,18 @@ $rus1 = mysqli_fetch_array($us1);
 			$filemode = 0777;
 			$dirmode =0777;
 			$chmodOk = TRUE;
-			if (!mosChmodRecursive($ruta1.$key."_".$undd[$h].$ext[$h], 0777, 0777)) {
-				$chmodOk = FALSE;
-			}
-			if ($chmodOk) {
-				//echo 'Permisos del directorio y de los archivos cambiados.';
-			} else {
-				//echo 'Los permisos del directorio y de los archivos no han podido ser cambiados.<br />Cambia los permisos de los archivos y directorios manualmente.';
-			}
+			
+			if(isset($ext[$h]) and $ext[$h]!=""){
+				if (!mosChmodRecursive($ruta1.$key."_".$undd[$h].$ext[$h], 0777, 0777)) {
+					$chmodOk = FALSE;
+				}
+			
+				if ($chmodOk) {
+					//echo 'Permisos del directorio y de los archivos cambiados.';
+				} else {
+					//echo 'Los permisos del directorio y de los archivos no han podido ser cambiados.<br />Cambia los permisos de los archivos y directorios manualmente.';
+				}
+			}	
 				$h++;
 		}
 	}
@@ -180,7 +191,7 @@ function cheqe() {
 </script>
 
 <?php include('barra.php');?>
-<div id="buscad"> 
+<div id="buscad">
 	<fieldset class='fieldset'><legend class="vistauserx"><?php echo $registr5.$de.$btinsp1;?><?php if(($unidadactiva) !=""){ echo "&nbsp;&nbsp;&nbsp;".$btdatosentidad3.": <font color='red'>".$unidadactiva."</font>"; }?></legend>
 		<div id="openModal" class="modalDialog">
 			<div>
@@ -189,11 +200,11 @@ function cheqe() {
 			</div>
 		</div><?php
 		if(($total_filas) >1){  ?>
-			<td>
+			<td><div style="position: relative; margin-top: 7px; padding-bottom: 8px;">
 				<form action="" method="post" name="formU"><?php echo $btdatosentidad2;?>:
 					<select name="unidades" id="unidades" class="boton" onchange="cambiaunidad(this.value,'insp.php');">
 						<option value="-1"><?php echo $btmostrartodo1?></option><?php 
-						WHILE ($row1=mysqli_fetch_array($reado)){ ?>					
+						while ($row1=mysqli_fetch_array($reado)){ ?>					
 							<option value="<?php echo @$row1['id_datos'];?>" <?php if((@$row1['id_datos']) ==@$_COOKIE['unidades']){ echo "selected";}?>><?php echo @$row1['entidad'];?></option><?php
 						} ?>
 					</select>
@@ -204,20 +215,20 @@ function cheqe() {
 			</td><?php 
 		} 
 		if(!empty($err)){ ?>
-			<div>
-				Los ficheros:&nbsp;<?php
+			<div class="message" style="margin-left:121px;">
+				<?php echo $no_scr1;
 				foreach($err as $Err){
 					echo "<b>".substr($Err.", ",0,-2)."</b>";
-				} ?>. Tienen extension no valida.<br>
+				} echo "&nbsp;".$no_exten; ?><br>
 			</div><?php
 		}
 $e="";
 	if(isset($_POST['editar'])){
 		$marcado=$_POST['marcado']; ?>
 		<form name="form1" method="post" action="" onsubmit="return cheqe();" enctype="multipart/form-data">          
-			<table width="60%" border="0" align="center" >
+			<table width="100%" border="0" align="center" >
 			  <tr>      
-			  <td colspan="2"></td>
+			   <td colspan="2"></td>
 			  </tr><?php
 			  $r=0;
 		foreach($marcado as $key){
@@ -229,29 +240,30 @@ $e="";
 			  <tr>
 				<td><div align="right" class="contentheading"><?php echo $btdatosentidad3;?></div></td>
 				<td colspan="2">
-					<input name="unidades1[]" type="text"  value="<?php echo $rowsa['entidad'];?>" readonly class="boton" id="unidades1<?php echo $r;?>" size="35" maxlength="100">
+					<input name="unidades1[]" type="text"  value="<?php echo $rowsa['entidad'];?>" readonly class="imput" id="unidades1<?php echo $r;?>" size="35" maxlength="100">
 					<input name="unidades[]" type="hidden"  value="<?php echo $rows['idunidades'];?>" id="unidades<?php echo $r;?>">
 				</td>
 			  </tr>
 			  <tr>
 				<td width="74"><div align="right" class="contentheading"><?php echo $Fecha; ?></div></td>
-				<td colspan="2"><input name="fecha[]" type="text" class="boton" id="fecha<?php echo $r;?>" readonly onKeyPress="return acceptNum1(event);" size="12" maxlength="10" value="<?php echo $rows['fecha'];?>">
+				<td colspan="2"><input name="fecha[]" type="text" class="imput" id="fecha<?php echo $r;?>" readonly onKeyPress="return acceptNum1(event);" size="12" maxlength="10" value="<?php echo $rows['fecha'];?>">
 				<a href="javascript:void(0)" onclick="if(self.gfPop)gfPop.fPopCalendar(document.getElementById('fecha<?php echo $r;?>'));return false;" hidefocus><img name="popcal" align="absmiddle" src="images/almana.png" width="25" height="22" border="0" title="" /></a></td>
 			  </tr>
 			  <tr>
 				<td><div align="right" class="contentheading"><?php echo $btestado; ?></div></td>
-				<td colspan="2"><select name="estado[]" size="1" class="boton" id="estado<?php echo $r;?>"><?php
+				<td colspan="2">&nbsp;&nbsp;<select name="estado[]" size="1" class="imputf custom-select d-block w-100" id="estado<?php echo $r;?>"><?php
 					//while ($rows = mysqli_fetch_array($sel)) {  ?>
 						<option value="MV" <?php if(($rows['estado']) =='MV'){ echo "selected";}?>>Muy Vulnerable</option>
 						<option value="V" <?php if(($rows['estado']) =='V'){ echo "selected";}?>>Vulnerable</option>
 						<option value="NVCS" <?php if(($rows['estado']) =='NVCS'){ echo "selected";}?>>No Vulnerable C/S</option>
 						<option value="NV" <?php if(($rows['estado']) =='NV'){ echo "selected";}?>>No Vulnerable</option>
 				    <?php //} ?>
-			    </select></td>
+			    </select>
+				</td>
 			  </tr>
 			  <tr>
 				<td valign="top"><div align="right" class="contentheading"><?php echo $btOBSERVACIONES; ?></div></td>
-				<td colspan="2"><input name="observ[]" id="observ<?php echo $r;?>" type="file">&nbsp;&nbsp;<?php if(($rows['observ']) !=""){ ?>Actual:&nbsp;(<b><?php echo $rows['observ'];?></b>)<?php } ?></td>
+				<td colspan="2">&nbsp;&nbsp;<input name="observ[]" id="observ<?php echo $r;?>" type="file">&nbsp;&nbsp;<?php if(($rows['observ']) !=""){ ?>Actual:&nbsp;(<b><?php echo $rows['observ'];?></b>)<?php } ?></td>
 			  </tr>
 				<tr><td colspan="2"><hr><input name="id[]" type="hidden" value="<?php echo $rows['id'];?>">
 				<input name="observ1[]" type="hidden" value="<?php echo $rows['observ'];?>"></td></tr><?php $r++;
@@ -320,7 +332,7 @@ $sel = "select visitas from preferencias where usuario='".$_SESSION['valid_user'
 $qsel = mysqli_query($miConex, $sel) or die(mysql_error());
 $rsel = mysqli_fetch_array($qsel);
 $cuantos = 5;
-if(($rsel['visitas']) !=""){
+if((@$rsel['visitas']) !=""){
 	$cuantos = $rsel['visitas'];
 }
 ///////navegador
@@ -365,21 +377,26 @@ if(($rsel['visitas']) !=""){
 //NAVEGADOR	FIN
 if(!isset($_POST['nuevo']) AND !isset($_POST['editar'])  AND !isset($_GET['nuevo'])){ 
 	if (($total_registros) !=0){ ?>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" >
 			<tr>
-				<td width="86%">
-					<form name="form1" method="get" action="">
-						<span ><?php echo $cantidadmost;?>:</span> 
-						<input name="pagina2" type="hidden"  value="<?php echo $pagina;?>">
-						<input name="mostrar" type="text" size="1" value="<?php if(isset($_GET["mostrar"])){ echo $_GET["mostrar"];}elseif(isset($_GET["registros"])){ echo $_GET["registros"];}elseif(!isset($_GET["registros"]) AND !isset($_GET['mostrar'])){ echo $rsel['visitas'];}elseif(($rsel['visitas']) ==""){ echo "5";}?>" onKeyPress="return acceptNum(event);" class="mostrar">
-						<input name="mo"  type="submit" value="<?php echo $btver;?>" class="btn4">
-						<input name="total_paginas2" type="hidden" value="<?php echo $total_paginas;?>">
-						<input name="palabra2" type="hidden"  value="<?php echo $palabra;?>">
-						<input name="total_registros2" type="hidden"  value="<?php echo $total_registros;?>">
-					</form>
+				<td width="788"><div style="position: relative; margin-top: 7px; padding-bottom: 8px;">
+					<form name="mst" method="get" action="" id="mst">
+					<span><?php echo $cantidadmost;?>:</span>
+					<span style="position: absolute; margin-left: 0%; margin-top: -11px;">
+	       				<span onClick="mueve('vers',getElementById('vers').value,<?php echo $total_registros; ?>,'ascendente');" style="cursor:pointer; position: absolute; margin-left: 30px; margin-top: 5px; z-index: 999;"><img src="gfx/asc.png"></span>
+						<span onClick="mueve('vers',getElementById('vers').value,<?php echo $total_registros; ?>,'descendente');" style="cursor:pointer; position: absolute; margin-top: 17px; margin-left:30px; z-index: 999;"><img src="gfx/desc.png"></span>
+						<input name="mostrar" id="vers" type="text" maxlength="3" value="<?php if (!isset($_REQUEST['mostrar'])) { if ($rowsp['visitas']>$total_registros) { echo $total_registros; }else{ echo $registros; } }else{ if ($_REQUEST['mostrar']>$total_registros) { echo $total_registros; }else{ echo $_REQUEST['mostrar'];} if($_REQUEST['mostrar']<1) { echo "1"; } } ?>" onKeyPress="return acceptNum(event);" class="mostrar" readonly>
+						<img src="images/search.png" style="cursor:pointer; top: 4px; position: relative;" onclick="document.mst.submit();">
+					</span>	
+						<input name="pagina" type="hidden" value="<?php echo $pagina;?>">
+						<input name="mo" type="hidden" value="<?php echo $btver;?>" class="btn4">
+						<input name="total_paginas" type="hidden" value="<?php echo $total_paginas;?>">
+						<input name="palabra" type="hidden"  value="<?php echo @$palabra;?>">
+						<input name="total_registros" type="hidden"  value="<?php echo $total_registros;?>">
+				    </form></div>
 				</td>
 				<td width="14%">
-	  				<div id="imprime">
+	  				<div id="imprime" style="margin: 0px 65px;">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr><?php 
 							if(($_SESSION['valid_user']) !="invitado" AND ($total_registros) !=0){ ?>
@@ -393,29 +410,29 @@ if(!isset($_POST['nuevo']) AND !isset($_POST['editar'])  AND !isset($_GET['nuevo
 				</td>
 			</tr>
 		</table>
-	  <p><h1 align="CENTER" class="vistauser1 Estilo3"><?php echo strtoupper($btinsp);?></h1></p>
+	 
 	  <form name="frm1" method="post" action="">
-		<TABLE width="100%" BORDER='0' align="center" cellpadding="0" cellspacing="0"  class="table"> 
-	  <tr class="vistauser1"> 
-				<?php if (($rus['tipo']) =="root"){ ?>
-				<td width="24"><span class="Estilo1"></span></td>
-				<?php } ?>
-				<td width="92"><span class="Estilo4"><b><?php echo strtoupper($Fecha);?></b></span></td>
-				<td width="109"><span class="Estilo4"><b><?php echo strtoupper($btestado);?></b></span></td>
-				<td width="127"><span class="Estilo4"><b><?php echo $btORIGEN;?></b></span></td>
-				<td width="144"><span class="Estilo4"><b><?php echo $btAreas1;?></b></span></td>
-				<td width="231" align="left"><span class="Estilo4"><b><?php echo $btRESULTADOS;?></b></span></td> 
-		        <td width="218" align="left"><span class="Estilo4"><b><?php echo $btdatosentidad3;?></b></span></td>
-	  </tr><?php
+		<table width="100%" BORDER='0' align="center" cellpadding="0" cellspacing="0"  class="table"> 
+	         <tr class="vistauser1">
+				<td width="20"><?php if (($rus['tipo']) =="root") { ?>
+					<div id="cheque1" onClick="marcar_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:block; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+					<div id="cheque2" onClick="desmarca_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:none; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div><?php } ?>
+				</td>
+				<td width="92"><span class="Estilo4"><?php echo strtoupper($Fecha);?></span></td>
+				<td width="109"><span class="Estilo4"><?php echo strtoupper($btestado);?></span></td>
+				<td width="127"><span class="Estilo4"><?php echo $btORIGEN;?></span></td>
+				<td width="144"><span class="Estilo4"><?php echo $btAreas1;?></span></td>
+				<td width="231" align="left"><span class="Estilo4"><?php echo $btRESULTADOS;?></span></td> 
+		        <td width="218" align="left"><span class="Estilo4"><?php echo $btdatosentidad3;?></span></td>
+	        </tr><?php
 		$i=0;
 		$p=0;
-		WHILE ($row=mysqli_fetch_array($result)){ $i++;
-			$seentid=mysqli_query($miConex, "select entidad from datos_generales where id_datos='".$row["idunidades"]."'") or die(mysql_error());
+		while ($row=mysqli_fetch_array($result)){ $i++;
+			$seentid=mysqli_query($miConex, "select entidad from datos_generales where id_datos='".$row["idunidades"]."'") or die();
 			$rseentid=mysqli_fetch_array($seentid);?>
-			<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC';colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';"  onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>';colorear('<?php echo $p;?>','#DBE2D0');"  onclick="marca1(<?php echo $p;?>,'#ffffff');"> 
-				<?php if (($rus['tipo']) =="root"){?><td>
-              <input name="marcado[]" type="checkbox" class="boton" id="marcado[<?php echo $p;?>]" onClick="marca1(<?php echo $p;?>,'#ffffff')" value="<?php echo $row["id"]?>" /> 
-              </td><?php } ?>
+			<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="marca1(<?php echo $p;?>,'#ffffff')">
+				<?php if (($rus['tipo']) =="root"){ ?>
+				<td width="5"><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;" >&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none; cursor:pointer;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff');" value="<?php echo $row['id']; ?>" /></td><?php } ?>
 				<td><?php echo $row["fecha"];?></td> 
 				<td><?php echo $row["estado"];?></td>
 				<td><?php echo $row["origen"];?></td>
@@ -425,28 +442,21 @@ if(!isset($_POST['nuevo']) AND !isset($_POST['editar'])  AND !isset($_GET['nuevo
 			</tr><?php $p++;
 			
 		} ?>
-		<tr>
-			<td colspan="7"><?php 
-				if (($rus['tipo']) =="root") { 
-					if (($total_registros) >1){?>
-						<img src="images/check_all.png" name="marcart" width="17" height="17" border="0" usemap="#marcart" id="marcart" title="Seleccionar Todos" onClick="marcar_todo();" onMouseOver="this.style.cursor='pointer';">&nbsp;<img src="images/uncheck_all.png" name="desmarcart" width="17" height="17" id="desmarcart" title="Desmarcar Todos" onClick='desmarcar_todo();' onMouseOver="this.style.cursor='pointer';"><?php 
-					}
-				} ?>			</td>
-		</tr>
-		</TABLE>
+		
 	<?php
-		if (($rus['tipo']) =="root"){ ?><hr>
-			<table width="324" border="0" align="center" cellpadding="2" cellspacing="2">
+		if (($rus['tipo']) =="root"){ ?>
+			
 			  <tr> 
-				<td align="center">
+				<td colspan="7" class="Estilo2">
 					<input name="create" id="create-user" type="button" class="btn" onClick="checkLength('<?php echo $strerror;?>','<?php echo $plea1.$bteliminar;?>','d');" value="<?php echo $bteliminar;?>"/>
 					<input type="hidden" name="crash">&nbsp;&nbsp;					
 			  		<input name="editar" type="submit" id="<?php echo $bteditar;?>" onClick="return alerta('<?php echo $strerror;?>','<?php echo $plea1.$bteditar;?>','');" class="btn" value="<?php echo $bteditar;?>">&nbsp;&nbsp;
 					<input name="nuevo" type="button" id="nuevo" value="<?php echo $btinsertar;?>" class="btn"  onclick="document.location='form-insertarinsp.php';">
 				</td>
 			  </tr>
-			</table><?php
+			<?php
 		} ?>
+		</table>
 	  </form>
 <br>  
 		<?php include('navegador.php');
@@ -454,7 +464,7 @@ if(!isset($_POST['nuevo']) AND !isset($_POST['editar'])  AND !isset($_GET['nuevo
 					<tr> 
 						<td align="center">
 							<br><div align="center"><div class="message" align="center"><?php echo $noregitro3.$btinsp;?></div></div><br><?php 
-							if(($rus1["tipo"]) =="root"){ ?>
+							if((@$rus1["tipo"]) =="root"){ ?>
 								<input name="sal" id="sal" type="button" class="btn" value="<?php echo $btinsertar;?>" onclick="javascript:document.location='form-insertarinsp.php';"><?php	
 							} ?>
 						</td>
@@ -467,4 +477,4 @@ if(!isset($_POST['nuevo']) AND !isset($_POST['editar'])  AND !isset($_GET['nuevo
 </div>
 <div class="ContenedorAlert" id="cir"> </div>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
-<iframe width="174" height="189" name="gToday:normal1:js/agenda1.js" id="gToday:normal1:js/agenda1.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe>
+<iframe width="174" height="189" name="gToday:normal2:agenda1.js" id="gToday:normal2:agenda1.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe>

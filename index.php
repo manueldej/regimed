@@ -1,11 +1,11 @@
 <?php
-############################################################################################################
+#############################################################################################################
 # Software: Regimed                                                                                         #
 #(Registro de Medios Informáticos)     					                                		            #
-# Version:  3.0.1                                                     				                        #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                        #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
 # Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
-#          	Msc. Carlos Pollan Estrada											         		            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
 # Licencia: Freeware                                                				                        #
 #                                                                       			                        #
 # Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
@@ -27,7 +27,6 @@ if (version_compare(PHP_VERSION, "5.3.0") < 0) {
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 define('REGIMED_ROOT', dirname(__FILE__));
 
- 	
 if(isset($_SESSION['valid_user'])){ ?><script type="text/javascript">document.location="expedientes.php";</script><?php }
 require_once("chequeo.php");
 	
@@ -35,14 +34,21 @@ require_once("chequeo.php");
 		<script type="text/javascript">window.parent.location="installation/index.php";</script><?php	
 		 die();
 	}
-
 include ('connections/miConex.php');
 $i="es";
-
-// if(isset($_COOKIE['username'])){
-	// $resultadoses = mysqli_query($miConex, "TRUNCATE `conectado`") or die(mysql_error());
-// }
+?>
+<script type="text/javascript">
+	function _descon(){		
+		<?php 				
+		if(!isset($_COOKIE['username'])){
+		 	mysqli_query($miConex, "TRUNCATE `conectado`") or die(mysql_error());
+		?>
+		document.location="index.php";
+		<?php } ?>
+	} 
+</script> 
 	
+<?php
 if(isset($_COOKIE['seulang'])){
 	if(($_COOKIE['seulang']) =="es"){$i="es"; }else{$i="en";}
 }
@@ -72,41 +78,17 @@ $rreup = mysqli_fetch_array($reup);
   	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
-	<script type="text/javascript" src="js/loadWelcome.js"></script>
 	
 <script language="JavaScript">
 function alerta(){
 	showAlert(3000,'<div class="alert negro" style="display: none"><b>&iexcl;<?php echo $wellc;?>! </b> <br/> <?php echo $wellc1;?>.</div>');
 	document.cookie="lgmi=1";
 }
+
 </script>
 <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />   
 <style type="text/css">
-	@import url("css/system-message.css");
-<!--
-#Layer1 {
-	position:absolute;
-	left:185px;
-	top:26px;
-	width:387px;
-	height:65px;
-	z-index:1;
-}
-body {
-	background-color: #FFFFFF;
-}
-.boton { 
-  -moz-border-radius: 5px 5px 5px 5px;
-  -webkit-border-radius: 5px 5px 5px 5px;
-		font-family: Verdana, sans-serif; 
-		font-size: 10px; 
-		color: #333333; 
-		border: 1px #666666 solid; 
-		background-color: #f2f2f2; 
-		font-weight: bold;
-		cursor:pointer;
-}
--->
+@import url("css/system-message.css");
 
 *{padding: 0; margin: 0;}
 
@@ -150,10 +132,8 @@ margin:20px;
 	text-decoration: none;
 }
 
-/* ---------->>> jtip <<<---------------------------------------------------------------*/
-
 #JT_arrow_left{
-	background-image: url(../images/arrow_left.gif);
+	background-image: url(images/arrow_left.gif);
 	background-repeat: no-repeat;
 	background-position: left top;
 	position: absolute;
@@ -165,7 +145,7 @@ margin:20px;
 }
 
 #JT_arrow_right{
-	background-image: url(../images/arrow_right.gif);
+	background-image: url(images/arrow_right.gif);
 	background-repeat: no-repeat;
 	background-position: left top;
 	position: absolute;
@@ -305,64 +285,18 @@ a:hover.tooltip span {
 	</div>
 </div>
 <div id="modal4" class="modalmask">
-	<div class="modalbox rotate" style="height: 189px;">
-		<div style="height: 25px; border-color: rgb(0, 109, 138); border-radius: 4px 4px 0 0;
-			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);	
-			background-color: #DA4F49;
-			background-image: linear-gradient(to bottom, #EE5F5B, #BD362F);
-			background-repeat: repeat-x;
-			border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-			color: #ffe3e3; padding: 1px 0px 16px 9px; margin-left: -13px; width: 548px; border-radius: 5px; vertical-align:middle;"><a href="#close" original-title="<?php echo $btclose;?>" class="close tip-s medium  barramenu" style="text-decoration:none; color: #F8F3F3;">X</a>
-			<h2 class="pos"><?php echo $recuperacla;?></h2>
-		</div>
-		<p ><iframe src="recupeclave.php" name="b" scrolling="none" width="102%" height="200" frameborder="0" class="notice" border="0"></iframe></p>
+<div class="modalbox rotate" style="height: 189px;">
+	<div style="height: 25px; border-color: rgb(0, 109, 138); border-radius: 4px 4px 0 0;
+		text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);	
+		background-color: #DA4F49;
+		background-image: linear-gradient(to bottom, #EE5F5B, #BD362F);
+		background-repeat: repeat-x;
+		border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+		color: #ffe3e3; padding: 1px 0px 16px 9px; margin-left: -13px; width: 548px; border-radius: 5px; vertical-align:middle;"><a href="#close" original-title="<?php echo $btclose;?>" class="close tip-s medium  barramenu" style="text-decoration:none; color: #F8F3F3;">X</a>
+		<h2 class="pos"><?php echo $recuperacla;?></h2>
 	</div>
+<p><iframe src="recupeclave.php" name="b" scrolling="none" width="102%" height="200" frameborder="0" class="notice" border="0"></iframe></p>
 </div>
-<div id="desconn" class="modalmask">
-	<div class="modalbox rotate" style="width: 308px;">
-		<div style="height: 25px; border-color: rgb(0, 109, 138); border-radius: 4px 4px 0 0;
-			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);	
-			background-color: #DA4F49;
-			background-image: linear-gradient(to bottom, #EE5F5B, #BD362F);
-			background-repeat: repeat-x;
-			border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-			color: #ffe3e3; padding: 1px 0px 16px 9px; margin-left: -13px; width: 327px; border-radius: 5px; vertical-align:middle;"><a href="#close" original-title="<?php echo $btclose;?>" class="close tip-s medium  barramenu" style="text-decoration:none; color: #F8F3F3;">X</a>
-			<h2 class="pos"><?php echo $recuperacla;?></h2>
-		</div>
-		<p><table width="357" border=0 class="">
-			     <form action="desconectar.php" name="form1" method="post">
-				 <tr bgColor='#66CCFF'>
-                   <td width='63' bgcolor="#FFFFFF">&nbsp;</td>
-                   <td width='300' bgcolor="#FFFFFF"></td>
-                 </tr>
-                 <tr>
-                   <td><div align="right"><b><?php echo $btusuario;?>: </b></div></td>
-                   <td align='left'>
-				     <INPUT name='uss' id="uss" type="text" size='25'></td>
-                 </tr>
-                 <tr>
-                   <td><div align="right" ><b><?php echo $btpassw;?>:</b></div></td>
-                   <td align='left'><INPUT name='clav' id="clav" type="password" size="25"></td>
-                 </tr>
-                 <tr>
-                   <td><div align="right" ><b><?php echo $btconectado;?></b></div></td>
-                   <td align='left'><?php
-						$consultases1 ="SELECT * FROM conectado";
-						$resultadoses1 = mysqli_query($miConex, $consultases1) or die(mysql_error());?>
-						<select name="coneta"><?php
-							while($rowconn=mysqli_fetch_array($resultadoses1)){ ?>
-								<option value="<?php echo $rowconn['id']?>"><?php echo $rowconn['conectado']?></option><?php
-							} ?>
-						</select>
-					</td>
-                 </tr>
-                 <tr>
-                   <td>&nbsp;</td>
-                   <td align='left'><input name="desconecta" class="btn" type='submit' value="<?php echo $btaceptar;?>"></td>
-                 </tr>
-				 </form>
-             </table></p>
-	</div>
 </div>
 <div class="PageBackgroundGlare"></div>
     <div class="Main">
@@ -415,24 +349,13 @@ function unidq(vas){
 }
 </script>
 <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-<script src="js/jtip.js" type="text/javascript"></script><?php 		  
-			    if (isset($_GET['e']) AND ($_GET['e']) =="s") {			 ?>
-				<div class="message inner red">
-				<span><b><?php echo $strError; ?></b>: <?php echo $strnousuario ;?></span>
-			</div>
-				
-<?php
-	            }elseif (isset($_GET['u']) AND ($_GET['u']) !="") {			 ?>
-				<div class="message inner red">
-				<span><b><?php echo $strError ?></b>: -<?php echo $_GET['u'];?>-  <?php echo $ya_esta3;?></span>
-			</div>
-<?php
-	      } 
-	
-$sqluser = "SELECT * FROM usuarios" ;
+<script src="js/jtip.js" type="text/javascript"></script>
+<?php if (isset($_GET['e']) AND ($_GET['e']) =="s") { ?>
+	<div id="err" class="message inner red"><span><b><?php echo $strError; ?></b>: <?php echo $strnousuario ;?></span></div>			
+<?php }
+$sqluser = "SELECT * FROM usuarios INNER JOIN (preferencias) ON (preferencias.usuario = usuarios.login) WHERE preferencias.acceso='s'" ;
 $query_user = mysqli_query($miConex, $sqluser) or die(mysql_error()); 
  ?>
-  
      <table width="70%" border="0" align="center" cellpadding="0" cellspacing="0">
         <tr>
             <td width="22%">&nbsp;</td>

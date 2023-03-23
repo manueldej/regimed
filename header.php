@@ -1,11 +1,11 @@
 <?php 
-############################################################################################################
+#############################################################################################################
 # Software: Regimed                                                                                         #
 #(Registro de Medios Informáticos)     					                                		            #
-# Version:  3.0.1                                                     				                        #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                        #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
 # Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
-#          	Msc. Carlos Pollan Estrada											         		            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
 # Licencia: Freeware                                                				                        #
 #                                                                       			                        #
 # Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
@@ -17,17 +17,17 @@
 # Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
 # Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
 #############################################################################################################
-define('ruta_ficheros', dirname(__FILE__));
+define('app_dir', dirname(__FILE__));
 if (!defined("ruta_images")) {
-   define("ruta_images", ruta_ficheros."/images/"); 
-   define("ruta_medias", ruta_ficheros."/images/");
+   define("ruta_images", app_dir."/images/"); 
+   define("ruta_medias", app_dir."/images/");
    # si no está definido en (MiComex.php)
 }
 echo "<!DOCTYPE html>"; 
 echo "<html lang='es'>";
 echo '<meta http-equiv="Content-Script-Type" content="text/javascript"/>'."\n";
 $versphpvieja = str_ireplace('.','',phpversion());
-$versphpnueva = 540;
+$versphpnueva = 721;
 if($versphpvieja < $versphpnueva ){?>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /><?php 
 }else{ ?>
@@ -36,8 +36,7 @@ if($versphpvieja < $versphpnueva ){?>
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <link href="css/bootstrap-responsive.css" rel="stylesheet">
 <?php
-		@session_start();
-		include('chequeo.php');
+
 class colores {
 	public function ColorFila($i,$color1,$color2){
 		if (($i % 2)== 0) {
@@ -51,10 +50,14 @@ class colores {
 $color1="#F1F2F3";
 $color2="#E9EAEB";
 $uCPanel = new colores();
-		if (!check_auth_user()){
-			?><script type="text/javascript">window.parent.location="index.php";</script><?php
-			exit;
-		}
+@session_start();
+include('chequeo.php');
+
+	if (!check_auth_user()){ ?>
+		<script type="text/javascript">window.parent.location="index.php";</script><?php
+		exit;
+	}
+	
 	if (!file_exists('connections/miConex.php')){ ?>
 		<script type="text/javascript">window.parent.location="installation/index.php";</script><?php
 		return;
@@ -71,12 +74,68 @@ $uCPanel = new colores();
 	}else{
 	  include('eng.php');
 	}
-	//$_SESSION["regimeddate_format"]=1;
-	//echo convDate(date('Y:m:d'));
 	
 	$consulta_unidades ="SELECT * FROM datos_generales";
-	$reado = mysqli_query($miConex, $consulta_unidades) or die(mysql_error());
+	$reado = mysqli_query($miConex, $consulta_unidades) or die(mysqli_error($miConex));
 	$total_filas = mysqli_num_rows($reado);
+
+	function rerecalcula() {
+		include('connections/miConex.php');
+		$i=0;
+		$n=0;
+		$sql = "SELECT * FROM areas";
+		$result= mysqli_query($miConex, $sql) or die(mysqli_error($miConex));	  
+	   	$n_campos = mysqli_num_fields($result);
+        
+		while ($rower = mysqli_fetch_array($result)) { $i++; 
+			for($n=1; $n<$n_campos; $n++){
+				$field = mysqli_fetch_field_direct($result, $n);
+				$name  = $field->name;
+				$flags = $field->flags;
+			   
+					if ($name!="idarea" AND $name!="nombre" AND $name!="idunidades") {
+					   $sql_cont = "SELECT COUNT(id) as total FROM aft WHERE id_area='".$rower['idarea']."' AND estado='A' AND categ='".$name."'";
+					   $resul_cont = mysqli_query($miConex, $sql_cont) or die(mysqli_error($miConex));	  
+					   $row1 = mysqli_fetch_array($resul_cont);	
+        			   
+					    
+						if (mysqli_num_rows($resul_cont)!=0){ 
+					     $sql11 = "UPDATE areas SET ".$name."='".$row1['total']."' WHERE idarea='".$rower['idarea']."'";
+					     $resul11 = mysqli_query ($miConex, $sql11) or die (mysqli_error($miConex));
+					    }
+					}
+			}
+		}
+	}
+
+	function chequea_exp(){
+		include('connections/miConex.php');
+		$quienes= Array();
+
+		$sql = "SELECT a.inv as inve, a.categ, a.exp, b.inv FROM aft a left JOIN exp b ON (a.inv=b.inv) WHERE a.categ='COMPUTADORAS' AND b.inv IS NULL";
+		$result= mysqli_query($miConex, $sql) or die(mysqli_error($miConex));	  
+		$cant = mysqli_num_rows($result);
+		
+		if ($cant!=0){ 
+		   return $cant;
+		}	
+     	return 0;	
+	}
+	
+	function act_exp(){
+		include('connections/miConex.php');
+		$quienes= Array();
+
+		$sql = "SELECT * FROM aft WHERE exp='' AND categ='COMPUTADORAS'";
+		$result= mysqli_query($miConex, $sql) or die(mysqli_error($miConex));	  
+		
+		while ($fil = mysqli_fetch_array($result)){
+			$sql_aft = "UPDATE aft SET exp='".$fil['inv']."' WHERE aft.inv ='".$fil['inv']."' AND categ='COMPUTADORAS'";
+		    $result_aft= mysqli_query($miConex, $sql_aft) or die(mysqli_error($miConex));	
+		}
+	}
+    
+    //act_exp();
 	
 ?>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -197,40 +256,59 @@ a:hover {
 <?php
  if ($_SESSION['valid_user']!="invitado") { 
 	   $sql_pref="SELECT * FROM preferencias WHERE usuario='".$_SESSION['valid_user']."'";
-	   $rsul = mysqli_query($miConex, $sql_pref) or die (mysql_error());
+	   $rsul = mysqli_query($miConex, $sql_pref) or die (mysqli_error($miConex));
 	   $rowsp = mysqli_fetch_array($rsul);
 	   
 	   $query = "SELECT * FROM usuarios WHERE login='".$_SESSION['valid_user']."'";
-       $result = mysqli_query($miConex, $query) or die(mysql_error());
+       $result = mysqli_query($miConex, $query) or die(mysqli_error($miConex));
 	   $rws = mysqli_fetch_array($result);
-
     }else{
 	   $sql_pref="SELECT * FROM preferencias WHERE usuario='webmaster'";
-	   $rsul = mysqli_query($miConex, $sql_pref) or die (mysql_error());
+	   $rsul = mysqli_query($miConex, $sql_pref) or die (mysqli_error($miConex));
 	   $rowsp = mysqli_fetch_array($rsul);
     } 
 
 $cant_notif =0;
 $sql_uactivaa = "select * from datos_generales";
-$result_uactivaa= mysqli_query($miConex, $sql_uactivaa) or die(mysql_error());
+$result_uactivaa= mysqli_query($miConex, $sql_uactivaa) or die(mysqli_error($miConex));
 $ractivaa = mysqli_num_rows($result_uactivaa);
 
 $sql_notificamtto = "select * from mtto where estado='Pendiente'";
-$result_notificamtto= mysqli_query($miConex, $sql_notificamtto) or die(mysql_error());
+$result_notificamtto= mysqli_query($miConex, $sql_notificamtto) or die(mysqli_error($miConex));
 $notificamtto = mysqli_num_rows($result_notificamtto);
 
+$sql_notificasellos = "select * from aft where sello='' AND categ='COMPUTADORAS' AND estado='A'";
+$result_notificasellos= mysqli_query($miConex, $sql_notificasellos) or die(mysqli_error($miConex));
+$notificasellos = mysqli_num_rows($result_notificasellos);
+
+$exp =0;
+
+if (chequea_exp() != 0) {
+	$notificaexp = chequea_exp();
+	$exp=chequea_exp();
+}else{
+	$notificaexp ='';
+}
+
+
 $sql_notificabajas = "select * from bajas_aft where titulo='sin Dictamen'";
-$result_notificabajas= mysqli_query($miConex, $sql_notificabajas) or die(mysql_error());
+$result_notificabajas= mysqli_query($miConex, $sql_notificabajas) or die(mysqli_error($miConex));
 $notificabajas = mysqli_num_rows($result_notificabajas);
 
 $sql_notificares = "select * from resoluciones where link=''";
-$result_notificares= mysqli_query($miConex, $sql_notificares) or die(mysql_error());
+$result_notificares= mysqli_query($miConex, $sql_notificares) or die(mysqli_error($miConex));
 $notificares = mysqli_num_rows($result_notificares);
 
-$cant_notif=$notificamtto+$notificabajas+$notificares ;
+$sql_notificarsi = "SELECT * FROM usuarios WHERE tipo='rsi'";
+$result_notificarsi = mysqli_query($miConex, $sql_notificarsi) or die();
+$notificarsi = mysqli_num_rows ($result_notificarsi);
+
+if ($notificarsi ==0 ) { $notificarsi=1;}else {$notificarsi=0;}
+	
+$cant_notif=$notificamtto+$notificabajas+$notificares+$notificarsi+$notificasellos+$exp;
 
 $query_Recordset1 = "SELECT * FROM tipos_medios";
-$Recordset1 = mysqli_query($miConex, $query_Recordset1) or die(mysql_error());
+$Recordset1 = mysqli_query($miConex, $query_Recordset1) or die(mysqli_error($miConex));
 $row_Recordset1 = mysqli_fetch_assoc($Recordset1);
 $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
 if(isset($_SESSION["autentificado"])){
@@ -240,24 +318,28 @@ if(isset($_SESSION["autentificado"])){
 }else{
 	$dage="select * from datos_generales";
 }
-$qdage=mysqli_query($miConex, $dage) or die(mysql_error());
-$rdage=mysqli_fetch_array($qdage);
-$us = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysql_error());
-$rus = mysqli_fetch_array($us);
-$nrus=mysqli_num_rows($us);
 
-$usx = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysql_error());
+$qdage=mysqli_query($miConex, $dage) or die(mysqli_error($miConex));
+$rdage=mysqli_fetch_array($qdage);
+if ($_SESSION ["valid_user"]!='invitado'){
+	$us = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysqli_error($miConex));
+	$rus = mysqli_fetch_array($us);
+	$nrus=mysqli_num_rows($us);	
+}
+
+
+$usx = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysqli_error($miConex));
 $russx = mysqli_fetch_array($usx);
 $nrusx=mysqli_num_rows($usx);
 
-$vis = mysqli_query($miConex, "SELECT COUNT(user) as total FROM visitas WHERE user ='".$_SESSION ["valid_user"]."'") or die(mysql_error());
+$vis = mysqli_query($miConex, "SELECT COUNT(user) as total FROM visitas WHERE user ='".$_SESSION ["valid_user"]."'") or die(mysqli_error($miConex));
 $resu = mysqli_fetch_assoc($vis);
 
-$us1 = mysqli_query($miConex, "select * from preferencias where usuario='".$_SESSION ["valid_user"]."'") or die(mysql_error());
+$us1 = mysqli_query($miConex, "select * from preferencias where usuario='".$_SESSION ["valid_user"]."'") or die(mysqli_error($miConex));
 $rus1 = mysqli_fetch_array($us1);
 
 $query_Recordset2 = "SELECT * FROM tipos_medios ORDER BY id";
-$Recordset2 = mysqli_query($miConex, $query_Recordset2) or die(mysql_error());
+$Recordset2 = mysqli_query($miConex, $query_Recordset2) or die(mysqli_error($miConex));
 $row_Recordset2 = mysqli_fetch_assoc($Recordset2);
 $totalRows_Recordset2 = mysqli_num_rows($Recordset2);
 
@@ -324,7 +406,7 @@ if(strpos($user, "Windows NT 5.4"))  { $os = "Windows Blackcomb"; $img2="blackco
 	$unidadactiva = ""; 
 	if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 		$ureactiva = "SELECT * FROM datos_generales WHERE id_datos='".$_COOKIE['unidades']."'";
-		$qselactiva = mysqli_query($miConex, $ureactiva) or die(mysql_error());
+		$qselactiva = mysqli_query($miConex, $ureactiva) or die(mysqli_error($miConex));
 		$rselactiva = mysqli_fetch_array($qselactiva);	
 		$unidadactiva = $rselactiva['entidad'];
 	}else{
@@ -332,9 +414,9 @@ if(strpos($user, "Windows NT 5.4"))  { $os = "Windows Blackcomb"; $img2="blackco
 	}
 
 $lin = substr(strrchr ($_SERVER['PHP_SELF'],"/"),1);
-$arreglopg=array("expedientes.php","registromedios1.php","res.php","visitas.php"); ?>
+$arreglopg = array("expedientes.php","registromedios1.php","res.php","visitas.php"); ?>
 <script type="text/javascript">
-    <?php if(($rus["tipo"]) =="root"){ ?>
+    <?php if((@$rus["tipo"]) =="root"){ ?>
 	var categoriaApp = [ '<?php echo $btAreas;?>','<?php echo $btcontrol;?>','<?php echo $btcategmedios;?>','<?php echo $btgensello;?>'];
 	<?php }else{ ?>
 	var categoriaApp = [ '<?php echo $btAreas;?>','<?php echo $btcontrol;?>','<?php echo $btcategmedios;?>' ];
@@ -358,10 +440,10 @@ $arreglopg=array("expedientes.php","registromedios1.php","res.php","visitas.php"
 		
 		app+='<li><a href="registroareas.php"><img src="gfx/icons/small/dashboard.png">&nbsp;'+categoriaApp[0]+'</a></li>';
 		app+='<li><a href="ej1.php"><img src="gfx/icons/small/users.png">&nbsp;'+categoriaApp[1]+'</a></li>';
-		<?php if(($russx["tipo"]) =="root"){ ?>
+		<?php if(@$_SESSION ["valid_user"]!='invitado' and @$russx["tipo"] =="root"){ ?>
 		app+='<li><a href="categ_medios.php"><img src="gfx/icons/small/sitemap.png">&nbsp;'+categoriaApp[2]+'</a></li>';
 		app+='<li><a href="sellos.php"><img src="gfx/icons/small/check.png">&nbsp;'+categoriaApp[3]+'</a></li>';
-		<?php }else{ ?>
+		<?php } else { ?>
 		app+='';
 		<?php } ?>
 		prod+='<li><a href="traspasos.php"><img src="gfx/icons/small/export.png">&nbsp;'+categoriaProd[0]+'</a></li>';
@@ -389,9 +471,23 @@ $arreglopg=array("expedientes.php","registromedios1.php","res.php","visitas.php"
 function notifica(num){
 	document.location='plan_mtto.php?noti='+num;
 }
+
 function notibaja(num){
 	document.location='bajas.php?noti='+num;
 }
+
+function notisellos(num){
+	document.location='registromedios1.php?noti='+num;
+}
+
+function notiexp(num){
+	document.location='registromedios1.php?notiex='+num;
+}
+
+function notirsi(num){
+	document.location='ej1.php?noti='+num;
+}
+
 function notires(num){
 	document.location='res.php?noti='+num;
 }
@@ -425,7 +521,7 @@ function notires(num){
 </script>
 <script language="JavaScript">
 		function pende(){
-			showAlert(9000,'<div style="display: none; opacity: 1; margin-left:265px; left:265px; width: 180px; top:25px; font-size: 10px;"><h1>&iexcl;<?php echo $tareas; ?>! </h1> <br/> <?php if ($notificamtto !=0){  echo '<a href="#" onclick="notifica('.$notificamtto.');" >'.$btpmtto.'</a> - <span style="border-radius: 50px; background-color: #E00000; text-shadow: #999999c; color: #FFFFFF; text-align: center; width: 20px; height: 17px;"> '.$notificamtto.'</span>';  } ?><br><?php if ($notificabajas !=0){ echo '<a href="#" onclick="notibaja('.$notificabajas.');" >'.$bajassd.'</a> - <span style="border-radius: 50px; background-color: #E00000; text-shadow: #999999c; color: #FFFFFF; text-align: center; width: 20px; height: 17px;">  '.$notificabajas; } ?><a href="#close" original-title="Cerrar" class="close tip-s medium  barramenu" style="text-decoration:none; color: #F8F3F3;">X</a></div>');
+			showAlert(9000,'<div style="display: none; opacity: 1; margin-left:265px; left:265px; width: 180px; top:25px; font-size: 10px;"><h1>&iexcl;<?php echo $tareas; ?>! </h1> <br/> <?php if ($notificamtto !=0){  echo '<a href="#" onclick="notifica('.$notificamtto.');" >'.$btpmtto.'</a> - <span style="border-radius: 50px; background-color: #E00000; text-shadow: #999999c; color: #FFFFFF; text-align: center; width: 20px; height: 17px;"> '.$notificamtto.'</span>';  } ?><br><?php if ($notificabajas !=0){ echo '<a href="#" onclick="notibaja('.$notificabajas.');" >'.$bajassd.'</a> - <span style="border-radius: 50px; background-color: #E00000; text-shadow: #999999c; color: #FFFFFF; text-align: center; width: 20px; height: 17px;">  '.$notificabajas; } ?><br><?php if ($notificarsi !=0){ echo '<a href="#" onclick="notirsi('.$notificarsi.');" >'.$sinrsi.'</a> - <span style="border-radius: 50px; background-color: #E00000; text-shadow: #999999c; color: #FFFFFF; text-align: center; width: 20px; height: 17px;">  '.$notificarsi; } ?><br><?php if ($notificasellos !=0){ echo '<a href="#" onclick="notisellos('.$notificasellos.');" >'.$sellossd.'</a> - <span style="border-radius: 50px; background-color: #E00000; text-shadow: #999999c; color: #FFFFFF; text-align: center; width: 20px; height: 17px;">  '.$notificasellos; } ?><br><?php if ($notificaexp !=''){ echo '<a href="#" onclick="notiexp('.$notificaexp.');" >'.$sinexp.'</a> - <span style="border-radius: 50px; background-color: #E00000; text-shadow: #999999c; color: #FFFFFF; text-align: center; width: 20px; height: 17px;">  '.$notificasellos; } ?><a href="#close" original-title="Cerrar" class="close tip-s medium  barramenu" style="text-decoration:none; color: #F8F3F3;">X</a></div>');
 			document.cookie="lgmi=1";
 		}
 </script>
@@ -493,6 +589,30 @@ function hora(){
 			</tr>
 			<tr>
 				<td>
+				  <?php if ($notificasellos !=0){ ?><a href="#" onClick="notisellos('<?php echo $notificasellos; ?>');" ><?php echo $sellossd; ?></a>
+				</td>
+				<td>
+				  <?php echo $notificasellos; } ?>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				  <?php if ($notificaexp !=''){ ?><a href="#" onClick="notiexp('<?php echo $notificaexp; ?>');" ><?php echo $sinexp; ?></a>
+				</td>
+				<td>
+				  <?php echo $notificaexp; } ?>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				  <?php if ($notificarsi !=0){ ?><a href="#" onClick="notirsi('<?php echo $notificarsi; ?>');" ><?php echo $sinrsi; ?></a>
+				</td>
+				<td>
+				  <?php echo $notificarsi; } ?>
+				</td>
+			</tr>
+			<tr>
+				<td>
 				  <div align="left"><?php if ($notificares !=0){ ?> <a href="#" onClick="notires('<?php echo $notificares; ?>');" ><?php echo $ressin; ?></a>
 				</td>
 				<td>
@@ -506,7 +626,7 @@ function hora(){
 		</table>
     </div>
 </div>	
-<body onclick="$('#divMenu').css('display','none'); "><div class="fondo">
+<body onclick="$('#divMenu').css('display','none');"><div class="fondo">
 <form method="post" name="ediper" id="ediper" action="v1.php">
 	<input name="editar" type="hidden" id="editar">
 	<input name="opera" type="hidden" id="opera">
@@ -525,24 +645,25 @@ function hora(){
 						 <img <?php if(($i) =="es") { ?>src="images/headeresp.png" <?php }else { ?>src="images/headereng.png" <?php }?>/>
 						</td>
 					    <td width="226" valign="middle"><?php
- 						if ($_SESSION ["valid_user"]) {
+ 				
+						if ($_SESSION ["valid_user"]) {
 					   	  if ($resu['total']==1){
 							     $visitas="visita";
 							 }else $visitas="visitas";
 
-						  if ($rus['sexo']=="h"){
+						  if ($_SESSION ["valid_user"]!='invitado' and $rus['sexo']=="h"){
 	                         $imge ="images/admin.png";
-						  }elseif ($rus['sexo']=="m"){
+						  }elseif ($_SESSION ["valid_user"]!='invitado' and $rus['sexo']=="m"){
                             $imge ="images/female.png";
 						  }else{
 							$imge ="images/invitado.gif";
 						  }
-						  if(($rus['tipo']) =="root"){						 
+						  if(($_SESSION ["valid_user"]!='invitado' and $rus['tipo']) =="root"){						 
 						  	$imge ="images/male.png";
 						  }  ?>
 						  
 <div id="procesa2" class="procesa2" style="margin-left: 39px;">
-<?php if ($rus['tipo']=="root" ){ 
+<?php if ($_SESSION ["valid_user"]!='invitado' and $rus['tipo']=="root" ){ 
  if (($nrus) !=0 and $cant_notif !=0) { ?>
  <div class="notif" style="margin-left: 4px;"><a href="#modal20" class="tooltip"><i style="background: url(images/glyphicons-halflings-white.png) scroll -1478px -316px transparent; height: 16px; width: 20px; float: left; margin-top: 2px; position: relative; margin-left: -2px; left: 13px; z-index:9999;"></i><b style="color:#FFFFFF;"><?php echo $cant_notif; ?></b><span><?php echo $daleclik; ?></span></a></div>
  <?php }else { ?><span manolo="<?php echo $nohay; ?>"><div class="notif"><i style="background: url(images/glyphicons-halflings-white.png) scroll -1478px -316px transparent; height: 16px; width: 20px; float: left; margin-top: 2px; position: relative; margin-left: -2px; left: 13px; z-index:9999;"></i></div></span> <?php } }else{?>
@@ -550,7 +671,7 @@ function hora(){
  <?php } ?>
 <div style="padding:4px; width:87px; margin-left: 55px;">
 	<a href="#" onclick="document.getElementById('idm').style.display='block';" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown"><img src="<?php if ($i=="es" ) { ?>images/es.png <?php }else{ ?>images/en.png <?php } ?>" align="absmiddle" style="cursor:pointer; text-decoration:none; margin-top: -10px;" width="20" height="16"></a>
-	 <a href="#" class="tooltip"><img width="20"height="16" src="images/<?php echo $img2; ?>"><span><?php echo $os; ?></span></a><a href='#' class='tooltip'><img width='20' height='16' src='images/<?php echo $img; ?>'><span onMouseOver="this.style.cursor='pointer';"><?php echo $browser; ?></span></a><a class="tooltip" href="javascript:animatedcollapse.toggle('cat')" style="cursor:pointer;"><img src="images/registro.png" height="16" width="20" ><span>Datos del Servidor</span></a> 
+	 <a href="#" class="tooltip"><img width="20"height="16" src="images/<?php echo $img2; ?>"><span><?php echo $os; ?></span></a><a href='#' class='tooltip'><img width='20' height='16' src='images/<?php echo $img; ?>'><span onMouseOver="this.style.cursor='pointer';"><?php echo $browser; ?></span></a><a class="tooltip" href="javascript:animatedcollapse.toggle('cat')" style="cursor:pointer;"><img src="images/registro.png" height="16" width="20" ><span><?php echo $dservidor; ?></span></a> 
 <?php } ?>
 <div id="idm" style="margin-top: -6px; margin-left: -12px; display: none; width: 28px; position: absolute; z-index: 90000; list-style: outside none none;">
 	<ul class="dropdown-submenu" style="list-style: outside none">
@@ -616,7 +737,7 @@ function hora(){
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" >
 								  <i style="background: url(images/glyphicons-halflings-white.png) scroll -361px -139px transparent; height:20px; width:16px; float: left;"></i>&nbsp;<?php echo "<b>".$btopcion."</b>"; ?>&nbsp;<b class="caret"></b></a>							
 							<?php 
-									if(($russx['tipo']) =="root"){ ?>
+									if ($_SESSION ["valid_user"]!='invitado' and $russx['tipo'] =="root"){ ?>
 										<ul class="dropdown-menu" style="left:160px;">
 											<li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataApp, 'Aplicaciones')"><img border="0" align="absmiddle" class="metadata-icon" src="gfx/icons/small/copy.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $Codificadores;?></a><ul class="dropdown-menu subApp">...</ul></li>		
 											<li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataReg, 'Registros')"><img border="0" align="absmiddle" class="metadata-icon" src="gfx/icons/small/document.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $btrecords;?></a><ul class="dropdown-menu subReg">...</ul></li>
@@ -626,12 +747,12 @@ function hora(){
 										</ul><?php
 									}elseif(($_SESSION ["valid_user"]) =="invitado"){  ?>
 										<ul class="dropdown-menu">
-											<li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataReg, 'Registros')"><img border="0" align="absmiddle" class="metadata-icon" src="images/txt.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $btrecords;?></a><ul class="dropdown-menu subReg">...</ul></li>
+											<li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataReg, 'Registros')"><img border="0" align="absmiddle" class="metadata-icon" src="gfx/icons/small/document.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $btrecords;?></a><ul class="dropdown-menu subReg">...</ul></li>
 										</ul><?php
 									}else{ ?>
 										<ul class="dropdown-menu">
-                                            <li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataApp, 'Aplicaciones')"><img border="0" align="absmiddle" class="metadata-icon" src="images/registro.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $Codificadores;?></a><ul class="dropdown-menu subApp">...</ul></li>
-										    <li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataReg, 'Registros')"><img border="0" align="absmiddle" class="metadata-icon" src="images/txt.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $btrecords;?></a><ul class="dropdown-menu subReg">...</ul></li>
+                                            <li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataApp, 'Aplicaciones')"><img border="0" align="absmiddle" class="metadata-icon" src="gfx/icons/small/copy.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $Codificadores;?></a><ul class="dropdown-menu subApp">...</ul></li>
+										    <li class="dropdown-submenu"><a tabindex="-1" href="javascript:showCategorias(dataReg, 'Registros')"><img border="0" align="absmiddle" class="metadata-icon" src="gfx/icons/small/document.png" style="cursor:pointer" width="14" height="14">&nbsp;&nbsp;<?php echo $btrecords;?></a><ul class="dropdown-menu subReg">...</ul></li>
 										</ul><?php
 									} ?>
 							</li>							
@@ -649,7 +770,7 @@ function hora(){
 							   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<img src="<?php echo $imge; ?>" height="14" width="12" style="margin-top: 2px;">&nbsp;<?php echo "<b>".ucwords($_SESSION['valid_user'])."</b>"; ?>&nbsp;<b class="caret"></b></a>
 								 <ul class="dropdown-menu" style="left:-13px;"><?php  if ($_SESSION['valid_user']!="invitado") { ?>
-								  <li><a onClick="editaperfil('perfil');" style="cursor:pointer;"><img src="gfx/icons/small/register.png" alt="Register">&nbsp;Modificar Perfil</a></li>
+								  <li><a onClick="editaperfil('perfil');" style="cursor:pointer;"><img src="gfx/icons/small/register.png" alt="Register">&nbsp;<?php echo $modificas3; ?></a></li>
 								  <li><a onClick="editaperfil('preferencias');" style="cursor:pointer;"><img src="gfx/icons/small/preferences.png" alt="Register">&nbsp;Preferencias</a></li>
 								  <li class="divider"></li>
 								  <?php } ?>	
@@ -668,7 +789,7 @@ function hora(){
 <div id="cat" role="navigation" class="procesa1" >
 		 <div class="panel panel-default" >
             <div class="panel-heading">
-              <h4 class="panel-title" ><b>DATOS DEL SERVIDOR</b></h4>
+              <h4 class="panel-title" ><b><?php echo strtoupper($dservidor); ?></b></h4>
 			  <span class="hide"></span><a  href="javascript:animatedcollapse.hide('cat')" title="Cerrar" class="btn btn-default" style="text-decoration:none; margin-top: -36px; margin-left: -247px; float:right;">X</a>
             </div><span class="hide"></span>
             <div class="panel-body">
@@ -677,7 +798,9 @@ function hora(){
 			$aliasDir = '../alias/';
 			// lista a ignorar
 			$projectsListIgnore = array('.', '..');
-			$apache_version = @apache_get_version(); 
+			//$apache_version = @apache_get_version(); 
+			// saber si es apache o nginx 
+			$apache_version = $_SERVER['SERVER_SOFTWARE'];
 			$version_ap = @explode ('PHP',$apache_version); 
 			// recuperacion de Proyectos
 			$handle = opendir(".");
@@ -697,18 +820,14 @@ function hora(){
 			@$phpExtContents .= "<li>${extension}</li>";
             $sis_op="";
 			$sis_op=php_uname("s");
-			if ($_SESSION['valid_user']!="invitado") {
-			 // $sql2= "UPDATE preferencias SET plataforma='".$sis_op."'";
-			 // $result2 = mysqli_query($sql2) or die (mysql_error());
-			} 
-	
+				
 			echo "&nbsp;&nbsp;&nbsp;Plataforma: <b>" .php_uname("s")."</b><br>\n";
-			echo "&nbsp;&nbsp;&nbsp;Versi&oacute;n Apache:&nbsp;<b>".$version_ap[0]."</b><br>\n";
-			echo "&nbsp;&nbsp;&nbsp;Versi&oacute;n php: <b>".phpversion().", ".php_uname("s")."</b><a style='cursor:pointer;' onclick='document.getElementById('procesa').style.heigth=45px;'; >&nbsp;&nbsp;Cr&eacute;ditos</a><br>\n";
+			echo "&nbsp;&nbsp;&nbsp;Versi&oacute;n Servidor:&nbsp;<b>".$version_ap[0]."</b><br>\n";
+			echo "&nbsp;&nbsp;&nbsp;Versi&oacute;n php: <b>".phpversion().", ".php_uname("s")."</b><br>\n";
+			echo "&nbsp;&nbsp;&nbsp;Servidor MySQL: <b>".mysqli_get_server_info($miConex).", ".mysqli_get_host_info($miConex)."- MySQL Community Server (GPL) </b><br>\n";
 			echo "&nbsp;&nbsp;&nbsp;Cliente MySQL: <b>".substr(mysqli_get_client_info(),0,30)."</b><br>\n";
-			echo "&nbsp;&nbsp;&nbsp;Servidor MySQL: <b>".mysql_get_host_info()."</b><br>\n";
-			echo "&nbsp;&nbsp;&nbsp;Protocolo MySQL: <b>".mysql_get_proto_info()."</b><br>\n";
-			echo "&nbsp;&nbsp;&nbsp;versi&oacute;n del Motor Zend: <b>".zend_version()."</b><br>\n";
+			echo "&nbsp;&nbsp;&nbsp;Versi&oacute;n del protocolo MySQL: <b>".mysqli_get_proto_info($miConex)."</b><br>\n";
+			echo "&nbsp;&nbsp;&nbsp;Versi&oacute;n del Motor Zend: <b>".zend_version()."</b><br>\n";
 			echo "&nbsp;&nbsp;&nbsp;Usuario MySQL: <b>root</b><br>\n";
             $sapi_type = php_sapi_name();
 			
@@ -718,7 +837,7 @@ function hora(){
 				echo "&nbsp;&nbsp;&nbsp;Ud. no est&aacute; usando CGI PHP\n";
 			}
 $pageContents = <<< EOPAGE
-	<link rel="shortcut icon" href="index1.php?img=favicon" type="image/ico" />
+	<link rel="shortcut icon" href="header.php?img=favicon" type="image/ico" />
 EOPAGE;
      echo $pageContents;
 ?>

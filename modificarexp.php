@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php'); 
 $dde="";
 $varCPU = array('marca','cpuid','frecuencia','fabricante','socket','cpucores','cpulogicos');
@@ -17,6 +24,8 @@ $varMemorias = array('marca','modelo','no_serie','fabricante','capacidad','tasa'
 $varDiscoDuro = array('marca','modelo','no_serie','fabricante','capacidad','tasa','cache','rpm');
 $varTarjetaGrafica = array('marca','modelo','no_serie','fabricante','capacidad','frecuencia');
 $varcomponente = array($varCPU,$varMemorias,$varDiscoDuro,$varTarjetaGrafica);
+$sistema_operativo = array('Microsoft Windows Server 2008','Microsoft Windows 11','Microsoft Windows 10','Microsoft Windows 8.1','Microsoft Windows 8','Microsoft Windows 7','Microsoft Windows XP','Unix','GNU/Linux','Solaris','Google Ghrome','IO OS');
+
 
 if(isset($_REQUEST['palabra'])){
  $palabra=$_REQUEST['palabra'];
@@ -68,13 +77,14 @@ $noinv = $explode[0];
 	$rows1 = mysqli_fetch_array($result1); 
 	$cantrows = mysqli_num_rows($result1);
 	
-?>
-<script language="JavaScript">
 
-  // chequear campos en blanco 
+?>
+<script type="text/javascript">
+
+// chequear campos en blanco 
 function submit_page(form)
 {
- foundError = false;
+  var foundError = false;
  
  if(isFieldBlank(form.t2)) {
   alert("El campo 'Inv' est\u00E1 en blanco.");
@@ -120,53 +130,54 @@ function submit_page(form)
   alert("El campo 'SO' est\u00E1 en blanco.");
   foundError = true;
  }else
-   
- if(foundError == false )
-  document.form1.action="insertarexp.php";
- else
-   document.form1.action="javascript:goHist(-1)";
+  if(foundError == false )
+ {
+	document.form1.action="insertarexp.php"; 
+ } else
+    document.form1.action="javascript:goHist(-1)";
 }
 
-function retornar(form){
- document.form1.action="registromedios1.php";
-}
-//------------------------- funciones -------------------------------------------//
+	function retornar(form){
+	  document.form1.action="registromedios1.php";
+	}
 
-function isFieldBlank(theField)
-{
- innStr = theField.value;
- innLen = innStr.length;
+	function isFieldBlank(theField)
+	{
+	  var innStr = theField.value;
+	  var innLen = innStr.length;
 
- if(theField.value == "" && innLen==0)
-  return true;
- else
-  return false;
+		 if(theField.value == "" && innLen==0)
+		 {
+			return true; 
+		 }else
+		   return false;
+	}
 
+	function ctype_digit(theField)
+	{
+	 var val = theField.value;
+	 var Len = val.length;
 
-function ctype_digit(theField){
- val = theField.value;
- Len = val.length;
+	  for(var i=0; i<Len; i++)
+	  {
+	   var ch = val.substring(i,i+1)
+	   if(ch < "0" || "9" < ch)
+		 return true;
+	  }
+	}
 
-  for(var i=0; i<Len; i++)
-  {
-   var ch = val.substring(i,i+1)
-   if(ch < "0" || "9"< ch)
-     return true;
-  }
-}
+	function ci(theField) 
+	{
+	  val = theField.value;
+	   Len = val.length;
 
-function ci(theField) {
- val = theField.value;
- Len = val.length;
-
-  for(var i=0; i<Len; i++)
-    var chh = val.substring(i,i+1)
-
-  if(i < "11")
-    return true;
-}	
- </script>
-<script type="text/javascript">
+		  for(var i=0; i<Len; i++){
+			 var chh = val.substring(i,i+1) 
+			 if(i < "11"){
+			  return true; 
+			 }  
+		  }
+	}	
 
 	 function seguro4(q,inv,idun,ini,donde,compon,compo,accion){
 	    if (compo!=="") {
@@ -215,11 +226,12 @@ function ci(theField) {
 	<input name="compo" id="compo" type="hidden">
 	<input name="accion" id="accion" type="hidden">
 </form>
+
 <div id="modal4" class="modalmask">
 <div class="modalbox resize" style="width: 54%; height: 543px; border-radius: 5px 5px 5px 5px; margin-top:70px;">
 <div style="height: 15px; text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25); background-color: rgb(196, 84, 60); background-image: linear-gradient(to bottom, rgb(#3C85C4), rgb(#3C85C4)); background-repeat: repeat-x; border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25); color: rgb(251, 238, 238); padding: 1px 0px 16px 9px; margin-left: -19px; width: 571px; vertical-align: middle; border-radius: 4px 4px 0px 0px; margin-top: -3px;"><a href="" title="<?php echo $btclose; ?>" class="close tip-s medium  barramenu" style="text-decoration:none; cursor:pointer; color: #F8F3F3; float:right; width: 15px; top: 0px; background: rgb(221, 179, 172) none repeat scroll 0% 0%;">X</a>
-<h2  class="pos"><?php echo strtoupper($new3.$btEXPEDIENTE);?></h2></div>
-		<p><iframe src="form-insertarexp.php?inv=<?php echo @$noinv;?>&marcado=<?php echo @$marcado;?>&idunidades=<?php echo @$explode2[0];?>" name="b" scrolling="Auto" width="102%" height="500" frameborder="0" class="notice" border="0"></iframe></p>
+<h2 class="pos"><?php echo strtoupper($new3.$btEXPEDIENTE);?></h2></div>
+		<p><iframe src="form-insertarexp.php?inv=<?php echo $noinv;?>&marcado=<?php echo $marcado;?>&idunidades=<?php echo $explode2[0];?>" name="b" scrolling="Auto" width="102%" height="500" frameborder="0" class="notice" border="0"></iframe></p>
 </div>
 </div>
 <div id="modal6" class="modalmask" style="background: rgba(63, 57, 57, 0.7);">
@@ -229,6 +241,7 @@ function ci(theField) {
 		</div><br>
 	<form action="" method="post" name="componente">
         <table width="47%" align="center" class="table"><?php 
+		  if ($compon!=""){ 
 		    if($compon == "Memorias") {
 		        foreach ($varcomponente[1] as $clave => $valor) { 
 				   $nombcamp[] = $valor; 
@@ -247,12 +260,12 @@ function ci(theField) {
 				}
 		    }
 		  
-		   for ($a=0; $a<count($nombcamp); $a++) { 
-		?>
+		   for ($a=0; $a<count($nombcamp); $a++) { ?>
+		
 		<tr>
 		  <td width="46%" align="center"><div align="center"><b><?php echo strtoupper($nombcamp[$a]); ?></b></div></td>
-		  <td width="54%" align="center"><div align="center"><input onkeypress="return handleEnter(this, event)" name="<?php echo $nombcamp[$a]; ?>1" id="<?php echo $nombcamp[$a]; ?>1" type="text" required value="<?php echo $rows1[$nombcamp[$a]]; ?>" class="form-control" onblur="componente.<?php echo $nombcamp[$a]; ?>.value=this.value; <?php if($_REQUEST['accion']=='editar') { ?>__editcompo('<?php echo $nombcamp[$a]; ?>','<?php echo $rows1['id']; ?>',this.value,'<?php echo $nombcamp[$a]; ?>'); <?php } ?>"></div></td>
-		</tr><?php } ?>
+		  <td width="54%" align="center"><div align="center"><input onkeypress="return handleEnter(this, event)" name="<?php echo $nombcamp[$a]; ?>1" id="<?php echo $nombcamp[$a]; ?>1" type="text" required value="<?php echo @$rows1[$nombcamp[$a]]; ?>" class="form-control" onblur="componente.<?php echo @$nombcamp[$a]; ?>.value=this.value; <?php if($_REQUEST['accion']=='editar') { ?>__editcompo('<?php echo $nombcamp[$a]; ?>','<?php echo @$rows1['id']; ?>',this.value,'<?php echo @$nombcamp[$a]; ?>'); <?php } ?>"></div></td>
+		  </tr><?php } } ?>
 		<tr><input name="interfaz" id="interfaz" type="hidden" value="<?php echo $rows1['interfaz'];?>"><?php if($compon!="Microprocesador" AND $compon!="Memorias" ) { ?>
 		  <td width="46%" align="center"><div align="center"><b>INTERFAZ</b></div></td>
 		  <td width="54%" align="center"><div align="center">
@@ -271,13 +284,13 @@ function ci(theField) {
 		<tr><input name="taip" id="taip" type="hidden" value="<?php echo $rows1['tipo'];?>"><?php if($compon=="Memorias") { ?>
 		  <td width="46%" align="center"><div align="center" id="tmem1"><b>TIPO</b></div></td>
 		  <td width="54%" align="center"><div align="center" id="tmem2" >
-		    <select name="tai" id="tai" class="form-control" onchange="componente.taip.value=this.value; __editcompo('tipo','<?php echo $rows1['id']; ?>',this.value,'tipo');">
-			  <option value="SDR SDRAM" <?php if($rows1['tipo']=="SDR SDRAM") {?> selected <?php } ?>>SDR SDRAM</option>
-			  <option value="RDRAM" <?php if($rows1['tipo']=="RDRAM") {?> selected <?php } ?>>RDRAM</option>
-			  <option value="DDR SDRAM" <?php if($rows1['tipo']=="DDR SDRAM") {?> selected <?php } ?>>DDR SDRAM</option>
-			  <option value="DDR2 SDRAM" <?php if($rows1['tipo']=="DDR2 SDRAM") {?> selected <?php } ?>>DDR2 SDRAM</option>
-			  <option value="DDR3 SDRAM" <?php if($rows1['tipo']=="DDR3 SDRAM") {?> selected <?php } ?>>DDR3 SDRAM</option>
-			  <option value="DDR4 SDRAM" <?php if($rows1['tipo']=="DDR4 SDRAM") {?> selected <?php } ?>>DDR4 SDRAM</option>
+		    <select name="tai" id="tai" class="form-control" onchange="componente.taip.value=this.value; __editcompo('tipo','<?php echo @$rows1['id']; ?>',this.value,'tipo');">
+			  <option value="SDR SDRAM" <?php if(@$rows1['tipo']=="SDR SDRAM") {?> selected <?php } ?>>SDR SDRAM</option>
+			  <option value="RDRAM" <?php if(@$rows1['tipo']=="RDRAM") {?> selected <?php } ?>>RDRAM</option>
+			  <option value="DDR SDRAM" <?php if(@$rows1['tipo']=="DDR SDRAM") {?> selected <?php } ?>>DDR SDRAM</option>
+			  <option value="DDR2 SDRAM" <?php if(@$rows1['tipo']=="DDR2 SDRAM") {?> selected <?php } ?>>DDR2 SDRAM</option>
+			  <option value="DDR3 SDRAM" <?php if(@$rows1['tipo']=="DDR3 SDRAM") {?> selected <?php } ?>>DDR3 SDRAM</option>
+			  <option value="DDR4 SDRAM" <?php if(@$rows1['tipo']=="DDR4 SDRAM") {?> selected <?php } ?>>DDR4 SDRAM</option>
 	        </select></div></td><?php } ?>
 		</tr>
 		<tr>
@@ -302,10 +315,11 @@ function ci(theField) {
 	</form>
 	</div>
 </div>
+
 <div id="buscad">
 <fieldset class="fieldset"><legend class="vistauserx"><?php if((count($explode) >1)){ echo $bteditar." ".$btEXPEDIENTE."S AFT";}else{ echo $bteditar." ".$btEXPEDIENTE." AFT:<font color=red><strong> ".$inv."</font>";} ?></legend>
 <form action="insertarexp.php" method="post" name="form1" >
-				<table width="576" height="759" border="0" align="center" class="tablen"><?php
+				<table height="759" border="0" align="center" class="table" style="width:50%"><?php
 					$kl=0;
 					foreach($explode as $key){
 						if(!empty($key)){
@@ -313,8 +327,8 @@ function ci(theField) {
 							$result=mysqli_query($miConex, $queryx) or die(mysql_error());
 							$row = mysqli_fetch_array($result);
                             $sihay = mysqli_num_rows($result); 							
-							$memor=explode('*',$row["MEMORIA2"]);
-							$redes=explode('*',$row["RED2"]); 
+							@$memor=explode('*',$row["MEMORIA2"]);
+							@$redes=explode('*',$row["RED2"]); 
 							if($sihay!=0) { 
 							        $sqlcpt0 = "SELECT * FROM componentes WHERE componentes.idexp='".$key."' AND componentes.nombre = '".$row["CPU"]."'";
 									$rescpt0 = mysqli_query($miConex, $sqlcpt0) or die (mysql_error());
@@ -331,7 +345,7 @@ function ci(theField) {
 								<td width="62" height="47" align="right"><img src="images/cpu.png" alt="CPU" width="45" height="45" class="Estilo1" longdesc="Unidad central de procesamiento " /></td>
 								<td width="130"><div align="right"><strong>CPU</strong></div></td>
 								<td colspan="3"><input onkeypress="return handleEnter(this, event)" name="cpu[]" type="text" class="form-control" id="cpu[]" value="<?php echo $row['CPU'];?>" size="50"></td>
-								<td><?php if ($numre0==0) {  ?><i id="insertcpu" onclick="seguro4('<?php echo $row["CPU"]; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Microprocesador','<?php echo $row['CPU']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['CPU']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -11px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
+								<td><?php if ($numre0==0) {  ?><i id="insertcpu" onclick="seguro4('<?php echo $row["CPU"]; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Microprocesador','<?php echo $row['CPU']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['CPU']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 1px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
 							</tr><?php if ($numre0!=0) {  ?>
 							<tr>	
 							    <td>&nbsp;</td>
@@ -376,7 +390,7 @@ function ci(theField) {
 								<td align="right"><img src="images/ram.png" alt="RAM" width="40" height="40" /></td>
 								<td><div align="right"><strong><?php echo $Memorias1;?>-1</strong></div></td>
 								<td colspan="3"><input onkeypress="return handleEnter(this, event)" name="mem[]" type="text" class="form-control" id="mem[]" value="<?php echo $row['MEMORIA'];?>" size="50"></td>
-							    <td><?php if (($numre1==0)  and ($row['MEMORIA']!="")) { ?><i id="insertmemo1" onclick="seguro4('<?php echo $row['MEMORIA']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Memorias','<?php echo $row['MEMORIA']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['MEMORIA']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -11px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
+							    <td><?php if (($numre1==0)  and ($row['MEMORIA']!="")) { ?><i id="insertmemo1" onclick="seguro4('<?php echo $row['MEMORIA']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Memorias','<?php echo $row['MEMORIA']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['MEMORIA']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 1px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
 							</tr><?php if ($numre1!=0) {  ?>
 							<tr>	
 							    <td>&nbsp;</td>
@@ -520,7 +534,7 @@ function ci(theField) {
 							  <td align="right"><strong><img src="images/ram.png" alt="RAM" width="40" height="40" longdesc="Tarjeta de Memoria " /></strong></td>
 							  <td><div align="right"><strong><?php echo $Memorias1;?>-4</strong></div></td>
 							  <td colspan="3"><input onkeypress="return handleEnter(this, event)" name="mem4[]" type="text" class="form-control" id="mem4[]" value="<?php echo @$memor[2]?>" /></td>
-				              <td><?php if (($numre3==0) and ($memor[2]!="")) {  ?><i id="insertmemo4" onclick="seguro4('<?php echo $memor[2]; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Memorias','<?php echo $memor[2]; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $memor[2]; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -11px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
+				              <td><?php if (($numre3==0) and ($memor[2]!="")) {  ?><i id="insertmemo4" onclick="seguro4('<?php echo $memor[2]; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Memorias','<?php echo $memor[2]; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $memor[2]; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 1px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
 							</tr><?php if ($numre3!=0) {  ?>
 							<tr>	
 							    <td>&nbsp;</td>
@@ -568,7 +582,7 @@ function ci(theField) {
 								<td align="right"><img src="images/video.png" alt="video" width="45" height="38" longdesc="Tarjeta de Video" /></td>
 								<td><div align="right"><strong><?php echo $bttargeta;?></strong></div></td>
 								<td colspan="3"><input onkeypress="return handleEnter(this, event)" name="grafic[]" type="text" class="form-control" id="grafic[]" value="<?php echo $row['GRAFICS'];?>" size="50">						</td>
-							    <td><?php if (($numre4==0) and ($row['GRAFICS']!="")) {  ?><i id="insertgrafics" onclick="seguro4('<?php echo $row['GRAFICS']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Tarjeta Grafica','<?php echo $row['GRAFICS']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['GRAFICS']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -11px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
+							    <td><?php if (($numre4==0) and ($row['GRAFICS']!="")) {  ?><i id="insertgrafics" onclick="seguro4('<?php echo $row['GRAFICS']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Tarjeta Grafica','<?php echo $row['GRAFICS']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['GRAFICS']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 1px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
 							</tr><?php if ($numre4!=0) {  ?>
 							<tr>	
 							    <td>&nbsp;</td>
@@ -616,7 +630,7 @@ function ci(theField) {
 								<td align="right"><span align="left"><strong><img src="images/HDD.png" alt="HDD" width="40" height="40" longdesc="Disco Duro" /></strong></span></td>
 								<td><div align="right"><strong>HDD-1</strong></div></td>
 								<td colspan="3"><input onkeypress="return handleEnter(this, event)" name="drive1[]" type="text" class="form-control" id="drive1[]" value="<?php echo $row['DRIVE1'];?>" size="50" >						</td>
-							    <td><?php if (($numre5==0) AND ($row['DRIVE1']!="")) {  ?><i id="insertgrafics" onclick="seguro4('<?php echo $row['DRIVE1']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Disco Duro','<?php echo $row['DRIVE1']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['DRIVE1']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -11px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
+							    <td><?php if (($numre5==0) AND ($row['DRIVE1']!="")) {  ?><i id="insertgrafics" onclick="seguro4('<?php echo $row['DRIVE1']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Disco Duro','<?php echo $row['DRIVE1']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['DRIVE1']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 1px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
 							</tr>
 							<?php if ($numre5!=0) {  ?>
 							<tr>	
@@ -665,7 +679,7 @@ function ci(theField) {
 								<td align="right"><span align="left"><strong><img src="images/HDD.png" alt="HDD" width="40" height="40" longdesc="Disco Duro" /></strong></span></td>
 								<td><div align="right"><strong>HDD-2</strong></div></td>
 								<td colspan="3"><input onkeypress="return handleEnter(this, event)" name="drive2[]" type="text" class="form-control" id="drive2[]" value="<?php echo $row['DRIVE2'];?>" size="50" >						</td>
-							    <td><?php if (($numre6==0) AND ($row['DRIVE2']!="")) {  ?><i id="inserthdd" onclick="seguro4('<?php echo $row['DRIVE2']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Disco Duro','<?php echo $row['DRIVE2']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['DRIVE2']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: -11px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
+							    <td><?php if (($numre6==0) AND ($row['DRIVE2']!="")) {  ?><i id="inserthdd" onclick="seguro4('<?php echo $row['DRIVE2']; ?>','<?php echo $key;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Disco Duro','<?php echo $row['DRIVE2']; ?>','insertar');" manolo="Agregar Detalles del Componte :&nbsp;<?php echo $row['DRIVE2']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 1px; margin-left: -29px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -250px;"></i><?php } ?></td>
 							</tr>
 							<?php if ($numre6!=0) {  ?>
 							<tr>	
@@ -740,7 +754,13 @@ function ci(theField) {
 							<tr>
 								<td align="right"><span align="left"><strong><img src="images/SO.png" alt="SO" width="40" height="40" longdesc="Sistema Operativo" /></strong></span></td>
 								<td><div align="right"><strong>OS</strong></div></td>
-								<td colspan="3"><input onkeypress="return handleEnter(this, event)" name="so[]" type="text" class="form-control" id="so[]" value="<?php echo $row['OS']?>" size="50"></td>					
+								<td colspan="3">
+								   <select name="os[]" id="os[]" class="form-control" onChange="return handleEnter(this, event)">
+									<?php for ($i=0; $i<count($sistema_operativo); $i++) { ?>    
+									   <option value="<?php echo $sistema_operativo[$i]; ?>" <?php if ($row['OS'] == strstr($row['OS'],$sistema_operativo[$i])) { echo "selected";} ?>><?php echo $sistema_operativo[$i]; ?></option>
+									<?php } ?>
+								</select>
+								</td>					
 							</tr>
 							<tr>
 								<td align="right"><span align="left"><strong><img src="images/custodios.png" alt="CUST" width="40" height="40" longdesc="Custodios" /></strong></span></td>
@@ -754,7 +774,7 @@ function ci(theField) {
 							<tr>
 								<td colspan="5"><hr><input type="hidden" name="invt[]" value="<?php echo $key;?>"><input type="hidden" name="marcado[]" value="<?php echo $row['id'];?>"></td>
 							</tr><?php } else { ?>
-									<script language="javascript">document.location='et.php?inv=<?php echo $key;?>';</script>
+									<script language="javascript">document.location='et.php?inv=<?php echo $key;?>';</script> 
 								<?php
 							}
 							$kl++;

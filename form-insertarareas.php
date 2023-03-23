@@ -1,13 +1,13 @@
 <?php 
 #############################################################################################################
 # Software: Regimed                                                                                         #
-#(Registro de Medios Informáticos)     					                                    #
-# Version:  3.1.1                                                    				            #
-# Fecha:    24/03/2011 - 01/01/2023                                             			    #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   							    #
-#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)						    #
-# Licencia: Freeware                                                				            #
-#                                                                       			            #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
 # Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
 # LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
 # lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #

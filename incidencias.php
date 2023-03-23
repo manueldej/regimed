@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php');
 include('script.php');
 
@@ -160,7 +167,7 @@ $sel = "select visitas from preferencias where usuario='".$_SESSION['valid_user'
 $qsel = mysqli_query($miConex, $sel) or die(mysql_error());
 $rsel = mysqli_fetch_array($qsel);
 $cuantos = 5;
-if(($rsel['visitas']) !=""){
+if((@$rsel['visitas']) !=""){
 	$cuantos = $rsel['visitas'];
 }
 ///////navegador
@@ -463,7 +470,7 @@ include('jquery.php'); ?>
 						<tr> 
 							<td align="center">
 								<br><div align="center"><div class="message" align="center"><?php echo $noregitro3.$btinsp;?></div></div><br><?php 
-								if(($rus1["tipo"]) =="root"){ ?>
+								if((@$rus1["tipo"]) =="root"){ ?>
 									<input name="nuevo" type="button" id="nuevo" value="<?php echo $new2.substr($Incidencias,0,-1);?>" class="btn"  onclick="document.getElementById('novo1').innerHTML='&nbsp;&nbsp;(<?php echo substr($new2,0,-1);?>)';document.getElementById('novo').style.display='block';document.getElementById('cuerp').style.display='none';"><?php	
 								} ?>
 							</td>
@@ -579,4 +586,4 @@ include('jquery.php'); ?>
 <iframe width="174" height="189" name="gToday:normal2:js/agenda2.js" id="gToday:normal2:js/agenda2.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe>
 <div class="ContenedorAlert" id="cir"> </div>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
-<iframe width="174" height="189" name="gToday:normal1:js/agenda1.js" id="gToday:normal1:js/agenda1.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe>
+<iframe width="174" height="189" name="gToday:normal1:agenda1.js" id="gToday:normal1:agenda1.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe>

@@ -24,64 +24,80 @@ if (!check_auth_user()){
 	header ("Location: index.php");
 	exit;
 }
- require_once('connections/miConex.php'); 
- $msg = "";
-  if($_GET["e"]) {
-   $msg = "Por favor escoja otro nombre, la Categor&iacute;a ".$_GET["e"]." ya existe";
- }
- ?>
+?>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script language="JavaScript" >
 // Check for a blank field
-function submit_page() {
-	// form validation check
-	var formValid=false;
-	var f = document.form1;
-	if ( f.t2.value == '' ) {
-		alert('Por favor, debe escribir el nombre de la nueva Categoria');
-		f.t2.focus();
-		formValid=false;
-	} else if ( confirm('Es correcto en nombre de la Categoria?')) 
-	  {	formValid=true;  }
-
-	return formValid;
+function submit_page(form){
+ foundError = false;
+ 
+ if(isFieldBlank(form.t1)) {
+  alert("El campo 'Login' está en blanco.");
+  foundError = true;
+ }else
+ if(isFieldBlank(form.t2)) {
+  alert("El campo 'password' está en blanco.");
+  foundError = true;
+ }else
+ if(isFieldBlank(form.t3)) {
+  alert("El campo 'email' está en blanco.");
+  foundError = true;
+ }else
+ if(isFieldBlank(form.t4)) {
+  alert("El campo 'cargo' está en blanco.");
+  foundError = true;
+ }else
+ if(isFieldBlank(form.t5)) {
+  alert("El campo 'Nombre' está en blanco.");
+  foundError = true;
+ }else
+ 
+ if(foundError == false )
+  document.form1.action="insertar.php";
+ else
+   document.form1.action="javascript:goHist(-1)";
 }
-function retornar(form){
-	document.form1.action="categ_medios.php";
+
+function retornar(form)
+{
+ document.form1.action="ej1.php";
 }
 
-//------------------------- funciones -------------------------------------------//
 function isFieldBlank(theField){
-	innStr = theField.value;
-	innLen = innStr.length;
-	
-	if(theField.value == "" && innLen==0)
-		return true;
-	else
-		return false;
+ innStr = theField.value;
+ innLen = innStr.length;
+
+ if(theField.value == "" && innLen==0)
+  return true;
+ else
+  return false;
+
 }
 
 function ctype_digit(theField){
-	val = theField.value;
-	Len = val.length;
+ val = theField.value;
+ Len = val.length;
  
-	for(var i=0; i<Len; i++)  {
-		var ch = val.substring(i,i+1)
-		if(ch < "0" || "16"< ch)
-			return true;
-	}
+  for(var i=0; i<Len; i++)
+  {
+   var ch = val.substring(i,i+1)
+   if(ch < "0" || "16"< ch)
+     return true;
+  }
 }
-//esta funcion comprobará que el No de carnet no tenga menos de 11 caracteres
+
 function ci(theField)  {
-	val = theField.value;
-	Len = val.length;
-	for(var i=0; i<Len; i++)
-		var chh = val.substring(i,i+1)
-	if(i < "16")
-		return true;
+ val = theField.value;
+ Len = val.length;
+
+  for(var i=0; i<Len; i++)
+    var chh = val.substring(i,i+1)
+    
+  if(i < "16")
+    return true;
 }
-//-----------------------  formulario  ----------------------------------//
 </script>
+
 <style type="text/css">
 <!--
 .Estilo2 {
@@ -105,23 +121,41 @@ div.message {
 }
 -->
 </style>
-<link href="css/template.css" rel="stylesheet" type="text/css">
 <fieldset class="fieldset">
-<table width="478" border=0 align="center" bgcolor='#FFFFFF' table >
-<tr><td width="472" class="Estilo3"><?php echo $msg;?></td></tr>
+<table width="200" border=0 align=left bgcolor='#FFFFFF' table >
     <tr>
-      <td ><table width="473" border="0" align="left" bgcolor="#FFFFFF">
-        <form name="form1" method="post" action="insertacateg.php" onsubmit="return submit_page();">          
+      <td ><table width="228" border="0" align="left" background="index.php_files/libreria_17.gif" bgcolor="#FFFFFF">
+        <form name="form1" method="post" action="" >     
           <tr>
-            
-          <td colspan="4"></td>
+            <td colspan="4"></td>
           </tr>
           <tr>
-            <td><div align="right" class="contentheading">NOMBRE</div></td>
-            <td colspan="2"><input name="t2" type="text" id="t22" size="35" maxlength="100"></td>
+            <td width="68"><div align="right" class="Estilo4">login</div></td>
+            <td colspan="2"><input name="t1" type="text" id="t12"></td>
+            <td width="8">&nbsp;</td>
           </tr>
-          <td width="74" align="right"><input type="submit" name="insertar" value="Guardar"></td>
-		    <td width="389" align="left"><input type="submit" name="Submit2" value="VolVer" onClick="retornar(this.form)"></td>
+          <tr>
+            <td><div align="right" class="Estilo4">passwd</div></td>
+            <td colspan="2"><input name="t2" type="text" id="t22" size="16" maxlength="16"></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><div align="right" class="Estilo4">email</div></td>
+            <td colspan="2"><input name="t3" type="text" id="t32" maxlength="50"></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><div align="right" class="Estilo4">cargo</div></td>
+            <td colspan="2"><input name="t4" type="text" id="t33" size="40" maxlength="40"></td>
+            <td>&nbsp;</td>
+	      </tr>
+          <tr>
+            <td><div align="right" class="Estilo4">nombre</div></td>
+            <td colspan="2"><input name="t5" type="text" id="t35" maxlength="50"></td>
+            <td>&nbsp;</td>
+		    <td width="59" align="right"><input type="submit" name="insertar" value="Guardar" onClick="submit_page(this.form)"></td>
+		    <td width="75" align="left"><input type="submit" name="Submit2" value="VolVer" onClick="retornar(this.form)"></td>
+		    <td>&nbsp;</td>
           </tr>	 
         </form>	
       </table></td>
