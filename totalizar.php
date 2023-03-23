@@ -1,18 +1,25 @@
 <?php 
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 echo "<!DOCTYPE html>"; 
 echo "<html lang='es'>";
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
 @session_start();
 include('chequeo.php');
 class colores {
@@ -43,7 +50,7 @@ $uCPanel = new colores();
 	}
 	if(($i) =="es"){include('esp.php');}else{ include('eng.php');}
 	require_once('connections/miConex.php');
-$Uact = "";
+    $Uact = "";
 	if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 		$sql_uactiva = "select * from datos_generales WHERE id_datos='".$_COOKIE['unidades']."'";
 	}else{
@@ -65,6 +72,12 @@ $Uact = "";
 	$rows = mysqli_fetch_array($result);
 	$TG=0;
 	$TTG=0;
+	$TGU = 0;
+	$TGR = 0;
+	$TGB = 0;
+	$TG_R = 0;
+	$TG_inter = 0;
+	$TG_intra = 0;
 	$count =0;
 	$p=0;
 	$ggg=base64_encode($sql);	?>
@@ -78,12 +91,12 @@ $Uact = "";
 		.pdf{
 			background: url(images/gr_custom-inputs.png) 0 -1px no-repeat;
 			height: 16px;
-			background-position: 0 -119px;
+			background-position: 0 -116px;
 		}
 		.printer{
 			background: url(images/gr_custom-inputs.png) 0 -1px no-repeat;
 			height: 16px;
-			background-position: 0 -19px;
+			background-position: 0 -16px;
 		}	
 	</style>
 	<script type="text/javascript">
@@ -124,6 +137,7 @@ $Uact = "";
                     $field = mysqli_fetch_field_direct ($result, $n);
 					$name1  = $field->name;
 					$flags = $field->flags;
+					
 					if (($name1) !='idunidades' and ($name1) !='nombre')  { 
 						//en uso
 						if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
@@ -131,24 +145,24 @@ $Uact = "";
 						}else{
 							$consulta  = "SELECT COUNT(estado) as enuso FROM aft WHERE  estado = 'A' AND categ='".strtoupper($name1)."'";
 						}						
-						$resultado1 = mysqli_query($miConex, $consulta) or die("La consulta fall&oacute;: " . mysql_error());
+						$resultado1 = mysqli_query($miConex, $consulta) or die(mysql_error());
 						$uso = mysqli_fetch_array($resultado1);
-						//echo $consulta;
 						//en red
 						if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 							$consultared  = "SELECT COUNT(enred) as enred1 FROM aft WHERE enred = 's' AND categ='COMPUTADORAS' AND idunidades='".$Uact."'";
 						}else{
 							$consultared  = "SELECT COUNT(enred) as enred1 FROM aft WHERE enred = 's' AND categ='COMPUTADORAS'";
 						}
-						$resultado1red = mysqli_query($miConex, $consultared) or die("La consulta fall&oacute;: " . mysql_error());
+						$resultado1red = mysqli_query($miConex, $consultared) or die(mysql_error());
 						$enlared = mysqli_fetch_array($resultado1red);
+						
 						//internet
 						if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
-							$consultainternet  = "SELECT COUNT(conect) as internet FROM aft WHERE conect = 'Internet' AND categ='COMPUTADORAS' AND idunidades='".$Uact."'";
+							$consultainternet  = "SELECT COUNT(conect) as internet FROM aft WHERE conect = 'Internet' AND categ='".strtoupper($name1)."' AND idunidades='".$Uact."'";
 						}else{
-							$consultainternet  = "SELECT COUNT(conect) as internet FROM aft WHERE conect = 'Internet' AND categ='COMPUTADORAS'";
+							$consultainternet  = "SELECT COUNT(conect) as internet FROM aft WHERE conect = 'Internet' AND categ='".strtoupper($name1)."'";
 						}					
-						$resultado1internet = mysqli_query($miConex, $consultainternet) or die("La consulta fall&oacute;: " . mysql_error());
+						$resultado1internet = mysqli_query($miConex, $consultainternet) or die(mysql_error());
 						$internet = mysqli_fetch_array($resultado1internet);
 						//intranet
 						if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
@@ -156,7 +170,7 @@ $Uact = "";
 						}else{
 							$consultaintranet  = "SELECT COUNT(conect) as intranet FROM aft WHERE conect = 'Intranet' AND categ='COMPUTADORAS'";
 						}						
-						$resultado1intranet = mysqli_query($miConex, $consultaintranet) or die("La consulta fall&oacute;: " . mysql_error());
+						$resultado1intranet = mysqli_query($miConex, $consultaintranet) or die(mysql_error());
 						$intranet = mysqli_fetch_array($resultado1intranet);
 						//Rotas
 						if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
@@ -164,7 +178,7 @@ $Uact = "";
 						}else{
 							$consultarotas  = "SELECT COUNT(estado) as irotas FROM aft WHERE estado = 'R' AND categ='".strtoupper($name1)."'";
 						}						
-						$resultado1rotas = mysqli_query($miConex, $consultarotas) or die("La consulta fall&oacute;: " . mysql_error());
+						$resultado1rotas = mysqli_query($miConex, $consultarotas) or die(mysql_error());
 						$irotas = mysqli_fetch_array($resultado1rotas);
 						//BAJAS						
 						if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
@@ -172,22 +186,42 @@ $Uact = "";
 						}else{
 							$consultapbajas  = "SELECT COUNT(estado) as ipbajas FROM bajas_aft WHERE estado = 'P' AND categ='".strtoupper($name1)."'";
 						}						
-						$resultado1pbajas = mysqli_query($miConex, $consultapbajas) or die("La consulta fall&oacute;: " . mysql_error());
+						$resultado1pbajas = mysqli_query($miConex, $consultapbajas) or die(mysql_error());
 						$ipbajas = mysqli_fetch_array($resultado1pbajas);
 
 						$TG  = (($uso['enuso'] + $irotas['irotas']) + $ipbajas['ipbajas']); 
 						$TTG = $TTG + $TG;
-						
+												
+						if ($irotas['irotas']!=0){
+							$TGR = $TGR + $irotas['irotas'];
+						}
+						if ($ipbajas['ipbajas']!=0){
+							$TGB = $TGB + $ipbajas['ipbajas'];
+						}
+						if ($uso['enuso']!=0){
+							$TGU = $TGU + $uso['enuso'];
+						}
+						if ($enlared['enred1']!=0){
+							$TG_R = $enlared['enred1'];
+						}
+						if ($internet['internet']!=0){
+							$TG_inter = $internet['internet'];
+						}
+						if ($intranet['intranet']!=0){
+							$TG_intra = $intranet['intranet'];
+							
+						}
+							
 						if(($TG ) >0){  ?>
 							<tr bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; ">
 							  <td><?php if (($name1) =='computadoras'){ echo "<span class=badge1 onclick='javascript:window.parent.comp.submit();'><b>"; }else{ ?> <span class="badge1" onclick="javascript:busca_tipo('<?php echo $name1;?>');"><b> <?php } echo ucfirst($name1); if (($name1) =='computadoras'){ ?></b></span><?php } ?></td>
-							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; }  if(($TG) !=0){ echo $TG;}else{ echo " - ";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
-							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if(($uso['enuso']) !=0){  echo $uso['enuso'];}else{ echo " - ";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
-							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if(($irotas['irotas']) !=0){  echo $irotas['irotas'];}else{ echo " - ";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
-							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if(($ipbajas['ipbajas']) !=0){  echo $ipbajas['ipbajas'];}else{ echo " - ";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
-							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if (($name1) =='computadoras'){ if(($enlared['enred1']) !=0){  echo $enlared['enred1'];}else{ echo " - ";} }else{ echo "-";}  if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
-							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if (($name1) =='computadoras'){ if(($internet['internet']) !=0){  echo $internet['internet'];}else{ echo " - ";} }else{ echo "-";}  if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
-							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if (($name1) =='computadoras'){ if(($intranet['intranet']) !=0){  echo $intranet['intranet'];}else{ echo " - ";} }else{ echo "-";}  if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
+							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; }  if(($TG) !=0){ echo $TG;}else{ echo "0";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
+							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if(($uso['enuso']) !=0){  echo $uso['enuso'];}else{ echo "0";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
+							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if(($irotas['irotas']) !=0){  echo $irotas['irotas'];}else{ echo "0";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
+							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if(($ipbajas['ipbajas']) !=0){  echo $ipbajas['ipbajas'];}else{ echo "0";} if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
+							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if (($name1) =='computadoras'){ if(($enlared['enred1']) !=0){  echo $enlared['enred1'];}else{ echo "0";} }else{ echo "0";}  if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
+							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if (($name1) =='computadoras'){ if(($internet['internet']) !=0){  echo $internet['internet'];}else{ echo "0";} }else{ echo "0";}  if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
+							  <td align="center"><?php if (($name1) =='computadoras'){ echo "<span class=badge1><b>"; } if (($name1) =='computadoras'){ if(($intranet['intranet']) !=0){  echo $intranet['intranet'];}else{ echo "0";} }else{ echo "0";}  if (($name1) =='computadoras'){ echo "</b></span>";} ?></td>
 						    </tr><?php 
 						}else{ $count ++;}
 					} $p++;
@@ -195,8 +229,15 @@ $Uact = "";
 				<tr>
 					<td colspan="8"><hr></td>
 				</tr>
-				<tr>
-					<td colspan="8" class="navegador"><div align="center"><font color="red"><b><?php echo $TTG;?></b></font>&nbsp;<?php echo $btversion1;?> -><font color="red"><b><?php echo $nufil;?></b></font>&nbsp;<?php echo $btAreas;?>.</div></td>
+				<tr class="navegador">
+				    <td><b>TOTAL DE AFT:</b></td>
+					<td><font color="red"><b><?php echo $TTG;?></b></font></td>
+					<td><font color="red"><b><?php echo $TGU;?></b></font></td>
+					<td><font color="red"><b><?php echo $TGR;?></b></font></td>
+					<td><font color="red"><b><?php echo $TGB;?></b></font></td>
+					<td><font color="red"><b><?php echo $TG_R;?></b></font></td>
+					<td><font color="red"><b><?php echo $TG_inter;?></b></font></td>
+					<td><font color="red"><b><?php echo $TG_intra;?></b></font></td>
 			    </tr>
 	</Table>
 

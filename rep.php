@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php');
 include ('script.php');
 include('mensaje.php');
@@ -35,7 +42,7 @@ $qsel = mysqli_query($miConex, $sel) or die(mysql_error());
 $rsel = mysqli_fetch_array($qsel);
 $cuantos = 5;
 
-if(($rsel['visitas']) !=""){
+if((@$rsel['visitas']) !=""){
 	$cuantos = $rsel['visitas'];
 }
 $validus = "";
@@ -66,7 +73,7 @@ $sel = "select visitas from preferencias where usuario='".$_SESSION['valid_user'
 $qsel = mysqli_query($miConex, $sel) or die(mysql_error());
 $rsel = mysqli_fetch_array($qsel);
 $cuantos = 5;
-if(($rsel['visitas']) !=""){
+if((@$rsel['visitas']) !=""){
 	$cuantos = $rsel['visitas'];
 }
 ///////navegador
@@ -173,7 +180,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=rep
 	<div id="openModal" class="modalDialog">
 		<div>
 			<button title="<?php echo $cerrar2;?>" class="closex" type="button" onclick="document.location='#closex';">X</button>
-			<div align="justify"><div><?php echo $seguro;?><hr><input class="btn" onclick="document.location='#closex';" value="<?php echo $btcancelar;?>">&nbsp;<input id="ok" class="btn" onclick="bValid();" value="<?php echo $btaceptar;?>"></div></div>			
+			<div align="justify"><div><?php echo $seguro;?><hr><input class="btn" onclick="document.location='#closex';" value="<?php echo $btcancelar;?>">&nbsp;<input id="ok" class="btn" onclick="bValid();" value="<?php echo $btaceptar;?>"></div></div>	
 		</div>
 	</div><?php
 	if(isset($_REQUEST['crash']) AND ($_REQUEST['crash']) !=""){
@@ -205,7 +212,8 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=rep
 								<label><?php echo $btmes;?>:</label>
 								<select name="mes" size="1" id="mes" class='combo_box'>
 									<option onclick="mues_ano(this.value);" value="-1"><?php echo $btmostrartodo;?></option> <?php
-									$a=0;							
+									$a=0;	
+									$ac=0;									
 									foreach($meses as $ms => $numeoq){ ?>
 										<option onclick="mues_ano(this.value);" value="<?php if(($ac) < 9){ $mm ="0".($ac+1); echo $mm;}else{ $mm = $ac+1; echo $mm;}?>" <?php if(($mm) ==@$_REQUEST['mes']){ echo "selected";}?>><?php echo $ms;?></option>  <?php
 										$ac++;
@@ -287,7 +295,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=rep
 								WHILE ($row=mysqli_fetch_array($result)){ $i++;
 									$sqlDG=mysqli_query($miConex, "SELECT * FROM datos_generales where (id_datos ='".$row["idunidades"]."')") or die(mysql_error()); 
 									$sqlxDG = mysqli_fetch_array($sqlDG);?>
-									<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="exped('<?php echo $row['id'];?>'); marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="contextual(event,'<?php echo $row["id"]?>');"> 
+									<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="marca1(<?php echo $p;?>,'#ffffff')"> 
 				                        <td width="7"><?php if($rus1["tipo"] =="root") { ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $row['id']?>" style="cursor:pointer;" /><?php }else{ echo "&nbsp;"; } ?></td>
 										<td width='134'><a href='registromedios1.php?palabra=<?php echo $row["inv"];?>&rp=rp'><?php echo $row["inv"];?></a></td>
 										<td><?php echo $myDate->formatDate($row["fecha"],"-","/");?></td>
@@ -314,7 +322,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=rep
 		}else{ $num="";
 			for ($a=1; $a<=count($meses); $a++){
 				foreach ($meses as $key => $numeo) {
-					$mx = str_replace("0","",@$_REQUEST['mes']);
+					$mx = @str_replace("0","", $_REQUEST['mes']);
 					if (($mx) ==$numeo){
 						$num = $key;
 						break;
@@ -325,7 +333,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=rep
 					<tr> 
 					  <td align="center"><br><div align="center"><div class="message" align="center">
 							<?php echo $noregitro3."<b>".$btprep2."</b> ".$enlinea; if(isset($_REQUEST['bus_fecha'])){ echo $btEN.$Fecha.": <b><font color='red'>".$_REQUEST['mes']."/".$_REQUEST['ano']."</font></b>"; } ?>.</div></div><br><?php 
-							if(($rus1["tipo"]) =="root"){ ?>
+							if((@$rus1["tipo"]) =="root"){ ?>
 								<input name="sal" id="sal" type="button" class="boton" value="<?php echo $btrestaurar;?>" onclick="javascript:document.location='sal_rep.php?tb=plan_rep&legen=PlandeReparac.';"><?php	
 							} ?>
 					  </td>

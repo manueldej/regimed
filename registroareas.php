@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php');
 include ('script.php');
 if(isset($_POST["eliminar"])){
@@ -223,14 +230,14 @@ function contextual(event,id){
 		  	</tr>			
 			<?php  
 			$nob=0; $p=0;
-			$edatz = mysqli_query($miConex, "select * from datos_generales") or die(mysql_error());
+			$edatz = mysqli_query($miConex, "select * from datos_generales") or die(mysqli_error());
 			$redatz = mysqli_fetch_array($edatz);
 			while($row=mysqli_fetch_array($result))    {	
 				if(($row["nombre"]) !="Reparaciones"){ $i++; 
 					$edat = mysqli_query($miConex, "select * from datos_generales where id_datos='".$row["idunidades"]."'") or die(mysql_error());
 					$redat = mysqli_fetch_array($edat);?>
-					<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="<?php if (($rus['tipo']) =="root") {  ?>contextual(event,'<?php echo $row["idarea"]?>'); <?php } ?>"> 
-			          <td width="5"><?php if(($rus['tipo']) =="root"){ if(($row['idarea']) >2){ ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $row['idarea']?>" style="cursor:pointer;" /><?php } }else{ echo "&nbsp;"; } ?></td>
+					<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="<?php if ((@$rus['tipo']) =="root") {  ?>contextual(event,'<?php echo $row["idarea"]?>'); <?php } ?>"> 
+			          <td width="5"><?php if((@$rus['tipo']) =="root"){ if(($row['idarea']) >2){ ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $row['idarea']?>" style="cursor:pointer;" /><?php } }else{ echo "&nbsp;"; } ?></td>
 					  <td width="250" class="Estilo2">&nbsp;&nbsp;<?php echo $row["nombre"];?></td>
 					  <td colspan="2" width="534" class="Estilo2"><?php echo $redat['entidad'];?><input type="hidden" name="id[<?php echo $p;?>]" value="<?php echo $row["idarea"];?>"></td>
 					</tr><?php  		$p++;

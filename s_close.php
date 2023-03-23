@@ -1,15 +1,22 @@
 <?php 
 ############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 setcookie('lgmi','0');	
 $i="es";
 	if(isset($_COOKIE['seulang'])){
@@ -28,12 +35,12 @@ if (@$_SESSION["valid_user"]) {
 	}
 include('connections/miConex.php');
 		$consultases ="SELECT * FROM conectado where conectado = '".$_SESSION["valid_user"]."'";
-		$resultadoses = mysqli_query($miConex, $consultases) or die(mysql_error());
+		$resultadoses = mysqli_query($miConex, $consultases) or die(mysqli_error($miConex));
 		$filases = mysqli_fetch_array($resultadoses);
-		$consulta ="SELECT * FROM preferencias where usuario = '".$_SESSION["valid_user"]."' AND idunidades='".$filases['idunidades']."'";
-		$resultado = mysqli_query($miConex,$consulta) or die(mysql_error());
+		$consulta = "SELECT * FROM preferencias where usuario = '".@$_SESSION["valid_user"]."' AND idunidades='".@$filases['idunidades']."'";
+		$resultado = mysqli_query($miConex,$consulta) or die(mysqli_error($miConex));
 		$fila = mysqli_fetch_array($resultado);
-	if(($fila['salva']) =="s"){
+	if((@$fila['salva']) =="s"){
 		include('salvar.php');
 		$sql = "SHOW TABLES FROM ".$database_miConex; 
 		$result = mysqli_query($miConex, $sql);
@@ -46,7 +53,7 @@ include('connections/miConex.php');
 	$old_user = $_SESSION["valid_user"];  // almacenado para comprobar si ellos estuvieron logged in
 	$result = $_SESSION["valid_user"];
 
-	$upcoses = mysqli_query($miConex, "delete from conectado where conectado = '".$_SESSION["valid_user"]."' AND idunidades='".$filases['idunidades']."'") or die(mysql_error());
+	$upcoses = mysqli_query($miConex, "delete from conectado where conectado = '".@$_SESSION["valid_user"]."' AND idunidades='".@$filases['idunidades']."'") or die(mysqli_error($miConex));
 	?>
 	<script type="text/javascript" src="ajax.js"></script>
 	<script type="text/javascript">
@@ -54,7 +61,7 @@ include('connections/miConex.php');
 	</script><?php
 	unset($_SESSION['valid_user']);
 	$consultases1 ="SELECT * FROM conectado";
-	$resultadoses1 = mysqli_query($miConex, $consultases1) or die(mysql_error());
+	$resultadoses1 = mysqli_query($miConex, $consultases1) or die(mysqli_error($miConex));
 	$filases1 = mysqli_num_rows($resultadoses1);
 	unset($_SESSION["autentificado"]); ?>
 	<script type="text/javascript" src="ajax.js"></script>
@@ -77,7 +84,6 @@ include('connections/miConex.php');
 		}
 	}
 }
-//header('Location:index.php');
 ?>
 <script type="text/javascript">document.location='index.php';</script>
 

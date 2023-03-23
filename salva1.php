@@ -1,23 +1,36 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php');
 $k=0;
+
 //@$result = mysql_list_tables ($database_miConex);
-$i = 0;
+	$i="es";
 	$bd=$database_miConex;
 	if(isset($_POST['tbl'])){$tbl=$_POST['tbl'];}
 	if(isset($_POST['adtabla'])){$adtabla=$_POST['adtabla'];}
 	if(isset($_POST['sip'])){$sip=$_POST['sip'];}
+
+	if(isset($_COOKIE['seulang'])){
+		if(($_COOKIE['seulang']) =="es"){$i="es"; }else{$i="en";}
+	}
+	if(($i) =="es"){include('esp.php');}else{ include('eng.php');}
 ?>
  <link rel="stylesheet" href="css/pace-theme-loading-bar.css" />
 		  <script>
@@ -38,7 +51,7 @@ $i = 0;
 		      Pace.ignore(function(){
 			load();
 		      });
-		    }, 1000);
+		    }, 700);
 
 		    Pace.on('hide', function(){
 		      console.log('done');
@@ -66,13 +79,13 @@ include('salvar.php');?>
 <div id="buscad"> 
 <fieldset class="fieldset"><legend class='vistauserx'><?php echo $impo_exp2;?></legend>
 		<script language="javascript">
-			function ap1(m)		{
+			function ap1(m){
 				document.getElementById("tarea").innerHTML=m;
 			}
-			function apx(m)		{
+			function apx(m){
 				document.getElementById("tarea").innerHTML=m;
 			}
-			function des1(f,n,zip)		{
+			function des1(f,n,zip){
 				if((zip) =="s"){
 					document.getElementById("descarga").innerHTML='<a class="enlace" target = "_blank" href="'+f+'" title="<?php echo $click1.$descarg;?>">'+n+'</a>';
 				}else{
@@ -83,7 +96,7 @@ include('salvar.php');?>
 		<fieldset class='fieldset'><legend class='vistauserx'><?php echo $otrosdet3;?></legend>
 			<div id="tarea">Actual:</div><br>
 		</fieldset><br>  <?php
-			if(($sip) =="s"){ ?>
+			if((@$sip) =="s"){ ?>
 				<fieldset class='fieldset'>
 					<legend class='vistauserx'><?php echo $descarg;?> </legend>
 					<div class="descar" id="descarga"><?php echo $btspera;?></div><br>
@@ -94,7 +107,7 @@ include('salvar.php');?>
 					<div class="descar" id="descarga"><?php echo $btspera;?></div><br>
 				</fieldset> <?php 
 			} 
-    salvar($i,$tbl,$adtabla,$sip);
+    @salvar($i,@$tbl,@$adtabla,@$sip);
 ?>	
  <br><br>
 </fieldset><br>

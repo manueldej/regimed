@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php');
 include ('script.php');
 include('mensaje.php');
@@ -29,10 +36,10 @@ class cdate{
 }
 $myDate = new cdate();
 $sel = "select visitas from preferencias where usuario='".$_SESSION['valid_user']."'";
-$qsel = mysqli_query($miConex, $sel) or die(mysql_error());
+$qsel = mysqli_query($miConex, $sel) or die(mysqli_error());
 $rsel = mysqli_fetch_array($qsel);
 $cuantos = 5;
-if(($rsel['visitas']) !=""){
+if((@$rsel['visitas']) !=""){
 	$cuantos = $rsel['visitas'];
 }
 ///////navegador
@@ -64,7 +71,7 @@ if(isset($_SESSION["autentificado"])){
 }else{
 	$validus = "";
 }
-$us1 = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysql_error());
+$us1 = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysqli_error());
 $rus1 = mysqli_fetch_array($us1);
 
 		if(isset($_REQUEST['bus_fecha'])){
@@ -91,10 +98,30 @@ $rus1 = mysqli_fetch_array($us1);
 		
 $sql = "SELECT * FROM traspasos ".@$fe_bu."  order by fecha ";
 $query_limit = sprintf("%s LIMIT %d, %d",$sql, $inicio, $registros);
-$result= mysqli_query($miConex, $query_limit) or die(mysql_error());
+$result= mysqli_query($miConex, $query_limit) or die(mysqli_error());
 $num_resultados = mysqli_num_rows($result);
 $ggg = base64_encode($query_limit);	
 
+$esta='SELECT aft.inv as nroinv, aft.descrip as desriptr, traspasos.inv, traspasos.descrip FROM traspasos INNER JOIN aft ON (aft.inv = traspasos.inv); ';
+$resuta = mysqli_query($miConex, $esta) or die(mysqli_error($miConex));
+$num_resu = mysqli_num_rows($resuta);
+				
+ while ($cual = mysqli_fetch_array($resuta))	{ 
+	$sqldq="UPDATE traspasos SET descrip = '".$cual['desriptr']."' WHERE traspasos.inv='".$cual['nroinv']."'";
+	$restd=mysqli_query($miConex, $sqldq) or die(mysqli_error($miConex));
+
+	}
+
+$esta='SELECT bajas_aft.inv as nroinv, bajas_aft.descrip as desriptr, traspasos.inv, traspasos.descrip FROM traspasos INNER JOIN bajas_aft ON (bajas_aft.inv = traspasos.inv); ';
+$resuta = mysqli_query($miConex, $esta) or die(mysqli_error($miConex));
+$num_resu = mysqli_num_rows($resuta);
+				
+ while ($cual = mysqli_fetch_array($resuta))	{ 
+	$sqldq="UPDATE traspasos SET descrip = '".$cual['desriptr']."' WHERE traspasos.inv='".$cual['nroinv']."'";
+	$restd=mysqli_query($miConex, $sqldq) or die(mysqli_error($miConex));
+
+	}
+	
 $sqlq = "SELECT * FROM traspasos order by fecha ";
 $resultq= mysqli_query($miConex, $sqlq);
 $resultq=mysqli_query($miConex, $sqlq);
@@ -109,32 +136,6 @@ $num_resultadosq = mysqli_num_rows($resultq);
 	$total_paginas = ceil($total_registros / $registros);
 //NAVEGADOR	FIN
 ?>
-<style type="text/css">
-<!--
-.Estilo1 {font-size: 9px}
--->
-
-	.email{
-		background: url(images/gr_custom-inputs.png) 0 -1px no-repeat;
-		height: 16px;
-		background-position: 0 -37px;
-	}
-	.pdf{
-		background: url(images/gr_custom-inputs.png) 0 -1px no-repeat;
-		height: 16px;
-		background-position: 0 -117px;
-	}
-	.exel{
-		background: url(images/gr_custom-inputs.png) 0 -1px no-repeat;
-		height: 16px;
-		background-position: 0 -97px;
-	}
-	.printer{
-		background: url(images/gr_custom-inputs.png) 0 -1px no-repeat;
-		height: 16px;
-		background-position: 0 -17px;
-	}
-</style>
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script><?php
 	include('jquery.php'); 
 	include('barra.php');?>
@@ -176,7 +177,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 		 creasalva('traspasos');
 		foreach($marcado as $key){
 			$de = "delete from traspasos where id='".$key."'";
-			$deq = mysqli_query($miConex, $de) or die(mysql_error());
+			$deq = mysqli_query($miConex, $de) or die(mysqli_error());
 		} ?>
 		<script type="text/javascript">document.location="r_traspasos.php";</script><?php
 	} 
@@ -187,7 +188,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 				<td width="640">
 					<form action="" method="post" name="buscav" id="busca">
 						<label><?php echo $btmes;?>:</label>
-						<select name="mes" size="1" id="mes" class='boton'>
+						<select name="mes" size="1" id="mes" class='imputf'>
 							<option onclick="mues_ano(this.value);" value="-1"><?php echo $btmostrartodo;?></option><?php
 							$a=0;
 							foreach($meses as $ms => $numeoq){ ?>
@@ -197,11 +198,10 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 							} ?>
 						</select>
 						&nbsp;&nbsp;<label id="divc"><?php echo $btano;?>:</label>
-						  <select name="ano" size="1" id="ano" class='boton'><?php
+						  <select name="ano" size="1" id="ano" class='imputf'><?php
 							$kk=date('Y');
 							for($i=$Aini[0];$i<=$Afin[0];$i++){ ?>
-									<option value='<?php echo $i;?>' <?php if(($i) ==@$_REQUEST['ano']){ echo "selected";}elseif(($i) ==$kk){ echo "selected"; }?>><?php echo $i;?></option>
-								  <?php 
+								<option value='<?php echo $i;?>' <?php if(($i)==@$_REQUEST['ano']){ echo "selected";}elseif(($i) ==$kk){ echo "selected"; }?>><?php echo $i;?></option><?php 
 							} ?>
 						  </select>                  
 						  <input name="bus_fecha" type="submit" id="bus_fecha" class="btn4" value="<?php echo $btver;?>" />
@@ -222,7 +222,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 						</div></td><?php 
 				} ?>
 			</tr>
-</table><?php 
+        </table><?php 
 	} 
 	$i= 0;
 	$p=0;
@@ -249,9 +249,9 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 		</table>
 	
 		<form name="frm1" id="frm1" method="post" action="">
-			<TABLE width="90%" BORDER='0' align="center" cellpadding="0" class="table" cellspacing="0" >
+			<table width="90%" border='0' align="center" cellpadding="0" class="table" cellspacing="0" >
 				<tr class="vistauser1">
-					 <td width="40"><?php if(($rus1["tipo"]) =="root"){ ?>
+					 <td width="40"><?php if((@$rus1["tipo"]) =="root"){ ?>
 						<div id="cheque1" onClick="marcar_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:block; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 						<div id="cheque2" onClick="desmarca_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:none; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div><?php }else{ echo "&nbsp;"; }?>	
 					</td>
@@ -264,18 +264,18 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 					<td width="123" align="center" class="vistauser1"><b><span class="Estilo4"><?php echo $btDESTINO;?></span></b></td>
 				    <td width="215" align="center" class="vistauser1"><b><span class="Estilo4"><?php echo strtoupper($btdatosentidad3);?></span></b>&nbsp;</td>
 				</tr><?php
-					while ($row=mysqli_fetch_array($result))	{	$i++;
-						$sqlDG1=mysqli_query($miConex, "SELECT * FROM datos_generales where (id_datos ='".$row["idunidades"]."')") or die(mysql_error()); 
+					while ($row=mysqli_fetch_array($result)) {	$i++;
+						$sqlDG1=mysqli_query($miConex, "SELECT * FROM datos_generales where (id_datos ='".$row["idunidades"]."')") or die(mysqli_error()); 
 						$sqlxDG1 = mysqli_fetch_array($sqlDG1); 
 
-						$sqlaft=mysqli_query($miConex, "SELECT descrip FROM aft where idunidades ='".$row["idunidades"]."' AND id_area='".$row["id_area"]."' AND inv='".$row["inv"]."'") or die(mysql_error()); 
-						$rowaft = mysqli_fetch_array($sqlaft); 
+						$sqlaft = mysqli_query($miConex, "SELECT descrip FROM aft where idunidades ='".$row["idunidades"]."' AND id_area='".$row["id_area"]."' AND inv='".$row["inv"]."'") or die(mysqli_error()); 
+		    			$rowaft = mysqli_fetch_array($sqlaft); 
 						
 						?>
 						<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="contextual(event,'<?php echo $row["id"]?>');"> 
-				            <td width="5"><?php if(($rus1["tipo"]) =="root"){ ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $row['id']?>" style="cursor:pointer;" /> <?php } ?></td>	
+				            <td width="5"><?php if((@$rus1["tipo"]) =="root"){ ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $row['id']?>" style="cursor:pointer;" /> <?php } ?></td>	
 							<td align="center"><a href="registromedios1.php?palabra=<?php echo $row["inv"];?>"><?php echo $row["inv"];?></a></td>
-							<td align="center"><?php echo $rowaft["descrip"];?></td>
+							<td align="center"><?php echo $row["descrip"];?></td>
 							<td width="17" align="center"><?php echo $myDate->formatDate($row["fecha"],"-","/");?></td>
 							<td><?php if(($row["motivo"]) !="") { echo $row["motivo"];}else{ echo "-"; }?></td>
 							<td><?php echo $row["origen"];?></td>
@@ -284,9 +284,9 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 						</tr><?php $p++;
 						
 					} ?>
-		  </TABLE>
+		  </table>
 			<?php 
-			if(($rus1["tipo"]) =="root"){ ?>
+			if((@$rus1["tipo"]) =="root"){ ?>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<table width="324" border="0" cellspacing="0" cellpadding="0">
 					<tr> 
@@ -312,7 +312,7 @@ if(isset($_REQUEST["msg"])){ print'<meta http-equiv="refresh" content="4;URL=r_t
 			<tr> 
 				<td align="center"><br><div align="center"><div class="message" align="center">
 						<?php echo $noregitro3;?><b><?php echo $bttrasp;?></b><?php echo strtolower($enlinea); if(isset($_REQUEST['bus_fecha'])){ echo "con fecha: <b><font color='red'>".$num."/".$_REQUEST['ano']."</font></b>"; } ?>.</div></div><?php 
-						if(($rus1["tipo"]) =="root"){ ?>
+						if((@$rus1["tipo"]) =="root"){ ?>
 							<br><br>
 							<input name="sal" id="sal" type="button" class="btn" value="<?php echo $btrestaurar;?>" onclick="javascript:document.location='sal_mtto.php?tb=traspasos&legen=Traspasos.';"><?php	
 						} ?>

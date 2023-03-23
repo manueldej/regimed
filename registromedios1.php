@@ -1,21 +1,29 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php'); 
 include('script.php');
 $us = mysqli_query($miConex, "select * from usuarios where login='".$_SESSION ["valid_user"]."'") or die(mysql_error());
 $russ = mysqli_fetch_array($us);
 $nrus=mysqli_num_rows($us);
 $Uactbx=1;
+						
 if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 	$Uactb = $_COOKIE['unidades'];
 	$Uactbx=$_COOKIE['unidades'];
@@ -26,8 +34,24 @@ if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 			document.cookie = "unidades=1;";
 			document.location="registromedios1.php";
 		</script><?php
+	}	
+}  
+
+	function COMP_exp($inv){
+		include('connections/miConex.php');
+		$existe = 0;
+
+		$sql = "SELECT * FROM aft WHERE exp='".$inv."' AND categ='COMPUTADORAS'";
+		$result= mysqli_query($miConex, $sql) or die(mysqli_error($miConex));	  
+		$existe = mysqli_num_rows($result);
+		if($existe!=0){
+			return true;
+		}
+        return false;
 	}
-} ?>
+
+    
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <script type="text/javascript" src="js/scrolltopcontrol.js">
@@ -39,8 +63,8 @@ if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 ***********************************************/
 
 </script> 
-<?php
-	include('jquery.php'); ?>
+<?php include('jquery.php'); ?>	
+
 <script type="text/javascript">
 				var valor;
 				var val="";
@@ -102,7 +126,46 @@ if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 				function carga(valor){
 					document.consulta.usb.value=valor;
 				}
-			</script>		
+</script>
+<script type="text/javascript">
+	
+		function objetoAjax(){
+			var xmlhttp=false;
+				try{
+					xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+				}catch(e){
+					try{
+					   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+					}catch(E){
+						xmlhttp = false;
+					}
+				}
+
+				if(!xmlhttp && typeof XMLHttpRequest!='undefined'){
+					xmlhttp = new XMLHttpRequest();
+				}
+				return xmlhttp;
+		}
+		
+		// generar lista de custodios según área seleccionada
+		function listarcusto(valo){
+			divcusto = document.getElementById('custoder');
+			ajaxcusto=objetoAjax();
+			ajaxcusto.onreadystatechange=function() {
+				if (ajaxcusto.readyState==4) {
+					divcusto.innerHTML=ajaxcusto.responseText;
+					var datos=ajaxcusto.responseXML.documentElement;	
+				}		
+			}
+			valores1="query_Re="+valo;
+			ajaxcusto.open("POST", "custo.php", true);
+			ajaxcusto.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+			ajaxcusto.send(valores1);
+			
+		}
+
+</script>		
+
 <script type="text/javascript">
 	function prueba()	{
 		document.header.enable(); 
@@ -119,6 +182,7 @@ if(isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
  
 </script>
  <?php
+
 $palabra="";
 $msg="";
 $m="";
@@ -143,9 +207,7 @@ $Recordset3 = mysqli_query($miConex, $query_Recordset3) or die(mysql_error());
 $totalRows_Recordset3 = mysqli_num_rows($Recordset3);
 
 //SABER LOS CUSTODIOS
-  $query_Recordset1 = "SELECT * FROM usuarios ORDER By nombre ASC";
-
-
+$query_Recordset1 = "SELECT * FROM usuarios ORDER By nombre ASC";
 $Recordset1 = mysqli_query($miConex, $query_Recordset1) or die(mysql_error());
 $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
 
@@ -163,7 +225,7 @@ if (isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 $Record = mysqli_query($miConex, $query_R) or die(mysql_error());
 
 
-if(($rsel['visitas']) !=""){
+if ($_SESSION ["valid_user"]!='invitado' and $rsel['visitas'] !=""){
 	$cuantos = $rsel['visitas'];
 }
 
@@ -254,9 +316,9 @@ if(($rsel['visitas']) !=""){
 			
 	}else{
 		if (isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
-		   $sql = "SELECT * FROM aft WHERE idunidades ='".$Uactb."' AND descrip LIKE '%".$palabra."%' or sello LIKE '%".$palabra."%' or tipo LIKE '%".$palabra."%' or inv LIKE '%".$palabra."%' or custodio LIKE '%".$palabra."%' or marca LIKE '%".$palabra."%' or categ  LIKE '%".$palabra."%' or modelo  LIKE '%".$palabra."%'";
+		   $sql = "SELECT * FROM aft WHERE idunidades ='".$Uactb."' AND descrip LIKE '%".$palabra."%' or sello LIKE '%".$palabra."%' or tipo LIKE '%".$palabra."%' or inv LIKE '%".$palabra."%' or custodio LIKE '%".$palabra."%' or marca LIKE '%".$palabra."%' or categ  LIKE '%".$palabra."%' or modelo  LIKE '%".$palabra."%' or sello  LIKE '%".$palabra."%'";
 		}else{
-			$sql = "SELECT * FROM aft WHERE descrip LIKE '%".$palabra."%' or sello LIKE '%".$palabra."%' or tipo LIKE '%".$palabra."%' or inv LIKE '%".$palabra."%' or custodio LIKE '%".$palabra."%' or marca LIKE '%".$palabra."%' or categ  LIKE '%".$palabra."%' or modelo  LIKE '%".$palabra."%'";
+			$sql = "SELECT * FROM aft WHERE descrip LIKE '%".$palabra."%' or sello LIKE '%".$palabra."%' or tipo LIKE '%".$palabra."%' or inv LIKE '%".$palabra."%' or custodio LIKE '%".$palabra."%' or marca LIKE '%".$palabra."%' or categ  LIKE '%".$palabra."%' or modelo  LIKE '%".$palabra."%' or sello  LIKE '%".$palabra."%'";
 		}
 		
 		
@@ -268,6 +330,25 @@ if(($rsel['visitas']) !=""){
 		$sql = "SELECT * FROM aft WHERE  tipo LIKE '%".$palabra."%'";
 		$query_limit = sprintf("%s ORDER BY %s %s LIMIT %d, %d",$sql, $orderby, $asc, $inicio, $registros);
 		$contx1 = "SELECT * FROM aft WHERE  tipo LIKE '%".$palabra."%' kk ORDER BY ".$orderby." ".$asc." limit ".$inicio.",".$registros;
+	}
+	
+	if(isset($_GET['noti'])){
+		if ($_GET['noti']!=0) {
+			if (strlen($_GET['noti']) >=4) {	 
+			   $sql = "SELECT * FROM aft WHERE exp='' AND categ='COMPUTADORAS'";
+		       $query_limit = sprintf("%s ORDER BY %s %s LIMIT %d, %d",$sql, $orderby, $asc, $inicio, $registros);		    
+	     	}else{
+				$sql = "SELECT * FROM aft WHERE sello='' AND categ='COMPUTADORAS' AND estado='A' ";
+		        $query_limit = sprintf("%s ORDER BY %s %s LIMIT %d, %d",$sql, $orderby, $asc, $inicio, $registros);	
+			}	
+				    
+		}
+	}
+	if(isset($_GET['notiex'])){
+		if ($_GET['notiex']!=0) {
+			$sql = "SELECT * FROM aft WHERE exp='' AND categ='COMPUTADORAS'";
+		    $query_limit = sprintf("%s ORDER BY %s %s LIMIT %d, %d",$sql, $orderby, $asc, $inicio, $registros);						    
+		}
 	}
 	
 	if(isset($_REQUEST['consulta'])){
@@ -301,7 +382,7 @@ if(($rsel['visitas']) !=""){
 		}elseif (($_REQUEST['tt']==-1) && $_REQUEST['flash']!=-1 && (isset($_REQUEST['usb']) && $_REQUEST['usb']=="") && $_REQUEST['custo']!=-1) {
 			// "--- Una Categoria sin especificar tipo + Custodio, sin especificar un area va usb<br>";
 			$sql = "SELECT * FROM aft WHERE categ = '".$_REQUEST['flash']."' AND custodio = '".htmlentities($_REQUEST['custo'])."'";
-		}elseif ($_REQUEST['tt']!=-1 && $_REQUEST['flash']!=-1 && $_REQUEST['ta10']!=-1 && ($_REQUEST['custo']==-1) && ($_REQUEST['estado']!=-1) && ($_REQUEST['idunidad']==1) && ($_REQUEST['marca']=="")) {
+		}elseif ($_REQUEST['tt']!=-1 && $_REQUEST['flash']!=-1 && @$_REQUEST['ta10']!=-1 && ($_REQUEST['custo']==-1) && ($_REQUEST['estado']!=-1) && ($_REQUEST['idunidad']==1) && ($_REQUEST['marca']=="")) {
 			// "--> Una Categoria + un tipo + estado, de un area va ta10<br>";
 			$sql = "SELECT * FROM aft WHERE id_area = '".$_REQUEST['tt']."' AND categ = '".$_REQUEST['flash']."' AND tipo = '".htmlentities($_REQUEST['ta10'])."' AND estado = '".$_REQUEST['estado']."'";
 		}elseif ($_REQUEST['tt']!=-1 && $_REQUEST['flash']==-1 && $_REQUEST['usb']==-1 && ($_REQUEST['custo']!=-1) && ($_REQUEST['estado']==-1) && ($_REQUEST['idunidad']==1) && ($_REQUEST['marca']=="")) {
@@ -371,6 +452,18 @@ if(($rsel['visitas']) !=""){
 	$total_paginas = ceil($total_registros / $registros);
 	
 //NAVEGADOR	FIN 
+
+function act_aft(){
+	include("connecion/miConex.php");
+	$esta='SELECT aft.descrip as nroinv, aft.inv as invent, exp.inv, exp.descrip FROM exp INNER JOIN aft ON (aft.inv = exp.inv); ';
+	$resuta = mysqli_query($miConex, $esta) or die(mysqli_error($miConex));
+	$num_resu = mysqli_num_rows($resuta);
+				
+	while ($cual = mysqli_fetch_array($resuta)){ 
+		$sqldq="UPDATE aft SET exp = '".$cual['invent']."' WHERE aft.inv='".$cual['invent']."'";
+		$restd=mysqli_query($miConex, $sqldq) or die(mysqli_error($miConex));
+	}
+}
 
 ?>
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -479,17 +572,18 @@ function contextual(event,id){
     background-image: linear-gradient(to bottom, #EE5F5B, #BD362F);
     background-repeat: repeat-x;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-    color: #ffe3e3; padding: 1px 0px 16px 9px; margin-left: -13px; width: 104%; border-radius: 5px; vertical-align:middle;"><a href="#close" original-title="<?php echo $btclose;?>" class="close tip-s medium  barramenu" style="text-decoration:none; color: #F8F3F3;">X</a>
+    color: #ffe3e3; padding: 1px 0px 16px 9px; margin-left: -13px; width: 104%; border-radius: 5px; vertical-align:middle;"><a href="#close" original-title="<?php echo $btclose;?>" class="close tip-s medium barramenu" style="text-decoration:none; color: #F8F3F3;">X</a>
     <h2 class="pos"><?php echo strtoupper($cr_filtro);?></h2></div>
-	<form action="registromedios1.php" method="post" name="consulta">
+   
+	<form action="registromedios1.php" method="POST" name="consulta">
        <table width="100%" border="0" align="center" class="table">
 		<tr>
 	      <td width="29%" align="center"><div align="right" class="contentheading"><?php echo substr($btAreas,0,-1);?></div></td>
 		    <td colspan="2" align="left">
-				<select name="tt" class="form-control" size="1" id="tt" onChange="">
+				<select name="tt" class="form-control" size="1" id="tt" onChange="listarcusto(this.value);">
 						<option value="-1"><?php echo "--";?></option><?php
 						while ($row_R = mysqli_fetch_array($Record)) {
-							if(($row_R['nombre']) !="Reparaciones"){?>
+							if(($row_R['nombre']) !="Reparaciones"){ $areacust = $row_R['idarea']; ?>
 								<option value="<?php echo $row_R['idarea'];?>" <?php if((@$_POST['tt']) ==$row_R['idarea']){ echo "selected";}?>><?php echo $row_R['nombre']?></option><?php
 							}
 						} 
@@ -519,17 +613,16 @@ function contextual(event,id){
 					} ?></div></td>   
 	    </tr>
 		<tr>
-		  <td><div align="right" class="contentheading"><?php echo strtoupper($btCustodios);?></div></td>
-            <td colspan="2"><label>
-              <select onkeypress="return handleEnter(this, event)" name="custo" size="1" class="form-control" id="custo"><?php
-				//if(isset($_POST['tt'])){ ?>
+		  <td><div align="right" id="custon1" class="contentheading"><?php echo strtoupper($btCustodios);?></div></td>
+            <td colspan="2"><div id="custoder"><label>
+              <select onkeypress="return handleEnter(this, event)" name="custo" size="1" class="form-control" id="custo">
 				  <option value="-1"><?php echo "--"; ?></option><?php
 					while ($row_Recordset1 = mysqli_fetch_array($Recordset1)){   ?>
 						<option value="<?php echo $row_Recordset1['nombre']?>"><?php echo $row_Recordset1['nombre']?></option><?php
 					} 
-				//}?> 
+				?> 
               </select>
-            </label></td>
+            </label></div></td>
 	    </tr>
 		<tr>
             <td><div align="right" class="contentheading"><?php echo strtoupper($btestado);?></div></td>
@@ -685,7 +778,7 @@ function contextual(event,id){
 			<table width="100%" border='0' class='table' align='center' cellpadding="0" cellspacing="0"> <?php 
 				if(($total_registros) !=0){ ?>
 					<tr class="vistauser1">
-					    <td width="10"> <?php if (($russ['tipo']) =="root") { ?>
+					    <td width="10"> <?php if (($_SESSION ["valid_user"]!='invitado' and $russ['tipo']) =="root") { ?>
 						  <div id="cheque1" onClick="document.getElementById('deta').style.display='block'; det2('<?php echo base64_encode($query_limit);?>'); marcar_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:block; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 						  <div id="cheque2" onClick="ocul(); desmarca_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:none; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div><?php } ?>
 					    </td>
@@ -711,13 +804,14 @@ function contextual(event,id){
 
 						?>
 						<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="if ((document.getElementById('marcado<?php echo $p;?>').type =='checkbox') && (document.getElementById('marcado<?php echo $p;?>').checked ==false)) { document.getElementById('deta').style.display='block'; det('<?php echo $rowid; ?>'); marca1(<?php echo $p;?>,'#ffffff'); }else{ marca1(<?php echo $p;?>,'#ffffff'); document.getElementById('deta').style.display='none'; }" onContextMenu="<?php if (($russ['tipo']) =="root") {  ?>contextual(event,'<?php echo $row["id"]?>'); <?php } ?>"> 
-						   <td width="15"><?php if (($russ['tipo']) =="root") { ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><?php } ?></td>			 
+						   <td width="15"><?php if ($_SESSION ["valid_user"]!='invitado' and $russ['tipo'] =="root") { ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><?php } ?></td>			 
 							<td><?php 
-									if (($russ['tipo']) =="root") { ?>
+									if ($_SESSION ["valid_user"]!='invitado' and $russ['tipo'] =="root") { ?>
 										<input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff');" value="<?php echo $row['id']?>" style="cursor:pointer;" /><?php 
 									}  
+																			
 									if((strtoupper($row["categ"])) =="COMPUTADORA" OR (strtoupper($row["categ"])) =="COMPUTADORAS" OR (strtoupper($row["categ"])) =="PC"){ ?>
-									  &nbsp;&nbsp;&nbsp;<a href="javascript:ir('<?php echo $row["inv"];?>','<?php echo $row["idunidades"];?>','<?php echo $palab;?>','rm');" class="tooltip"><img src="images/pc.png" width="24" height="24" align="absmiddle"><span onmouseover="this.style.cursor='pointer';"><?php echo $verdetalles1.$row["inv"]." (".$row_exp["n_PC"].")";?></span></a><?php 
+									  &nbsp;&nbsp;&nbsp;<a href="javascript:ir('<?php echo $row["inv"];?>','<?php echo $row["idunidades"];?>','<?php echo $palab;?>','rm');" class="tooltip" style="margin-left:12px;"><img src="images/pc.png" width="24" height="24" align="absmiddle"><?php if(COMP_exp($row["inv"])==true){ ?><span onmouseover="this.style.cursor='pointer';"><?php echo $verdetalles1.$row["inv"]." (".$row_exp["n_PC"].")"; ?></span><?php }else{ ?><span onmouseover="this.style.cursor='pointer';"><?php echo $row["inv"]." (Sin ".$btEXPEDIENTE1.")"; ?></span><?php } ?></a><?php 
 									} ?>							
 							</td>
 							<td class="Estilo2"><?php  echo $row["inv"];?></td>
@@ -733,7 +827,7 @@ function contextual(event,id){
 					<tr>
 						<td class="Estilo2">&nbsp;</td>
 						<td colspan="7" class="Estilo2"><?php 
-							if (($russ['tipo']) =="root") {   
+							if ($_SESSION ["valid_user"]!='invitado' and $russ['tipo'] =="root") {   
 								if(($total_registros) !=0){ ?>
 									<input name="create" id="create-user" type="button" class="btn" onclick="checkLength('<?php echo $strerror;?>','<?php echo $plea1.$bteliminar;?>','d');" value="<?php echo $bteliminar;?>"/>
 									<input type="hidden" name="eliminar"/>
@@ -756,10 +850,12 @@ function contextual(event,id){
 	</div>
 <a href="#top"></a>	
 </fieldset><br>
-   <?php include ("version.php");?>
+   <?php include("version.php");?>
 <div>
 <div class="dialogoInfo"></div>
 <div class="ContenedorAlert" id="cir"> </div>
 <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+

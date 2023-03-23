@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 @session_start();
 require_once('connections/miConex.php');
 		include('chequeo.php');
@@ -54,6 +61,7 @@ require("mensaje.php");   ?>
 			</script><?php 
 			exit;
 	}?>
+	
 <style type="text/css">
 <!--
 
@@ -71,6 +79,20 @@ div.message {
 }
 -->
 </style>
+<?php  
+	function rsi(){
+		include ('connections\miConex.php');
+		$sql = "SELECT * FROM usuarios WHERE tipo='rsi'";
+		$result = mysqli_query($miConex, $sql) or die();
+		$nrow = mysqli_num_rows ($result);
+		
+		if ($nrow!=0){
+			return true; 
+		}else{
+		   return false;
+		}
+	}
+?>
 <?php
 	if(isset($_POST["crash"]) AND ($_POST["crash"]) !=""){
 		$query_Recordset1 = "SELECT * FROM datos_generales";
@@ -241,15 +263,16 @@ div.message {
 					}else{ ?><input name="t6[]" type="hidden"  value="<?php echo $row_areaz['nombre'];?>" />
 						<input name="aviej[]" type="hidden"  value="<?php echo $row_areaz['idarea'];?>" /><?php 
 					}
-					if(($rowq["tipo"]) !="usuario" AND  ($row["tipo"]) !="root"){ ?>
+					if($row["tipo"] !="root"){ ?>
 					<tr>
 						<td><div align="right"><b><?php echo $t_usuario;?>:&nbsp;</b></div></td>
 						<td colspan="3">
-							<select name="tipo[]" class="form-control">
+							<select name="tipo[]" class="form-control" >
 								<option value="-1"><?php echo $seleccione.$El.$t_usuario;?></option>
-								<option value="usuario" <?php if(($row["tipo"]) =="usuario"){ echo "selected";}?>><?php echo $btusuario;?></option>
-								<option value="admin" <?php if(($row["tipo"]) =="admin"){ echo "selected";}?>><?php echo $admini;?></option>
-						  </select>			</td>
+								<option value="usuario" <?php if(($row["tipo"]) =="usuario"){ echo "selected";}?>><?php echo $btusuario;?></option><?php if ((rsi() == false) OR ($row["tipo"] =="rsi")){ ?>
+								<option value="rsi" <?php if($row["tipo"] =="rsi"){ echo "selected";}?>><?php echo $rsi;?></option>
+								<?php } ?>
+						   </select>		</td>
 					</tr>
 					<?php }
 					if(($rowq["tipo"]) == $row["tipo"] OR ($rowq["tipo"]) =="root"){ ?>
@@ -276,7 +299,7 @@ div.message {
 				   <tr>
 					  <td colspan="3" align="center"><hr>
 						<input name="o" type="hidden" value="<?php echo $o;?>">
-						<input type="submit" class="btn" name="editar" value="<?php echo $btaceptar;?>">&nbsp;
+						<input type="submit" id="editar" class="btn" name="editar" value="<?php echo $btaceptar;?>">&nbsp;
 						<input type="button" class="btn" name="Submit2" value="<?php echo $btcancelar;?>" onClick="window.parent.location='ej1.php';"></td>
 				  </tr>
 			  </table>

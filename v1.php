@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php');
 include ('script.php');
 require("mensaje.php"); 
@@ -69,12 +76,27 @@ function decodifica(estado,codif,decodif,id,idcodif){
 	 document.getElementById(id).value=document.getElementById(idcodif).value;
 	}
  }
-</script> 
+ 
+</script>
+<?php  
+	function rsi(){
+		include ('connections\miConex.php');
+		$sql = "SELECT * FROM usuarios WHERE tipo='rsi'";
+		$result = mysqli_query($miConex, $sql) or die();
+		$nrow = mysqli_num_rows ($result);
+		
+		if ($nrow!=0){
+			return true; 
+		}else{
+		   return false;
+		}
+	}
+?>
 <fieldset class="fieldset"><legend class="vistauserx"><?php echo $musuario1;?></legend>
 <?php
 	if(isset($_POST["crash"]) AND ($_POST["crash"]) !=""){
 		$query_Recordset1 = "SELECT * FROM datos_generales";
-		$Recordset1 = mysqli_query($query_Recordset1) or die(mysql_error());
+		$Recordset1 = mysqli_query($query_Recordset1) or die();
 		$row_Recordset1 = mysqli_fetch_array($Recordset1);
 		$m_Priority = 3; // 1 Urgente, 3 Normal
 		$m_r_Greeting = "Estimado(a): ";
@@ -168,7 +190,7 @@ function decodifica(estado,codif,decodif,id,idcodif){
 			}
 		} ?>
 		<form name="form1" method="post" action="insertar.php">
-			<table width="90%" border="0" align="center" cellspacing="2" cellpadding="2" class="tablen">
+			<table width="50%" border="0" align="center" cellspacing="2" cellpadding="2" class="tablen">
 			<?php 
 			$o=0;
 			$validus = "";
@@ -213,8 +235,8 @@ function decodifica(estado,codif,decodif,id,idcodif){
 						<input name="t2[]" id="clavevieja1<?php echo $o;?>" class="form-control" size="<?php echo strlen(base64_decode($row["passwd"]));?>" type="text" value="<?php echo $row['passwd'];?>" onclick="muestraclave('<?php echo 'sistema'.$o; ?>','<?php echo 'clavevieja1'.$o; ?>'); document.getElementById('muestram1<?php echo $o;?>').style.display='none';">
 						<input name="decodifa[]" id="decodifa<?php echo $o;?>" type="hidden" value="<?php echo base64_decode($row['passwd']);?>">
 						<input name="codifa[]" id="codifa<?php echo $o;?>" type="hidden" value="<?php echo $row['passwd'];?>">
-						<div id="muestram1<?php echo $o;?>" style="display:block;"><input name="muestra1[]" type="checkbox" id="muestra1<?php echo $o;?>" style="cursor:pointer; display:none;" onClick="decodifica(getElementById('muestra1<?php echo $o;?>').checked,getElementById('codifa<?php echo $o;?>').value,getElementById('decodifa<?php echo $o;?>').value, 'clavevieja1<?php echo $o;?>','codifa<?php echo $o;?>');" value="muestra1" />
-						<span manolo='Mostrar/Ocultar Contrase&ntilde;a' id="oji<?php echo $o;?>" style="background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -113px 202px; height: 26px; width: 30px; float: right; cursor: pointer; position: absolute; margin-left: 768px; margin-top: -25px;" onmouseover="this.style.cursor='pointer';" onclick="if (getElementById('muestra1<?php echo $o;?>').checked==false) {getElementById('muestra1<?php echo $o;?>').checked=true; }else{getElementById('muestra1<?php echo $o;?>').checked=false;} decodifica(getElementById('muestra1<?php echo $o;?>').checked,getElementById('codifa<?php echo $o;?>').value,getElementById('decodifa<?php echo $o;?>').value, 'clavevieja1<?php echo $o;?>','codifa<?php echo $o;?>'); if(getElementById('muestra1<?php echo $o;?>').checked) { getElementById('oji<?php echo $o;?>').style='background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -559px 202px; height: 26px; width: 30px; float: right; cursor:pointer; position: absolute; margin-left: 768px; margin-top: -25px;'}else{ getElementById('oji<?php echo $o;?>').style='background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -113px 202px; height: 26px; width: 30px; float: right; cursor:pointer; position: absolute; margin-left: 768px; margin-top: -25px;'} "></span></div>
+						<div id="muestram1<?php echo $o;?>" style="display:block;"><input name="muestra1[]" type="checkbox" id="muestra1<?php echo $o;?>" style="cursor:pointer; display:none;" onClick="decodifica(getElementById('muestra1<?php echo $o;?>').checked,getElementById('codifa<?php echo $o;?>').value,getElementById('decodifa<?php echo $o;?>').value,'clavevieja1<?php echo $o;?>','codifa<?php echo $o;?>');" value="muestra1" />
+						<span manolo='Mostrar/Ocultar Contrase&ntilde;a' id="oji<?php echo $o;?>" style="background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -113px 202px; height: 26px; width: 30px; float: right; cursor: pointer; position: absolute; margin-left: 467px; margin-top: -25px;" onmouseover="this.style.cursor='pointer';" onclick="if (getElementById('muestra1<?php echo $o;?>').checked==false) {getElementById('muestra1<?php echo $o;?>').checked=true; }else{getElementById('muestra1<?php echo $o;?>').checked=false;} decodifica(getElementById('muestra1<?php echo $o;?>').checked,getElementById('codifa<?php echo $o;?>').value,getElementById('decodifa<?php echo $o;?>').value, 'clavevieja1<?php echo $o;?>','codifa<?php echo $o;?>'); if(getElementById('muestra1<?php echo $o;?>').checked) { getElementById('oji<?php echo $o;?>').style='background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -559px 202px; height: 26px; width: 30px; float: right; cursor:pointer; position: absolute; margin-left: 467px; margin-top: -25px;'}else{ getElementById('oji<?php echo $o;?>').style='background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -113px 202px; height: 26px; width: 30px; float: right; cursor:pointer; position: absolute; margin-left: 467px; margin-top: -25px;'} "></span></div>
 					  </td>
 					</tr>
 					<tr>
@@ -255,15 +277,17 @@ function decodifica(estado,codif,decodif,id,idcodif){
 					}else{ ?><input name="t6[]" type="hidden"  value="<?php echo $row_areaz['nombre'];?>" />
 						<input name="aviej[]" type="hidden"  value="<?php echo $row_areaz['idarea'];?>" /><?php 
 					}
-					if(($rowq["tipo"]) !="usuario" AND  ($row["tipo"]) !="root"){ ?>
+					if($row["tipo"] !="root" ){ ?>
 					<tr>
 						<td><div align="right"><b><?php echo $t_usuario;?>:&nbsp;</b></div></td>
 						<td colspan="3">
-							<select name="tipo[]" class="form-control">
+						    <select name="tipo[]" class="form-control" >
 								<option value="-1"><?php echo $seleccione.$El.$t_usuario;?></option>
-								<option value="usuario" <?php if(($row["tipo"]) =="usuario"){ echo "selected";}?>><?php echo $btusuario;?></option>
-								<option value="admin" <?php if(($row["tipo"]) =="admin"){ echo "selected";}?>><?php echo $admini;?></option>
-						  </select>			</td>
+								<option value="usuario" <?php if(($row["tipo"]) =="usuario"){ echo "selected";}?>><?php echo $btusuario;?></option><?php if ((rsi() == false) OR ($row["tipo"] =="rsi")){ ?>
+								<option value="rsi" <?php if($row["tipo"] =="rsi"){ echo "selected";}?>><?php echo $rsi;?></option>
+								<?php } ?>
+						   </select>
+						</td>
 					</tr>
 					<?php }
 					if(($rowq["tipo"]) == $row["tipo"] OR ($rowq["tipo"]) =="root"){ ?>

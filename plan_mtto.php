@@ -1,15 +1,22 @@
 <?php 
-############################################################################################################
-# Software: Regimed                                                                                        #
-#(Registro de Medios Informáticos)     					                                		           #
-# Version:  3.0.1                                                     				                       #
-# Fecha:    01/06/2016 - 03/04/2018                                             					                       #
-# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			           #
-#          	Msc. Carlos Pollan Estrada											         		           #
-# Licencia: Freeware                                                				                       #
-#                                                                       			                       #
-# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                #
-############################################################################################################
+#############################################################################################################
+# Software: Regimed                                                                                         #
+#(Registro de Medios Informáticos)     					                                		            #
+# Version:  3.1.1                                                    				                        #
+# Fecha:    24/03/2011 - 01/01/2023                                             					        #
+# Autores:  Ing. Manuel de Jesús Núñez Guerra   								     			            #
+#          	Msc. Carlos Pollan Estrada	(IN MEMORIAN)							         		            #
+# Licencia: Freeware                                                				                        #
+#                                                                       			                        #
+# Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
+# LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
+# lo puede modificar bajo los términos de la Licencia Pública General GNU publicada por la Fundación de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versión 2 de la Licencia, o (en su opción)   #
+# cualquier posterior versión. REGIMED es distribuido con la esperanza de que será útil, pero SIN CUALQUIER #
+# GARANTÍA; Sin aún la garantía implícita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROPÓSITO PARTICULAR.  #
+# Vea la Licencia Pública General del GNU para más detalles. Usted debería haber recibido una copia de la   #
+# Licencia  Pública General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+#############################################################################################################
 include('header.php'); 
 include('barra.php');
 $i="es";
@@ -24,7 +31,7 @@ $qselvi = mysqli_query($miConex, $selvi) or die(mysql_error());
 $rsel = mysqli_fetch_array($qselvi);
 
 $cuantos = 5;
-if(($rsel['visitas']) !=""){
+if((@$rsel['visitas']) !=""){
 	$cuantos = $rsel['visitas'];
 }
 
@@ -199,7 +206,7 @@ include('salva_rep.php');
 		</div>
 		<br></fieldset>
 		 <?php include ("version.php");?>
-		<iframe width="174" height="189" name="gToday:normal:js/agenda.js" id="gToday:normal:js/agenda.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe>
+		<iframe width="174" height="189" name="gToday:normal:agenda.js" id="gToday:normal:agenda.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe>
 		<div class="ContenedorAlert" id="cir"> </div>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script><?php
@@ -254,7 +261,7 @@ $nuRecUni = mysqli_num_rows($RecUni); ?>
 </script>
 <?php 
     if (isset($_SESSION["valid_user"]))  {
-		if(($rus1["tipo"]) =="root" and $totalRows_Recordset1>0){  ?>
+		if((@$rus1["tipo"]) =="root" and $totalRows_Recordset1>0){  ?>
 		<form name="fbusc" action="" method="post">
 			<input type="hidden" name="bus">
 		</form>
@@ -347,11 +354,11 @@ $nuRecUni = mysqli_num_rows($RecUni); ?>
 						</tr>
 					  </form>
 				</table>
-				<iframe width=174 height=189 name="gToday:normal:js/agenda.js" id="gToday:normal:js/agenda.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe><?php 
+				<iframe width=174 height=189 name="gToday:normal:agenda.js" id="gToday:normal:agenda.js" src="js/ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; left:-501px; top:0px;"></iframe><?php 
 		}
 	} 
-		require_once("db_fns.php");  		
-		if (isset($_REQUEST['insertx']))	  {
+	require_once("db_fns.php");  		
+		if (isset($_REQUEST['insertx']))  {
 			$fec = substr(strrchr($_REQUEST['dc2'], "/"), 1);
 			$fecac = date("Y");
 			if(($fec) < $fecac){  ?>	
@@ -369,13 +376,14 @@ $nuRecUni = mysqli_num_rows($RecUni); ?>
 				}else{ echo "<font color='red' size='2'>Ya el medio con el Inventario No. <b>".$_REQUEST['invent']."</b> est&aacute; planificado para el d&iacute;a <b>".$_REQUEST['dc2']."<b></font>"; }
 			}
 		} 	
-$sel = "select visitas from preferencias where usuario='".$_SESSION['valid_user']."'";
-$qsel = mysqli_query($miConex, $sel) or die(mysql_error());
-$rsel = mysqli_fetch_array($qsel);
-$cuantos = 5;
-if(($rsel['visitas']) !=""){
-	$cuantos = $rsel['visitas'];
-}
+	$sel = "select visitas from preferencias where usuario='".$_SESSION['valid_user']."'";
+	$qsel = mysqli_query($miConex, $sel) or die(mysql_error());
+	$rsel = mysqli_fetch_array($qsel);
+	$cuantos = 5;
+	
+	if((@$rsel['visitas']) !=""){
+		$cuantos = $rsel['visitas'];
+	}
 
 		$fe_bu = "";
 		if(isset($_REQUEST['bus_fecha'])){
@@ -394,29 +402,28 @@ if(($rsel['visitas']) !=""){
 			}			
 		}elseif (isset($_COOKIE['unidades']) AND ($_COOKIE['unidades']) !=""){
 			$fe_bu = "where (idunidades='".$_COOKIE['unidades']."')";
-		}elseif ($pendientes !=0) {
-			$fe_bu = " WHERE estado='Pendiente'";
+		}elseif ($pendientes !="") {
+			$fe_bu = " WHERE mtto.estado='Pendiente'";
 		}
-	
 
-		$sql="SELECT * FROM mtto ".$fe_bu." order by id ASC"; 
+		$sql="SELECT aft.inv, aft.categ, aft.idarea, aft.idunidades, mtto.id, mtto.inv,mtto.fecha, mtto.estado, mtto.idunidades FROM mtto INNER JOIN (aft) ON (mtto.inv = aft.inv) ".$fe_bu." order by mtto.fecha ASC"; 
+		
 		$query_limit = sprintf("%s LIMIT %d, %d",$sql, $inicio, $registros);
 		$result= mysqli_query($miConex, $query_limit) or die(mysql_error());
 		$num_resultados = mysqli_num_rows($result);
 		$ggg = base64_encode($query_limit);	
 		
-    	$sqlzb="SELECT * FROM mtto ".$fe_bu." order by id ASC"; 
+    	$sqlzb="SELECT * FROM mtto ".$fe_bu." order by fecha ASC"; 
 		$resultb=mysqli_query($miConex, $sqlzb) or die(mysql_error());
 		$num_resultadosb = mysqli_num_rows($resultb);
 
 		if ($pendientes !=0) {
-		   $sql="SELECT * FROM mtto ".$fe_bu." order by id ASC"; 
+		   $sql="SELECT aft.inv, aft.categ, aft.idarea, aft.idunidades, mtto.id, mtto.inv,mtto.fecha, mtto.estado, mtto.idunidades FROM mtto INNER JOIN (aft) ON (mtto.inv = aft.inv) ".$fe_bu." order by mtto.fecha ASC"; 
 		   $query_limit = sprintf("%s LIMIT %d, %d",$sql, $inicio, $registros);
 		   $result= mysqli_query($miConex, $query_limit) or die(mysql_error());
 		   $num_resultados = mysqli_num_rows($result);
 		   $ggg = base64_encode($query_limit);	
 		}
-			
 		
 //NAVEGADOR inicio
 	if(isset($_REQUEST['total_registros'])){
@@ -524,7 +531,7 @@ $nsemean = mysqli_num_rows($semean);
 							if ($num_resultadosb !=0){	?>
 								<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
 									<tr class="vistauser1">
-										<td width="20"><?php if (($rus['tipo']) =="root") { ?>
+										<td width="20"><?php if ((@$rus['tipo']) =="root") { ?>
 											<div id="cheque1" onClick="marcar_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:block; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 											<div id="cheque2" onClick="desmarca_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:none; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div><?php }else { echo "&nbsp;"; } ?>
 										</td>
@@ -543,11 +550,12 @@ $nsemean = mysqli_num_rows($semean);
 											}else{
 												$sqlzc=mysqli_query($miConex, "SELECT categ,idarea,idunidades FROM aft where inv ='".$row["inv"]."'") or die(mysql_error()); 
 											}
+											
 												$sqlzcx = mysqli_fetch_array($sqlzc);					
 												$sqlDG=mysqli_query($miConex, "SELECT * FROM datos_generales where id_datos ='".$sqlzcx["idunidades"]."'") or die(mysql_error()); 
 												$sqlxDG = mysqli_fetch_array($sqlDG);  ?>
 									<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="contextual(event,'<?php echo $row["id"]?>');"> 
-				                        <td width="7"><?php if($rus1["tipo"] =="root") { ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $row['id']?>" style="cursor:pointer;" /><?php }else{ echo "&nbsp;"; } ?></td>
+				                        <td width="7"><?php if(@$rus1["tipo"] =="root") { ?><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $row['id']?>" style="cursor:pointer;" /><?php }else{ echo "&nbsp;"; } ?></td>
 										<td><a target="_parent" href='registromedios1.php?palabra=<?php echo $row["inv"];?>&rp=mt'><?php echo $row["inv"];?></a></td>
 										<td><?php echo $sqlzcx["categ"];?></td>
 										<td><?php echo $row["fecha"];?></td>
@@ -562,13 +570,13 @@ $nsemean = mysqli_num_rows($semean);
 				</tr>
 		</table><?php 
 								
-								if($rus1["tipo"] =="root") { ?>
+								if(@$rus1["tipo"] =="root") { ?>
 									<br>
 									<input name="edit" type="submit" onclick="return alerta('<?php echo $strerror;?>','<?php echo $plea1.$bteditar;?>','');" class="btn" id="edit" value="<?php echo $bteditar;?>"/>&nbsp;&nbsp; 
 									<input name="create" id="create-user" type="button" class="btn" onclick="checkLength('<?php echo $strerror;?>','<?php echo $plea1.$bteliminar;?>','d');" value="<?php echo $bteliminar;?>"/>
 									<input type="hidden" name="crash"><?php
 								}	$k++;
-								if(($rus1["tipo"]) =="root"){ ?>
+								if((@$rus1["tipo"]) =="root"){ ?>
 									&nbsp;&nbsp;<input name="sal" id="sal" type="button" class="btn" value="<?php echo $btrestaurar;?>" onclick="javascript:window.parent.location='sal_rep.php?tb=mtto&legen=PlandeMtto.';"><?php	
 								} 			
 							} else {
