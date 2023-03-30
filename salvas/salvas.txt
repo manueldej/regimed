@@ -1,0 +1,1 @@
+carpeta destinada para almacenar las salvas de la Base de Datos.
