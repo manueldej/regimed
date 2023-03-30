@@ -529,7 +529,7 @@ $ggg=base64_encode($sql);
 						
 						?>
 						
-						<tr bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" id="cur_tr_<?php echo $p;?>" onMouseOver="this.style.background='#CCFFCC';colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>';colorear('<?php echo $p;?>','#DBE2D0');"  <?php if(($russx['tipo']) =="root" ){ ?> onClick="detalles('<?php echo $rows["id"]?>'); marca1(<?php echo $p;?>,'#ffffff');  <?php if(($rows['link']) !=""){ ?>dele1();<?php } ?>"<?php } ?>> 
+						<tr bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" id="cur_tr_<?php echo $p;?>" onMouseOver="this.style.background='#CCFFCC';colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>';colorear('<?php echo $p;?>','#CCFFCC');"  <?php if(($russx['tipo']) =="root" ){ ?> onClick="detalles('<?php echo $rows["id"]?>'); marca1(<?php echo $p;?>,'#ffffff');  <?php if(($rows['link']) !=""){ ?>dele1();<?php } ?>"<?php } ?>> 
 					    	<td width="5"><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><?php if(($russx['tipo']) =="root" ){ ?><input name="marcado[]" type="checkbox" style="display:none;" class="form-control" id="marcado<?php echo $p?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); <?php if(($rows['link']) !=""){ ?>dele1();<?php } ?>" value="<?php echo $rows["id"]?>" /><?php } ?></td>
 							<td width="28"><?php 
 							 if((strtoupper($rows["categ"])) =="COMPUTADORA" OR (strtoupper($rows["categ"])) =="COMPUTADORAS" OR (strtoupper($rows["categ"])) =="PC"){ ?>
@@ -537,9 +537,9 @@ $ggg=base64_encode($sql);
 							</td>
 							<td width="28"> <?php 
 								if(($rows['tiene']) =="s") { ?>
-									<a target="_blank" href="<?php echo $rows['link'];?>"><img src="images/090910_folder.png" width="25" height="25" border="0"/></a> <?php 
+									<a target="_blank" href="<?php echo $rows['link'];?>"><img src="images/090910_folder.png" width="24" height="24" border="0"/></a> <?php 
 								}else{ ?>
-									<img src="images/090819_folders.png" width="25" height="25" /> <?php 
+									<img src="images/090819_folders.png" width="24" height="24" /> <?php 
 								}?>							
 							</td>
 							<td width="83"><?php echo $rows['inv'];?></td>

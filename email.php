@@ -69,7 +69,7 @@ body {
 		$cuerpo = $_POST['cuerpo'];
 		$asunto = $_POST['asunto'] ;
 		$sCabeceras = 'From: '.$_SESSION ["valid_user"].' <'.$_POST['de'].'>' ;
-		$destino = array('cpollan@ahmzllo.granma.inf.cu','manuel.jesus@zetifmf.azcuba.cu') ;
+		$destino = array('manuel.jesus@zetifmf.azcuba.cu') ;
 		
 		$cuta=0;
 		for($r=0; $r<count($destino);$r++){
@@ -102,7 +102,7 @@ body {
 		  </tr>
 			<tr>
 				<td align="right"><strong><?php echo $Para;?>:</strong></td>
-				<td><input name="para" type="text" class="btn5" id="para" size="60" readonly="" value="Ing. Manuel de Jes&uacute;s N&uacute;&ntilde;ez Guerra; Msc. Carlos Poll&aacute;n Estrada"></td>
+				<td><input name="para" type="text" class="btn5" id="para" size="60" readonly="" value="Ing. Manuel de Jes&uacute;s N&uacute;&ntilde;ez Guerra"></td>
 			</tr>
 			<tr>
 				<td align="right"><strong><?php echo $Asunto;?>:</strong></td>
@@ -118,7 +118,7 @@ body {
 			<tr>
 				<td colspan="2">
 					<input name="ok" type="submit" id="ok" value="<?php echo $enviasenala ='Enviar';?>" class="btn">
-					<input name="cancel" type="button" id="cancel" value="<?php echo $btcancelar?>" class="btn">
+					<input name="cancel" type="button" id="cancel" onclick="document.location='creditos.php'" value="<?php echo $btcancelar?>" class="btn">
 				</td>
 			</tr>
 		</table>
@@ -145,7 +145,6 @@ $txtms = "";
 </div>
 <div class="dialogoInfo"></div>
 <div class="ContenedorAlert" id="cir"> </div>
-		<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
-		
-		<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>

@@ -45,7 +45,7 @@ function showModalz(pos,ima, txt){
 	<table align="center" border="0" cellpadding="0" cellspacing="0" style="height:440px; width:886px">
 	    <tr>
 			<td align="center" valign="top">
-				<div align="center"><img src="images/logoaplicacion.png" width="189" height="127" align="middle" /><br></div>
+				<div align="center"><img src="images/logoaplicacion.png" width="189" height="127" align="middle" /><br><br></div>
 				<div align="justify"><span style="color: red"><strong>Registro de Medios&nbsp;Inform&aacute;ticos</strong></span>, idea original, dise&ntilde;o y programaci&oacute;n: <a href="?m#modal2" class="tooltip"><font color="#000000"><b>Ing. Manuel de Jes&uacute;s N&uacute;&ntilde;ez Guerra</b></font><span onmouseover="this.style.cursor='pointer';"><?php echo $click1.strtolower($sho).$bddatosper;?></span></a>, Administrador superior "A" de redes inform&aacute;ticas de la F&aacute;brica &quot;Manuel Fajardo Rivero&quot;, programaci&oacute;n: <a class="tooltip" href="?p#modal2"><font color="#000000"><b>MSc. Carlos Poll&aacute;n Estrada</b></font><span onmouseover="this.style.cursor='pointer';"><?php echo $click1.strtolower($sho).$bddatosper;?></span></a>, Especialista en Ciencias Inform&aacute;ticas del &quot;Joven Club de Computaci&oacute;n de Guant&aacute;namo&quot;.&nbsp;</div>
 			</td>
 		</tr>

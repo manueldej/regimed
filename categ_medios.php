@@ -152,7 +152,7 @@ $ggg= base64_encode($sql);
 						$cta=0;
 						$i=0;
 						while($row=mysqli_fetch_array($result))    {	$i++;?>
-							<tr id="cur_tr_<?php echo $p?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#DBE2D0');" <?php if(($row["id"]) >20){ ?> onClick="marca1(<?php echo $p;?>,'#ffffff');" <?php } ?>>							
+							<tr id="cur_tr_<?php echo $p?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#CCFFCC');" <?php if(($row["id"]) >20){ ?> onClick="marca1(<?php echo $p;?>,'#ffffff');" <?php } ?>>							
 								<td width="37" class="Estilo2"><?php   
 									if(($row["id"]) >20){ $cta++; ?>
 										<input name="marcado[]" type="checkbox" class="boton" id="marcado<?php echo $p?>" onClick="marca1(<?php echo $p;?>,'#ffffff');" value="<?php echo $row["id"]?>" /><?php  

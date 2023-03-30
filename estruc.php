@@ -24,8 +24,8 @@ $bd=$database_miConex;
 if(isset($_GET['tb'])){$tb= $_GET['tb'];}
 $sql2 = $sql2 = "SHOW TABLE STATUS FROM ".$bd." LIKE '".$tb."'";
 $db_info_result = mysqli_query($miConex, $sql2);
-if((mysql_error($miConex)) !=""){
-	$Mensaje = mysql_error($miConex);
+if((mysqli_error($miConex)) !=""){
+	$Mensaje = mysqli_error($miConex);
 	show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 }
 $tmp = mysqli_fetch_array($db_info_result); 
@@ -134,10 +134,10 @@ $tmp = mysqli_fetch_array($db_info_result);
 		}
 		$tmp = mysqli_fetch_array($db_info_result);
 		//////
-		mysql_select_db($bd);
+		mysqli_select_db($bd);
 		$sqlx = 'SELECT '.$nom_cap.' FROM  '.$tb; 
 		$info_result = mysqli_query($miConex, $sqlx);
-		if((mysql_error($miConex)) !=""){
+		if((mysqli_error($miConex)) !=""){
 			$Mensaje = mysql_error($miConex);
 			show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 		}
@@ -150,8 +150,8 @@ $tmp = mysqli_fetch_array($db_info_result);
 			$sq = 'ALTER TABLE `'.$tb.'`  CHANGE `'.$nom_cap.'` `'.$nom_cap.'` '.$infe_row['DATA_TYPE'].'('.$metas->max_length.')';
 			echo $sq;
 			$rsq = mysqli_query($miConex, $sq);
-			if((mysql_error($miConex)) !=""){
-				$Mensaje = mysql_error($miConex);
+			if((mysqli_error($miConex)) !=""){
+				$Mensaje = mysqli_error($miConex);
 				show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 			}
 		}
@@ -160,14 +160,15 @@ $MainTableSql = "select * from ".$tb;
 
 $rsDA = mysqli_query($miConex, $MainTableSql);
 
-if((mysql_error($miConex)) !=""){
-	$Mensaje = mysql_error($miConex);
+if((mysqli_error($miConex)) !=""){
+	$Mensaje = mysqli_error($miConex);
 	show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 }
 
 $fields = mysqli_num_fields($rsDA);
-$rows   = mysqli_num_rows($rsDA);
-$ncpos = mysql_fetch_field($rsDA, 0);
+$cant_campos = intval($fields); 
+$rows  = mysqli_num_rows($rsDA);
+$ncpos = mysqli_fetch_field_direct($rsDA, 0);
 ?>
 	<script type="text/javascript">
 		var nav4 = window.Event ? true : false;
@@ -185,10 +186,11 @@ $ncpos = mysql_fetch_field($rsDA, 0);
 			document.location="paginas.php?id=11&tb=<?php echo $tb;?>&bd=<?php echo $bd;?>&tb=<?php echo $tb;?>&qunico=si&nomb=" + nomb;
 		}
 		function aunico(nomb){
-			if(confirm("<?php echo $seguro5;?>")){ 
+			if(confirm("Esta seguro")){ 
 				document.location="paginas.php?id=11&tb=<?php echo $tb;?>&bd=<?php echo $bd;?>&aunico=si&nomb=" + nomb;
 			}
 		}
+
 	</script>
 		<form onKeyUp="highlight(event)" onClick="highlight(event)" method="post" action="save/index.php" name="formy" target="_blank">
 			<input name="query1" type="hidden" value="<?php echo $MainTableSqup;?>">
@@ -203,6 +205,7 @@ $ncpos = mysql_fetch_field($rsDA, 0);
 			}
 		</script>
 <?php include('barra.php'); ?>
+<script type="text/javascript" src="ajax.js"></script>
 		<div id="buscad">
 <fieldset class='fieldset'><legend class='vistauserx'><?php echo $btdatabase.":&nbsp;<font color=red>".$bd."</font>&nbsp;&nbsp;".$tablasa.": <font color=red>".$tb."</font>&nbsp;&nbsp;&nbsp;&nbsp;(".$estructra3.")";?></legend>
 	<table width='100%' border='0' cellspacing='0' cellpadding='0' class="table">
@@ -222,24 +225,26 @@ $ncpos = mysql_fetch_field($rsDA, 0);
 			</tr><?php
 			 $i=0;
 			 $p=0;
-				while ($i < $fields) {
-					$fields  = mysqli_fetch_field_direct ($rsDA, $i); 
+				while ($i < intval($cant_campos)) {
+					$fields  = mysqli_fetch_field_direct($rsDA,$i); 
 					$flags = $fields->flags;
 					$name = $fields->name;
-					$meta  = mysqli_fetch_field_direct ($rsDA, $i); 
+					$meta  = mysqli_fetch_field_direct($rsDA,$i); 
 					
 					$infe = "SHOW COLUMNS FROM ".$bd.".".$meta ->table." WHERE Field = '".$meta ->name."'";
+					echo $infe; 
+					
 					$infe_query = mysqli_query($miConex, $infe);
-					if((mysql_error($miConex)) !=""){
+					if((mysqli_error($miConex)) !=""){
 						$Mensaje = mysql_error($miConex);
 						show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 					}
 					$infe_row = mysqli_fetch_assoc($infe_query);
 					$colla="SHOW TABLE STATUS FROM ".$bd." LIKE '".$meta ->table."'";
-					$qcolla=mysqli_query($miConex, $colla) or die(mysql_error($miConex));
+					$qcolla=mysqli_query($miConex, $colla) or die(mysqli_error($miConex));
 					$rcolla = mysqli_fetch_assoc($qcolla);?>
-					<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="exped('<?php echo $name; ?>'); marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="contextual(event,'<?php echo $name; ?>');"> 
-				        <td width="5"><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff'); " value="<?php echo $name; ?>" style="cursor:pointer;" /></td>
+			<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#CCFFCC');" onclick="marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="contextual(event,'<?php echo $name; ?>');"> 
+				<td width="5"><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff');" value="<?php echo $name; ?>" style="cursor:pointer;" /></td>
 						<td width='17%'><?php echo $name;?></td>
 						<td width='14%'> <?php echo $infe_row['Type']; ?> </td>
 						<td width='14%'> 
@@ -264,7 +269,7 @@ $ncpos = mysql_fetch_field($rsDA, 0);
 							<?php }
 						  ?>						  </td>
 						  <td width='18%' align="center"><?php echo $tmp['Engine'];?></td>
-		  </tr>
+		    </tr>
 						<?php
 						$i++; $p++;
 				}	?>

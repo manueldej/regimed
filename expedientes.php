@@ -305,7 +305,7 @@ function contextual(event,id){
 	<div id="resultado">
 		<form action="q.php" method="post" name="frm1" id="frm1">
     		<table border="0" class="table" align="center" id="tablestructure" cellpadding="0" cellspacing="0">
-				<tr class="vistauser1" style="background: #eee2ddb3;">
+				<tr class="vistauser1" style="background: #d34d4629;">
 				    <td width="20">
 						<div id="cheque1" onClick="exped1('<?php echo $inicio;?>','<?php echo $registros;?>'); marcar_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:block; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 						<div id="cheque2" onClick="exped2(); desmarca_todo();" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent; display:none; cursor:pointer;">&nbsp;&nbsp;&nbsp;&nbsp;</div>
@@ -333,7 +333,7 @@ function contextual(event,id){
 			
 			while($row=mysqli_fetch_array($result)) { $i++;	
 				if(($row["nombre"]) !="Reparaciones"){ $rowidarea = $row["idarea"]; ?>
-				<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#FCF8E2');" onclick="exped('<?php echo $rowidarea;?>', document.getElementById('marcado<?php echo $p;?>').checked); marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="contextual(event,'<?php echo $row["idarea"]?>');"> 
+				<tr id="cur_tr_<?php echo $p;?>" bgcolor="<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#CCFFCC');" onclick="exped('<?php echo $rowidarea;?>', document.getElementById('marcado<?php echo $p;?>').checked); marca1(<?php echo $p;?>,'#ffffff')" onContextMenu="contextual(event,'<?php echo $row["idarea"]?>');"> 
 					
 					<td width="5"><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none; cursor:pointer;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff');" value="<?php echo $row['idarea']?>" /></td>	
 					<td width="20"><span manolo="<?php echo $TOTALES." PC: ".$row['computadoras'];?>" style="background: url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -702px 202px transparent; height: 26px; width: 30px; float: right; cursor: pointer;" onmouseover="this.style.cursor='pointer';" onclick="seguro4('3');"></span></td>

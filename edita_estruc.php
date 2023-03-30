@@ -27,18 +27,18 @@ if(isset($_POST['tb'])){$tb= $_POST['tb'];}
 if(isset($_POST['marcado'])){$campo= $_POST['marcado'];}
 $nombre_tabla = $tb;
 $sql2 = "SHOW TABLE STATUS FROM ".$bd." LIKE '".$tb."'";
-$db_info_result = mysqli_query($sql2);
-if((mysql_error($miConex)) !=""){
-	$Mensaje = mysql_error($miConex);
+$db_info_result = mysqli_query($miConex, $sql2);
+if((mysqli_error($miConex)) !=""){
+	$Mensaje = mysqli_error($miConex);
 	show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 }
 $tmp = mysqli_fetch_array($db_info_result);
 
 $tot = count($campo);
 $MainTableSql = "select * from ".$tb;
-$rsDA = mysqli_query($MainTableSql);
-if((mysql_error($miConex)) !=""){
-	$Mensaje = mysql_error($miConex);
+$rsDA = mysqli_query($miConex, $MainTableSql);
+if((mysqli_error($miConex)) !=""){
+	$Mensaje = mysqli_error($miConex);
 	show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 }
 
@@ -86,24 +86,27 @@ include('barra.php'); ?>
 					$a=0;	
 					while ($a<$tot) {
 						$sw="select ".$campo[$a]." from ".$tb;
-						$q_sw = mysqli_query($sw);
-						if((mysql_error($miConex)) !=""){
-							$Mensaje = mysql_error($miConex);
+						$q_sw = mysqli_query($miConex, $sw);
+						if((mysqli_error($miConex)) !=""){
+							$Mensaje = mysqli_error($miConex);
 							show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 						}
-							$type  = mysql_field_type  ($q_sw, 0);
-							$name  = mysql_field_name  ($q_sw, 0);
-							$len   = mysql_field_len   ($q_sw, 0);
-							$flags = mysql_field_flags ($q_sw, 0);
-							$meta = mysql_fetch_field($q_sw, 0);	
+							//$type  = mysql_field_type  ($q_sw, 0); //extensión fue declarada obsoleta en PHP 5.5.0 y eliminada en PHP 7.0.0
+							$type  = mysqli_fetch_field_direct($q_sw, 0);
+							$name  = mysqli_fetch_field_direct  ($q_sw, 0);
+							$len   = mysqli_fetch_field_direct   ($q_sw, 0);
+							$flags = mysqli_fetch_field_direct ($q_sw, 0);
+							$meta = mysqli_fetch_field_direct($q_sw, 0);	
 							//mysql_select_db("information_schema");
+													
 						$tamanocampo = "SHOW TABLE STATUS FROM ".$bd." LIKE '".$meta ->table."'";
-						$qtamanocampo = mysqli_query($tamanocampo);
+						$qtamanocampo = mysqli_query($miConex, $tamanocampo);
 						$rtamanocampo = mysqli_fetch_assoc($qtamanocampo);
 						$infe = "SHOW COLUMNS FROM ".$bd.".".$rtamanocampo['Name']." where Field = '".$meta ->name."'";
-						$infe_query = mysqli_query($infe);
-						if((mysql_error($miConex)) !=""){
-							$Mensaje = mysql_error($miConex);
+						$infe_query = mysqli_query($miConex, $infe);
+											
+						if((mysqli_error($miConex)) !=""){
+							$Mensaje = mysqli_error($miConex);
 							show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;	
 						}
 						$infe_row = mysqli_fetch_assoc($infe_query);
@@ -136,18 +139,20 @@ include('barra.php'); ?>
 							<td valign="middle"><input class="boton" type="text" id="field_length[<?php echo $a;?>]" name="field_length[<?php echo $a;?>]" size="8" value="<?php if((strtoupper($infe_row['Type'])) =="TEXT"){ echo "65535"; }elseif((strtoupper($rtamanocampo['Data_length'])) ==""  AND (strtoupper($infe_row['Type'])) =="INT"){ echo str_replace('(','',substr(strrchr ($infe_row['Type'], "("), 0, -1));}elseif((strtoupper($rtamanocampo['Data_length'])) ==""){ echo "-"; }else{echo str_replace('(','',substr(strrchr ($infe_row['Type'], "("), 0, -1));}?>"/>      </td>
 							<td valign="middle">
 								<select class="boton" name="field_null[<?php echo $a;?>]">
-									<option value="<?php	  if(($meta->not_null) ==1){echo "NOT NULL";}  if(($meta->not_null) ==0){echo "default NULL";} ?>" ><?php if(($meta->not_null) ==1){echo "not null";} if(($meta->not_null) ==0){echo "null";}  ?></option>
+									<option value="<?php if((@$meta->not_null) ==1){echo "NOT NULL";} if((@$meta->not_null) ==0){echo "default NULL";} ?>" ><?php if((@$meta->not_null) ==1){echo "not null";} if((@$meta->not_null) ==0){echo "null";}  ?></option>
 									<option value="NOT NULL">not null</option>
 									<option value="NULL">null</option>
 								</select>
-						  </td><?php 
+						    </td><?php 
 								$colus = "SHOW COLUMNS FROM ".$bd.".".$tb." WHERE Field ='".$meta->name."'";
-								$qcolus = mysqli_query($colus) or die(mysql_error($miConex));
+								echo $colus;
+								
+								$qcolus = mysqli_query($miConex, $colus) or die(mysqli_error($miConex));
 								$rcolus = mysqli_fetch_array($qcolus); ?>
 							<td valign="middle">
 								<select class="boton" name="field_extra[<?php echo $a;?>]" id="field_extra[<?php echo $a;?>]">
-									<option value="<?php if((stristr ($flags, 'auto_increment')) !="" ){echo "AUTO_INCREMENT";}?>"><?php if((stristr ($flags, 'auto_increment')) !="" ){ echo "auto_increment"; }?></option>
-									<option value="AUTO_INCREMENT">auto_increment</option>
+									<option value="<?php if((stristr ($flags, 'AUTO_INCREMENT')) !="" ){echo "AUTO_INCREMENT";}?>"><?php if((stristr ($flags, 'AUTO_INCREMENT')) !="" ){ echo "AUTO_INCREMENT"; }?></option>
+									<option value="AUTO_INCREMENT">AUTO_INCREMENT</option>
 								</select>
 						  </td>
 							<td valign="middle"><input type="checkbox" name="field_key[<?php echo $a;?>]" value="1" title="Primaria" <?php if((stristr ($flags, 'primary_key')) =="primary_key" ){ echo "checked";}  ?> /></td>
@@ -155,10 +160,10 @@ include('barra.php'); ?>
 								<select class="boton" name="tbl_type[<?php echo $a;?>]">
 									<option value="<?php echo $tmp['Engine'];?>" selected="selected"><?php echo $tmp['Engine'];?></option><?php 
 									$m = "SHOW ENGINES";
-									$qm = mysqli_query($m);
-									if((mysql_error($miConex)) !=""){
+									$qm = mysqli_query($miConex, $m);
+									if((mysqli_error($miConex)) !=""){
 
-										$Mensaje = mysql_error($miConex);
+										$Mensaje = mysqli_error($miConex);
 										show_message2($strerror,"<strong>".$strError1."</strong>",$Mensaje,"cancel",$strOK,"paginas.php?id=2","#026CAE",$bd);exit;
 									}
 									while($rowcp=mysqli_fetch_array($qm)){
@@ -166,7 +171,7 @@ include('barra.php'); ?>
 											<option  onMouseOver="this.style.cursor='pointer';" value="<?php echo strtolower($rowcp['Engine']);?>" title="<?php echo traduce($rowcp['Comment'],$_COOKIE["leng"])?>" <?php if(($rowcp['Engine']) =="MyISAM"){ echo ' selected="selected"'; }?>><?php echo $rowcp['Engine'];?></option><?php 
 										} 
 									} 
-									mysql_select_db($bd); ?>
+									mysqli_select_db($bd); ?>
 								</select>
 						  </td>
 							<td valign="middle">
@@ -174,7 +179,7 @@ include('barra.php'); ?>
 									<option value="1"><?php echo $fina1;?></option>
 									<option value="0"><?php echo $fina;?></option>
 									<optgroup label="<?php echo $fina2;?>"><?php
-										mysql_select_db($bd);
+										mysqli_select_db($bd);
 										$rest = mysqli_query($miConex, "SELECT * FROM ".$tb);
 										$hay = @mysqli_num_fields($rest);
 										$i=0;

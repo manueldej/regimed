@@ -193,9 +193,8 @@ $rowscomp = mysqli_fetch_array($resultcomp);
 	  document.creaExp.submit();
 	}
 	
-	function __print(categ, tbl) {
-	  document.imprime.categ.value = categ; 
-	  document.imprime.tb.value = tbl;
+	function __print(categ) {
+	  document.imprime.categ.value = categ;
 	  document.imprime.action="imprimir/index1.php";
 	  document.imprime.target="_blank";
 	  document.imprime.submit();
@@ -309,7 +308,6 @@ $rowscomp = mysqli_fetch_array($resultcomp);
 </form>
 <form method="post" name="imprime">
 	<input name="categ" type="hidden">
-	<input name="tb" type="hidden">
 </form>
 <form action="" method="post" name="wq" id="wq">
 	<input name="q" value="<?php echo $q;?>" type="hidden">
@@ -349,7 +347,7 @@ $rowscomp = mysqli_fetch_array($resultcomp);
 						$filacargo = mysqli_fetch_array($resulcargo); ?>
 						
 					  <td class="exel"><a href="expexp.php?query=<?php echo $ggg;?>&tb=exp&categ=<?php echo $categ; ?>" target="_blank" class="tooltip">&nbsp;&nbsp;&nbsp;<span onMouseOver="this.style.cursor='pointer';" ><?php echo strtoupper($cr_exel);?></span></a></td>
-                      <td class="printer"><a style="cursor:pointer;" onclick="__print('<?php echo $categ; ?>','exp');" target="_blank" class="tooltip">&nbsp;&nbsp;&nbsp;<span onMouseOver="this.style.cursor='pointer';" ><?php echo strtoupper($sav_print);?></span></a></td>
+                      <td class="printer"><a style="cursor:pointer;" onclick="__print('<?php echo $categ; ?>');" target="_blank" class="tooltip">&nbsp;&nbsp;&nbsp;<span onMouseOver="this.style.cursor='pointer';" ><?php echo strtoupper($sav_print);?></span></a></td>
                     </tr>
                   </table>	
 				</div>			
@@ -372,7 +370,7 @@ $rowscomp = mysqli_fetch_array($resultcomp);
 			  <tr>
 				<td><span class="vistauser1"><b><?php echo $btResponsable; ?>:</b></span></td>
 				<td><?php echo $custoq; ?></td>
-				<td width="44"><span class="vistauser1"><b><?php echo $btnCargo; ?>:</b></span></td>
+				<td><span class="vistauser1"><b><?php echo $btnCargo; ?>:</b></span></td>
 				<td><?php echo $filacargo['cargo']; ?></td>
 			  </tr>
 			  <tr>
@@ -415,9 +413,10 @@ $rowscomp = mysqli_fetch_array($resultcomp);
 								
 									foreach ($varcomponente[0] as $clave => $valor) { 
 										   $nombcampo[] = $valor; 
-									}									
+									}
+									
 								?>
-								<span onmouseover="this.style.color='rgb(79, 105, 179)';" onmouseout="this.style.color='rgb(0, 0, 0)';">&nbsp;<?php echo $row['CPU']; ?><?php if ($numre!=0 and $_SESSION ["valid_user"]!='invitado') { ?><i id="editcpu" onclick="seguro4('<?php echo $row["CPU"]; ?>','<?php echo $categ;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Microprocesador','<?php echo $row['CPU']; ?>','editar');" manolo="Editar&nbsp;<?php echo $row['CPU']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 0px; margin-left: 9px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><i id="deleCPU" onclick="__deletecompo('<?php echo $filacomp["id"]; ?>'); __ir('<?php echo $categ;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm');" manolo="Eliminar Compontes del:&nbsp;<?php echo $row['CPU']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 0px; margin-left: 21px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -23px -250px;"></i></span>
+								<span onmouseover="this.style.color='rgb(79, 105, 179)';" onmouseout="this.style.color='rgb(0, 0, 0)';">&nbsp;<?php echo $row['CPU']; ?><?php if ($numre!=0 and $_SESSION ["valid_user"]!='invitado') { ?><i id="editcpu" onclick="seguro4('<?php echo $row["CPU"]; ?>','<?php echo $categ;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm','Microprocesador','<?php echo $row['CPU']; ?>','editar');" manolo="Editar&nbsp;<?php echo $row['CPU']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 0px; margin-left: 4px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -1px -226px;"></i><i id="deleCPU" onclick="__deletecompo('<?php echo $filacomp["id"]; ?>'); __ir('<?php echo $categ;?>','<?php echo $idunidadesc;?>','<?php echo $palabra;?>','rm');" manolo="Eliminar Compontes del:&nbsp;<?php echo $row['CPU']; ?>" style="cursor:pointer; height: 26px; width: 16px; float: left; position: absolute; cursor:pointer; margin-top: 0px; margin-left: 21px; background: transparent url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -23px -250px;"></i></span>
 								<div id="<?php echo $row['CPU']; ?>">
 								<form name="cpu" action="" method="post">
 								<table width="30%" align="center" class="table">

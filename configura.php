@@ -268,7 +268,7 @@ $existenciadt = mysqli_num_rows($resulta);
 	<div id="crpo">
 <fieldset class='fieldset'><?php if(isset($_POST['fusionar'])){  echo '<legend class="vistauserx">'.strtoupper($btfusionar).'</legend>';}
 	if(isset($_REQUEST["p"]) AND ($_REQUEST["p"]) =='p' AND !isset($_REQUEST['nuevo'])){	?>
-		<legend class="vistauserx"><?php echo $leyenda[1]."--> ".$btdatabase.":&nbsp;<font color=red>".$database_miConex."</font>";?></legend>
+		<legend class="vistauserx"><?php echo $leyenda[1]." => ".$btdatabase.":&nbsp;<font color=red>".$database_miConex."</font>";?></legend>
 		    <div id="openModal" class="modalDialog">
 			<div>
 				<button title="<?php echo $cerrar2;?>" class="closex" type="button" onclick="document.location='#closex';">X</button>
@@ -296,37 +296,39 @@ $existenciadt = mysqli_num_rows($resulta);
 					$rus1 = mysqli_fetch_array($us1); $i++; 
 					
 					$dquien = mysqli_query($miConex, "SELECT * FROM usuarios where login ='".$MainTableValues["usuario"]."'") or die(mysqli_error($miConex));
-					$rw_tipo = mysqli_fetch_array($dquien);
+					$rw_tipo = mysqli_fetch_array($dquien); ?>
 					
-					?>
-						<tr bgcolor="<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>" id="cur_tr_<?php echo $p;?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC');" onMouseOut="this.style.background='<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#DBE2D0');" style="cursor:pointer;">  
-							<td width="2%"><div onclick="marca1(<?php echo $p;?>,'#ffffff'); marca_edit('<?php echo $p;?>','<?php echo $rw_tipo['tipo']; ?>');" id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input onclick="marca1(<?php echo $p;?>,'#ffffff'); marca_edit('<?php echo $p;?>','<?php echo $rw_tipo['tipo']; ?>');" type="checkbox" style="display:none; cursor:pointer;" id="marcado<?php echo $p;?>"  name="marcado[]" value="<?php  echo $MainTableValues['id'];?>"></td>
-							<td width="20%"><?php echo $MainTableValues["usuario"];?></td>
-							<td><div align="center"><input disabled="disabled" style="cursor:pointer;" name="salva[]" id="salva[<?php echo $p;?>]" type="checkbox" class="form-control" <?php if(($MainTableValues["salva"]) =="s"){ echo "checked"; } ?> value="s" size="17"></div></td>
-							<td><div align="center"><input disabled="disabled" style="cursor:pointer;" name="pass[]" id="pass[<?php echo $p;?>]" class="form-control" type="checkbox" <?php  if(($MainTableValues["pass"]) =="s"){ echo "checked"; } ?>  value="s"></div></td>
-							<td><div align="center" id="visi[<?php echo $p;?>]" style="display:none;">
-								<span>
-								<span onClick="mueve('visitas[<?php echo $p;?>]',getElementById('visitas[<?php echo $p;?>]').value,'100','ascendente');" style="cursor:pointer; position: absolute; margin-left: 30px; margin-top: 5px; z-index: 999;"><img src="gfx/asc.png"></span>
-								<span onClick="mueve('visitas[<?php echo $p;?>]',getElementById('visitas[<?php echo $p;?>]').value,'100','descendente');" style="cursor:pointer; position: absolute; margin-top: 17px; margin-left:30px; z-index: 999;"><img src="gfx/desc.png"></span>
-								<input disabled="disabled" name="visitas[]" id="visitas[<?php echo $p;?>]" type="text" maxlength="3" value="<?php echo $MainTableValues["visitas"]; ?>" onKeyPress="return acceptNum(event);" class="mostrar" readonly>
-								</span></div><div align="center" id="vis[<?php echo $p;?>]" style="display:block;">
-								<input name="total_registros" id="muestra[<?php echo $p;?>]" disabled="disabled" class="form-control" type="text"  value="<?php echo $MainTableValues['visitas'];?>" size="3" style="width:12%;"></div>
-						    </td>
-							<td><div align="center" id="colum[<?php echo $p;?>]" style="display:none;">
-								<span>
-								<span onClick="mueve('columnas[<?php echo $p;?>]',getElementById('columnas[<?php echo $p;?>]').value,<?php echo $cantidaddecampos-2; ?>,'ascendente');" style="cursor:pointer; position: absolute; margin-left: 30px; margin-top: 5px; z-index: 999;"><img src="gfx/asc.png"></span>
-								<span onClick="mueve('columnas[<?php echo $p;?>]',getElementById('columnas[<?php echo $p;?>]').value,<?php echo $cantidaddecampos-2; ?>,'descendente');" style="cursor:pointer; position: absolute; margin-top: 17px; margin-left:30px; z-index: 999;"><img src="gfx/desc.png"></span>
-								<input disabled="disabled" name="columnas[]" id="columnas[<?php echo $p;?>]" type="text" maxlength="3" value="<?php echo $MainTableValues["columnas"]; ?>" onKeyPress="return acceptNum(event);" class="mostrar" readonly>
-								</span></div><div align="center" id="registros[<?php echo $p;?>]" style="display:block;">
-								<input name="total_registros" id="muestra1[<?php echo $p;?>]" disabled="disabled" class="form-control" type="text"  value="<?php echo $MainTableValues['columnas'];?>" size="3" style="width:12%;"></div>
-						    </td>
-							<td><div align="center"><input disabled="disabled" name="busca[]" id="busca[<?php echo $p;?>]" type="checkbox" <?php  if(($MainTableValues["busca"]) =="s"){ echo "checked"; } ?> value="s" class="form-control" size="3" style="width: 12%;"></div></td>
-							<?php if($rus['tipo']=="root") { ?>
-							<td><div align="center"><input disabled="disabled" name="acceso[]" id="acceso[<?php echo $p;?>]" type="checkbox" <?php  if(($MainTableValues["acceso"]) =="s"){ echo "checked"; } ?> value="s" class="form-control" size="1" style="width: 12%;"></div></td>
-							<?php } ?>
-							<td>&nbsp;&nbsp;<?php echo $rus1['entidad'];?></td>
-						</tr>
-						
+					<tr bgcolor="<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>" id="cur_tr_<?php echo $p;?>" onMouseOver="this.style.background='#CCFFCC'; colorear('<?php echo $p;?>','#CCFFCC');" onMouseOut="this.style.background='<?php echo $uCPanel->ColorFila($p,$color1,$color2);?>'; colorear('<?php echo $p;?>','#CCFFCC');" style="cursor:pointer;">  
+						<td width="2%"><div onclick="marca1(<?php echo $p;?>,'#ffffff'); marca_edit('<?php echo $p;?>','<?php echo $rw_tipo['tipo']; ?>');" id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input onclick="marca1(<?php echo $p;?>,'#ffffff'); marca_edit('<?php echo $p;?>','<?php echo $rw_tipo['tipo']; ?>');" type="checkbox" style="display:none; cursor:pointer;" id="marcado<?php echo $p;?>"  name="marcado[]" value="<?php  echo $MainTableValues['id'];?>"></td>
+						<td width="20%"><?php echo $MainTableValues["usuario"];?></td>
+						<td><div align="center"><input disabled="disabled" style="cursor:pointer;" name="salva[]" id="salva[<?php echo $p;?>]" type="checkbox" class="form-control" <?php if(($MainTableValues["salva"]) =="s"){ echo "checked"; } ?> value="s" size="17"></div></td>
+						<td><div align="center"><input disabled="disabled" style="cursor:pointer;" name="pass[]" id="pass[<?php echo $p;?>]" class="form-control" type="checkbox" <?php  if(($MainTableValues["pass"]) =="s"){ echo "checked"; } ?>  value="s"></div></td>
+						<td><div align="center" id="visi[<?php echo $p;?>]" style="display:none;">
+							<span>
+							<span onClick="mueve('visitas[<?php echo $p;?>]',getElementById('visitas[<?php echo $p;?>]').value,'100','ascendente');" style="cursor:pointer; position: absolute; margin-left: 30px; margin-top: 5px; z-index: 999;"><img src="gfx/asc.png"></span>
+							<span onClick="mueve('visitas[<?php echo $p;?>]',getElementById('visitas[<?php echo $p;?>]').value,'100','descendente');" style="cursor:pointer; position: absolute; margin-top: 17px; margin-left:30px; z-index: 999;"><img src="gfx/desc.png"></span>
+							
+							<input disabled="disabled" name="visitas[]" id="visitas[<?php echo $p;?>]" type="text" maxlength="3" value="<?php echo $MainTableValues["visitas"]; ?>" onKeyPress="return acceptNum(event);" class="mostrar" readonly>
+									
+							</span></div><div align="center" id="vis[<?php echo $p;?>]" style="display:block;">
+							
+							<input name="total_registros" id="muestra[<?php echo $p;?>]" disabled="disabled" class="form-control" type="text"  value="<?php echo $MainTableValues['visitas'];?>" size="3" style="width:12%;">
+							</div>
+						</td>
+						<td><div align="center" id="colum[<?php echo $p;?>]" style="display:none;">
+							<span>
+							<span onClick="mueve('columnas[<?php echo $p;?>]',getElementById('columnas[<?php echo $p;?>]').value,<?php echo $cantidaddecampos-2; ?>,'ascendente');" style="cursor:pointer; position: absolute; margin-left: 30px; margin-top: 5px; z-index: 999;"><img src="gfx/asc.png"></span>
+							<span onClick="mueve('columnas[<?php echo $p;?>]',getElementById('columnas[<?php echo $p;?>]').value,<?php echo $cantidaddecampos-2; ?>,'descendente');" style="cursor:pointer; position: absolute; margin-top: 17px; margin-left:30px; z-index: 999;"><img src="gfx/desc.png"></span>
+							<input disabled="disabled" name="columnas[]" id="columnas[<?php echo $p;?>]" type="text" maxlength="3" value="<?php echo $MainTableValues["columnas"]; ?>" onKeyPress="return acceptNum(event);" class="mostrar" readonly>
+							</span></div><div align="center" id="registros[<?php echo $p;?>]" style="display:block;">
+							<input name="total_registros" id="muestra1[<?php echo $p;?>]" disabled="disabled" class="form-control" type="text"  value="<?php echo $MainTableValues['columnas'];?>" size="3" style="width:12%;"></div>
+						</td>
+						<td><div align="center"><input disabled="disabled" name="busca[]" id="busca[<?php echo $p;?>]" type="checkbox" <?php  if(($MainTableValues["busca"]) =="s"){ echo "checked"; } ?> value="s" class="form-control" size="3" style="width: 23%;"></div></td>
+						<?php if($rus['tipo']=="root") { ?>
+						<td><div align="center"><input disabled="disabled" name="acceso[]" id="acceso[<?php echo $p;?>]" type="checkbox" <?php  if(($MainTableValues["acceso"]) =="s"){ echo "checked"; } ?> value="s" class="form-control" size="1" style="width: 23%;"></div></td>
+						<?php } ?>
+						<td>&nbsp;&nbsp;<?php echo $rus1['entidad'];?></td>
+					</tr>						
 						<?php 	
 						$p++;  $r++;  
 					} ?>
@@ -464,7 +466,7 @@ $existenciadt = mysqli_num_rows($resulta);
 								$p1=0;
 								while ($rqseldgr= mysqli_fetch_array($qseldgr)) { $i++; ?>						
 									<tr bgcolor="<?php  echo $uCPanel->ColorFila($p1,$color1,$color2);?>" id="cur_tr_<?php echo $p1;?>" onMouseOver="this.style.background='#CCFFCC';colorear('<?php echo $p1;?>','#CCFFCC'); this.style.cursor='pointer';" onMouseOut="this.style.background='<?php  echo $uCPanel->ColorFila($p1,$color1,$color2);?>';colorear('<?php echo $p1;?>','#DBE2D0');" onClick="marca1(<?php echo $p1;?>,'#ffffff')" >								 
-										<td width="4%"><input name="marcado[]" id="marcado[<?php echo $p1;?>]" onClick="marca1(<?php echo $p1;?>,'#ffffff')"  type="checkbox" value="<?php  echo $rqseldgr['id_datos'];?>"></td>
+										<td width="4%"><input name="marcado[]" id="marcado<?php echo $p1;?>" onClick="marca1(<?php echo $p1;?>,'#ffffff')"  type="checkbox" value="<?php  echo $rqseldgr['id_datos'];?>"></td>
 										<td width="96%"><label for="marcado[]"><?php  echo $rqseldgr['entidad'];?></label></td>
 									</tr><?php
 									$p1++;
