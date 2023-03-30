@@ -1,1 +1,1 @@
-Aqué se generarám fichero .rar con las exportaciones
+Carpeta utilizada por la aplicación para expotar ficheros.rar de las exportaciones generadas
