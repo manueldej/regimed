@@ -414,17 +414,17 @@ function intra($campo, $miConex){
 		echo $unidad."-><font color=red>".$rsedgs['entidad']."</font>"; 
 	} ?>
 </legend>
-<?php
+<?php 
 	if(!isset($_GET['ini'])){ 
-	    if ($sql_coun !== 28 ){	?>
-		<table width="100%" border='0' class='sgf1' align='center' cellpadding="0" cellspacing="0">
+	    if ($sql_coun > 28 ){ ?>
+		<table width="100%" border='1' class='sgf1' align='center' cellpadding="0" cellspacing="0">
 			<tr> 
 			   <td width="25px;">&nbsp;</td>	
 		       <td class="vistauser1" align="left" ><b>
 				<?php $fields = mysqli_fetch_field_direct ($result, 1); echo strtoupper($fields->name); ?></b>
 				</td>
 					<?php 				
-						for($n=21; $n<=mysqli_num_fields($result)-2; $n++){ 
+						for($n=21; $n<=mysqli_num_fields($result)-3; $n++){ 
 							$fields = mysqli_fetch_field_direct ($result, $n); 
 							$name1 = $fields->name;
 							$flags = $fields->flags;?>	 
@@ -445,7 +445,7 @@ function intra($campo, $miConex){
 			<tr>
 			    <td>&nbsp;</td>
 				<td align="left"><?php echo $row['nombre'];?></td><?php 
-					for($n=21; $n<=mysqli_num_fields($result)-2; $n++){ 
+					for($n=21; $n<=mysqli_num_fields($result)-3; $n++){ 
 					    $fields = mysqli_fetch_field_direct ($result, $n); 
 						$name1 = $fields->name;
 						$flags = $fields->flags;?>
@@ -481,9 +481,8 @@ function intra($campo, $miConex){
 			    } ?>
 		</table><?php
 	}else{ 
-	    if ($sql_coun !== 28 ) {
-	 ?>	
-				<table width="100%" border='0' class='sgf1' align='center' cellpadding="0" cellspacing="0">
+	    if ($sql_coun > 28 ) { ;
+	 ?>		<table width="100%" border='0' class='sgf1' align='center' cellpadding="0" cellspacing="0">
 					<tr>
 					    <td class="vistauser1" align='left'><b>
 						<?php $field = mysqli_fetch_field_direct ($result, 1); echo strtoupper($field->name); ?></b>
