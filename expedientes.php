@@ -19,7 +19,7 @@
 #############################################################################################################
 include('header.php');
 $ordena="";
-$cat_medios = Array("computadoras"=>"images/pc.png", "impresora"=>"images/impresoras.png", "monitor"=>"images/monitores.png", "escanner"=>"images/scan.png", "teclado"=>"images/teclado.png", "switch"=>"images/swicth.png", "router"=>"images/router.png", "modem"=>"images/modem.png", "ploter"=>"images/ploter.png", "camara"=>"images/camara.png", "memorias"=>"images/memoria_usb.png", "mouse"=>"images/mouse_optico.png","adaptadores"=>"images/adaptadores.png","ups"=>"images/ups.png","bocinas"=>"images/bocinas.png","fotocopiadora"=>"images/fotocopiadora.png","pinza"=>"images/pinza.png","hddinternos"=>"images/hddinterno.png","filtros"=>"images/filtros.png","hddexternos"=>"images/hddexterno.png","dvd"=>"images/dvd.png","cd"=>"images/cd.png","cartuchos"=>"images/cartucho.png","toner"=>"images/toner.png","voip"=>"images/voip.png","dataswicht"=>"images/dataswitch.png","datashow"=>"images/datashow.png");
+$cat_medios = Array("computadoras"=>"images/pc.png", "impresora"=>"images/impresoras.png", "monitor"=>"images/monitores.png", "escanner"=>"images/scan.png", "teclado"=>"images/teclado.png", "switch"=>"images/swicth.png", "router"=>"images/router.png", "modem"=>"images/modem.png", "ploter"=>"images/ploter.png", "camara"=>"images/camara.png", "memorias"=>"images/memoria_usb.png", "mouse"=>"images/mouse_optico.png","adaptadores"=>"images/adaptadores.png","ups"=>"images/ups.png","bocinas"=>"images/bocinas.png","fotocopiadora"=>"images/fotocopiadora.png","pinza"=>"images/pinza.png","hddinternos"=>"images/hddinterno.png","filtros"=>"images/filtros.png","hddexternos"=>"images/hddexterno.png","dvd"=>"images/dvd.png","cd"=>"images/cd.png","cartuchos"=>"images/cartucho.png","toner"=>"images/toner.png","voip"=>"images/voip.png","dataswitch"=>"images/dataswitch.png","datashow"=>"images/datashow.png","fax"=>"images/fax.png");
 
 if ($_SESSION ["valid_user"]!='invitado') {
 	$selvi = "select visitas from preferencias where usuario='".$_SESSION['valid_user']."'";
@@ -312,10 +312,13 @@ function contextual(event,id){
 					</td>
 					<td width="5"></td>
 					<?php 
-						for($n=1; $n<=28; $n++){ 
+				
+						for($n=1; $n<=$n_campos-2; $n++){ 
 							$fields  = mysqli_fetch_field_direct ($result, $n); 
 							$name1 = $fields->name;
-							$flags = $fields->flags; ?>
+							$flags = $fields->flags; 
+					
+					?>
 						  <td width="<?php if ($name1=="nombre") { echo "200px;"; }else { echo "25px;"; } ?>"><span class="Estilo4" style="margin-left: -9px; cursor:pointer;" >
 						<?php if (array_key_exists($name1, $cat_medios)) { 
 								 echo "<span manolo='".strtoupper($name1)."'><img src='".$cat_medios[$name1]."' width='24' height='24' border='0'></span>";
@@ -338,7 +341,7 @@ function contextual(event,id){
 					<td width="5"><div id="chequeadera<?php echo $p;?>" style="background:url(gfx/checkbox.gif) no-repeat scroll 0 -15px transparent;">&nbsp;&nbsp;&nbsp;&nbsp;</div><input name="marcado[]" type="checkbox" style="display:none; cursor:pointer;" id="marcado<?php echo $p;?>" onClick="marca1(<?php echo $p;?>,'#ffffff');" value="<?php echo $row['idarea']?>" /></td>	
 					<td width="20"><span manolo="<?php echo $TOTALES." PC: ".$row['computadoras'];?>" style="background: url(&quot;images/glyphicons-halflings.png&quot;) repeat scroll -702px 202px transparent; height: 26px; width: 30px; float: right; cursor: pointer;" onmouseover="this.style.cursor='pointer';" onclick="seguro4('3');"></span></td>
 				<?php 
-						for($n=1; $n<=28; $n++){ 
+						for($n=1; $n<=$n_campos-2; $n++){ 
 							$field = mysqli_fetch_field_direct($result, $n);
 							$name  = $field->name;
 							$flags = $field->flags; 
@@ -353,7 +356,7 @@ function contextual(event,id){
 					<td align="center">&nbsp;</td>
 					<td align="center">&nbsp;</td>
 					<td align="center"><h2><?php echo strtoupper($btTaller); ?></h2></td><?php 
-						for($n=2; $n<=28; $n++){ 
+						for($n=2; $n<=$n_campos-2; $n++){ 
 							$name1  = mysqli_fetch_field_direct ($result, $n); ?>
 							<td><h2><?php echo "<b>".reparac($name1->name, $miConex)."</b>";?></h2></td>
 							<?php 
@@ -363,7 +366,7 @@ function contextual(event,id){
 					<td align="center">&nbsp;</td>
 					<td align="center">&nbsp;</td>
 					<td align="center"><h3><?php echo $TOTALES;?></h3><br></td><?php 
-						for($n=2; $n<=28; $n++){ 
+						for($n=2; $n<=$n_campos-2; $n++){ 
 							$name1  = mysqli_fetch_field_direct($result, $n); ?>
 							<td><div class="navegador dataTables_paginate paging_full_numbers"><span class="paginate_active"><h2 style="color:#000000; margin-left: -3px;"><?php echo "<b>".total($name1->name, $miConex)."</b>";?></h2></span></div></td>
 							<?php 
