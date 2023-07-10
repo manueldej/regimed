@@ -1,21 +1,21 @@
 <?php
 #############################################################################################################
 # Software: Regimed                                                                                         #
-#(Registro de Medios Inform·ticos)     					                                		            #
-# Version:  3.1.1                                                     				                        #
-# Fecha:    01/06/2016 - 01/01/2023                                             					        #
-# Autores:  Ing. Manuel de Jes˙s N˙Òez Guerra   								     			            #
-#          	Msc. Carlos Pollan Estrada (IN MEMORIAM)							         		            #
-# Licencia: Freeware                                                				                        #
-#                                                                       			                        #
+#(Registro de Medios Inform√°ticos)     					                                    #
+# Version:  3.1.1                                                     			                    #
+# Fecha:    01/06/2016 - 01/01/2023                                             			    #
+# Autores:  Ing. Manuel de Jes√∫s N√∫√±ez Guerra   							    #
+#          	Msc. Carlos Pollan Estrada (IN MEMORIAM)						    #
+# Licencia: Freeware                                                				            #
+#                                                                       			            #
 # Usted puede usar y modificar este software si asi lo desea, pero debe mencionar la fuente                 #
 # LICENCIA: Este archivo es parte de REGIMED. REGIMED es un software libre; Usted lo puede redistribuir y/o #
-# lo puede modificar bajo los tÈrminos de la Licencia P˙blica General GNU publicada por la FundaciÛn de     #
-# Software Gratuito (the Free Software Foundation ); Ya sea la versiÛn 2 de la Licencia, o (en su opciÛn)   #
-# cualquier posterior versiÛn. REGIMED es distribuido con la esperanza de que ser· ˙til, pero SIN CUALQUIER #
-# GARANTÕA; Sin a˙n la garantÌa implÌcita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROP”SITO PARTICULAR.  #
-# Vea la Licencia P˙blica General del GNU para m·s detalles. Usted deberÌa haber recibido una copia de la   #
-# Licencia  P˙blica General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
+# lo puede modificar bajo los t√©rminos de la Licencia P√∫blica General GNU publicada por la Fundaci√≥n de     #
+# Software Gratuito (the Free Software Foundation ); Ya sea la versi√≥n 2 de la Licencia, o (en su opci√≥n)   #
+# cualquier posterior versi√≥n. REGIMED es distribuido con la esperanza de que ser√° √∫til, pero SIN CUALQUIER #
+# GARANT√çA; Sin a√∫n la garant√≠a impl√≠cita de COMERCIABILIDAD o ADAPTABILIDAD PARA UN PROP√ìSITO PARTICULAR.  #
+# Vea la Licencia P√∫blica General del GNU para m√°s detalles. Usted deber√≠a haber recibido una copia de la   #
+# Licencia  P√∫blica General de GNU junto con REGIMED. En Caso de que No, vea <http://www.gnu.org/licenses>. #
 #############################################################################################################
 if (!defined('PHP_VERSION_ID')) {
 	$version = explode('.', PHP_VERSION);
@@ -552,7 +552,7 @@ p.footnote:first-line {
 		<?php //exit;
 		 } 
 		
-		// reemplazar para los que ya hayan instalado la aplicaciÛn y tengan datos 
+		// reemplazar para los que ya hayan instalado la aplicaci√≥n y tengan datos 
 		if(isset($_POST['reemplazar'])){
 		
 			if (compruebaDB($DBhostname, $DBuserName, $DBpassword, $DBname) == true) {
@@ -604,7 +604,7 @@ p.footnote:first-line {
 					  `estado` varchar(50) NOT NULL,
 					  `observ` varchar(150) NOT NULL,
 					  `idtalon` int(11) NOT NULL,
-					  `inv` varchar(15) NOT NULL,
+					  `inv` varchar(15) DEFAULT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
@@ -1252,7 +1252,7 @@ Registro de Medios Inform&aacute;ticos es un software&nbsp;(Freeware) con licenc
 					  `estado` varchar(50) NOT NULL,
 					  `observ` varchar(150) NOT NULL,
 					  `idtalon` int(11) NOT NULL,
-					  `inv` varchar(15) NOT NULL,
+					  `inv` varchar(15) DEFAULT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
@@ -1871,11 +1871,11 @@ Registro de Medios Inform&aacute;ticos es un software&nbsp;(Freeware) con licenc
 				$sql ="ALTER TABLE `datos_generales` DROP `pop`";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
 				
-				//Agregar campo "provincia" despuÈs de "mail" en la tabla datos_generales
+				//Agregar campo "provincia" despu√©s de "mail" en la tabla datos_generales
 				$sql ="ALTER TABLE `datos_generales` ADD `provincia` VARCHAR(150) COLLATE utf8_bin NULL AFTER `mail`";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
 								
-				//Agregar campo "web" despuÈs de "smtp" en la tabla datos_generales
+				//Agregar campo "web" despu√©s de "smtp" en la tabla datos_generales
 				$sql ="ALTER TABLE `datos_generales` ADD `web` VARCHAR(150) COLLATE utf8_bin NULL AFTER `smtp`";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
 				
@@ -1929,7 +1929,7 @@ Registro de Medios Inform&aacute;ticos es un software&nbsp;(Freeware) con licenc
 				$sql ="UPDATE $DBname.`tipos_aft` SET `descrip` = '&Uacute;tiles/Herramientas' WHERE `tipos_aft`.`id` =2;";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
 				
-				//Mover el campo mail despuÈs de web
+				//Mover el campo mail despu√©s de web
                 $sql ="ALTER TABLE `datos_generales` CHANGE `mail` `mail` VARCHAR(50) COLLATE utf8_bin NOT NULL   AFTER `web`";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
 				
@@ -1937,7 +1937,7 @@ Registro de Medios Inform&aacute;ticos es un software&nbsp;(Freeware) con licenc
 				$sql ="DROP TABLE `unidades`";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
 	
-				//Camciar tamaÒo al campo "estado" de las tablas "aft"
+				//Camciar tama√±o al campo "estado" de las tablas "aft"
 				$sql ="ALTER TABLE `aft` CHANGE `estado` `estado` CHAR( 2 )  COLLATE utf8_general_ci NOT NULL";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
 				
@@ -1948,7 +1948,7 @@ Registro de Medios Inform&aacute;ticos es un software&nbsp;(Freeware) con licenc
 					  `estado` varchar(50) NOT NULL,
 					  `observ` varchar(150) NOT NULL,
 					  `idtalon` int(11) NOT NULL,
-					  `inv` varchar(15) NOT NULL,
+					  `inv` varchar(15) DEFAULT NULL,
 					  PRIMARY KEY (`id`) COMMENT 'id'
 					) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;";
 				mysqli_query($miConex, $sql) or die(mysqli_error()); 
@@ -2056,7 +2056,7 @@ Registro de Medios Inform&aacute;ticos es un software&nbsp;(Freeware) con licenc
 					  `estado` varchar(50) NOT NULL,
 					  `observ` varchar(150) NOT NULL,
 					  `idtalon` int(11) NOT NULL,
-					  `inv` varchar(15) NOT NULL,
+					  `inv` varchar(15) DEFAULT NULL,
 					  PRIMARY KEY (`id`) COMMENT 'id'
 					) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;";
 				mysqli_query($miConex, $sql) or die(mysqli_error());
